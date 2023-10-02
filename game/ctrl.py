@@ -23,3 +23,9 @@ def get_game_state():
     }
     
     return game_state
+
+def restart_game():
+    Resource.objects.all().delete()
+    Resource.objects.create(name='Food', quantity=300)
+    Resource.objects.create(name='Water', quantity=500)
+    Resource.objects.create(name='Oxygen', quantity=700)

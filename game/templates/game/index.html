@@ -21,8 +21,30 @@
         </nav>
 
         <div class="container m-3">
-            <p> Django - check!</p>
-            <p> Bootstrap - check!</p>
+
+
+
+            <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">Resource</th>
+                <th scope="col">Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for resource in resources %}
+                <tr>
+                <td>{{ resource.name }}</td>
+                <td>{{ resource.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+
+
+
+
+
         </div> <!-- container -->
 
     </body>

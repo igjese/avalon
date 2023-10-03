@@ -24,6 +24,7 @@ class Component(models.Model):
     name = models.CharField(max_length=100)
     consumes = models.JSONField(default=dict, blank=True, null=True)  # e.g., {"Energy": 1, "Food": 1, "Water": 1}
     produces = models.JSONField(default=dict, blank=True, null=True)  # e.g., {"Oxygen": 1}
+    info = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name

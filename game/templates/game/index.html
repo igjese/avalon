@@ -128,9 +128,18 @@
 <script>
     // Initialize DataTables
     $(document).ready(function() {
-        $('#suppliesTable').DataTable();
-        $('#systemsTable').DataTable();
-        $('#referenceTable').DataTable(); 
+        $('#suppliesTable').DataTable({
+            "pageLength": 100,  // Show 100 rows per page
+            "lengthChange": false  // Remove the dropdown menu
+        });
+        $('#systemsTable').DataTable({
+            "pageLength": 100,  // Show 100 rows per page
+            "lengthChange": false  // Remove the dropdown menu
+        });
+        $('#referenceTable').DataTable({  // Assuming you also have a table with this ID for recipes
+            "pageLength": 100,  // Show 100 rows per page
+            "lengthChange": false  // Remove the dropdown menu
+        });
     });
 </script>
 

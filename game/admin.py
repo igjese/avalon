@@ -11,7 +11,7 @@ class SubSystemAdmin(admin.ModelAdmin):
     list_display = ('name', 'parent_system')
 
 class ComponentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'consumes', 'produces')
+    list_display = ('name', 'consumes', 'produces', 'info')
 
 class InstalledComponentAdmin(admin.ModelAdmin):
     list_display = ('component', 'parent_subsystem', 'quantity')

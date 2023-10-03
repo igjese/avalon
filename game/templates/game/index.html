@@ -30,9 +30,13 @@
         <li class="nav-item">
             <a class="nav-link" id="systems-tab" data-toggle="tab" href="#systems">Ship Systems</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" id="reference-tab" data-toggle="tab" href="#reference">Reference</a>
+        </li>
     </ul>
 
     <div class="tab-content mt-3">
+
         <div class="tab-pane fade show active" id="supplies">
             <!-- Supplies and Cargo -->
             <table id="suppliesTable" class="table table-striped">
@@ -80,6 +84,37 @@
                 </tbody>
             </table>
         </div> <!-- Ship Systems -->
+
+        <div class="tab-pane fade" id="reference">
+            <!-- Reference Content -->
+            <h4 class="mt-3">Reference</h4>
+            <table id="referenceTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Component</th>
+                        <th scope="col">Consumes</th>
+                        <th scope="col">Produces</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for component in components %}
+                    <tr>
+                        <td>{{ component.name }}</td>
+                        <td>
+                            {% for key, value in component.consumes.items %}
+                                {{ key }}: {{ value }}<br>
+                            {% endfor %}                        
+                        </td>
+                        <td>
+                            {% for key, value in component.produces.items %}
+                                {{ key }}: {{ value }}<br>
+                            {% endfor %}                            </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div> <!-- Reference Content -->
+
     </div>
 </div>
 
@@ -95,6 +130,7 @@
     $(document).ready(function() {
         $('#suppliesTable').DataTable();
         $('#systemsTable').DataTable();
+        $('#referenceTable').DataTable(); 
     });
 </script>
 

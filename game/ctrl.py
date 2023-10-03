@@ -1,5 +1,5 @@
 from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent
-import json
+from django.core.serializers import serialize
 
 def advance_game_tick():
     # Any game logic that advances the state of the game by one tick
@@ -59,7 +59,7 @@ def get_game_state():
     game_state = {
         'resources': resource_data
     }
-    
+
     return game_state
 
 def restart_game():

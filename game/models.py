@@ -15,7 +15,7 @@ class ShipSystem(models.Model):
 
 class SubSystem(models.Model):
     name = models.CharField(max_length=100)
-    parent_system = models.ForeignKey(ShipSystem, on_delete=models.CASCADE)
+    parent_system = models.ForeignKey(ShipSystem, related_name='subsystems', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

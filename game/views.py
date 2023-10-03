@@ -2,14 +2,15 @@ from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 
-from .models import Resource
+from .models import Resource, ShipSystem
 from . import ctrl  # Import the game_controller module
 
 
 # Create your views here.
 def index(request):
     resources = Resource.objects.all()
-    return render(request, 'game/index.html', {'resources': resources})
+    systems = ShipSystem.objects.all()
+    return render(request, 'game/index.html', {'resources': resources, 'systems': systems})
 
 
 def advance_game_tick_and_get_game_state(request):

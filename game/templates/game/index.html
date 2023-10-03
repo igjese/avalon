@@ -94,6 +94,7 @@
                         <th scope="col">Component</th>
                         <th scope="col">Consumes</th>
                         <th scope="col">Produces</th>
+                        <th scope="col">Info</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -108,7 +109,9 @@
                         <td>
                             {% for key, value in component.produces.items %}
                                 {{ key }}: {{ value }}<br>
-                            {% endfor %}                            </td>
+                            {% endfor %}                            
+                        </td>
+                        <td>{{ component.info }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

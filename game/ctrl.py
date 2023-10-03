@@ -64,7 +64,21 @@ def get_game_state():
 
 def restart_game():
     Resource.objects.all().delete()
-    Resource.objects.create(name='Food', quantity=300)
-    Resource.objects.create(name='Water', quantity=500)
-    Resource.objects.create(name='Oxygen', quantity=700)
-    Resource.objects.create(name='Energy', quantity=1000)
+    
+    # Define starting quantities in a dictionary
+    starting_quantities = {
+        'Food': 300,
+        'Water': 500,
+        'Oxygen': 700,
+        'Energy': 1000,
+        'Hydrogen': 0,
+        'FuelCells': 100,
+        'WasteWater': 50,
+        'Nutrients': 1000,
+        'Air': 100
+        # Add more resources here as needed
+    }
+    
+    # Create Resource objects based on the dictionary
+    for resource_name, quantity in starting_quantities.items():
+        Resource.objects.create(name=resource_name, quantity=quantity)

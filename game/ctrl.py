@@ -1,7 +1,16 @@
 from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent
-from django.core.serializers import serialize
+import logging
+import json
+from .game_logging import log, init_logs, clear_logs  # Import the new game_logging 
+
+current_tick = 0  # This should be updated as the game progresses
+
+# Initialize logging
+init_logs()
 
 def advance_game_tick():
+    global current_tick
+    current_tick += 1
     # Any game logic that advances the state of the game by one tick
     process_ship_systems()
 
@@ -48,7 +57,7 @@ def process_installed_component(installed_component):
     consume_text = consume_text[:-2] if consume_text else "-"
     produce_text = produce_text[:-2] if produce_text else "-"
 
-    print(f"{component.name} in {installed_component.parent_subsystem}/{installed_component.parent_subsystem.parent_system} | In: {consume_text} | Out: {produce_text}")
+    log(f"{component.name} in {installed_component.parent_subsystem}/{installed_component.parent_subsystem.parent_system} # In: {consume_text} # Out: {produce_text}")
 
 def get_game_state():
     # Your logic to collect and return the current state of the game
@@ -63,6 +72,11 @@ def get_game_state():
     return game_state
 
 def restart_game():
+    global current_tick
+    current_tick = 0
+
+    clear_logs()
+
     Resource.objects.all().delete()
     
     # Define starting quantities in a dictionary

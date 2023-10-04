@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.core.serializers import serialize
 
-from .models import Resource, ShipSystem, Component
+from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent
 from . import ctrl  # Import the game_controller module
+from .game_logging  import parse_logs # Import the new game_logging file
 
 
 # Create your views here.
@@ -23,3 +25,24 @@ def advance_game_tick_and_get_game_state(request):
 def restart_game(request):
     ctrl.restart_game()
     return HttpResponseRedirect(reverse('main'))
+
+def debug_page(request):
+    return render(request,'game/debug.html')
+
+def get_logs(request):
+    log_data = parse_logs()
+    return JsonResponse({'data': log_data})
+
+def get_data(request):
+    systems = serialize('json', ShipSystem.objects.all())
+    subsystems = serialize('json', SubSystem.objects.all())
+    components = serialize('json', Component.objects.all())
+    installed_components = serialize('json', InstalledComponent.objects.all())
+    resources = serialize('json',Resource.objects.all())
+    return JsonResponse({
+        'systems': systems,
+        'subsystems': subsystems,
+        'components': components,
+        'installed_components': installed_components,
+        'resources': resources
+    }, safe=False)

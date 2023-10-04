@@ -9,7 +9,6 @@ class StorageType(models.Model):
 
 class Resource(models.Model):
     name = models.CharField(max_length=100)
-    quantity = models.IntegerField()
     storage_type = models.ForeignKey(StorageType, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -54,12 +53,29 @@ class StorageUnit(models.Model):
     def __str__(self):
         return self.name
 
+class Location(models.Model):
+    name = models.CharField(max_length=100)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+    location_type = models.CharField(max_length=50)  # This can be 'Star', 'Planet', 'Moon', 'Ship', 'Space Station', 'Surface Installation', etc.
+    # ... any other fields like coordinates, description etc.
+
+    def __str__(self):
+        return self.name
+
 class InstalledStorageUnit(models.Model):
     storage_unit = models.ForeignKey('StorageUnit', on_delete=models.CASCADE)
     resource = models.ForeignKey('Resource', on_delete=models.CASCADE, null=True, blank=True)
-    currently_stored = models.IntegerField()  # How much stuff is currently in the storage unit
     subsystem = models.ForeignKey('Subsystem', on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.IntegerField()  # How many units are installed in the subsystem
 
     def __str__(self):
         return self.storage_unit.name
+
+class StoredResource(models.Model):
+    """Defines a resource stored in an installed storage unit."""
+    storage_unit = models.ForeignKey('InstalledStorageUnit', related_name='stored_resources', on_delete=models.CASCADE)
+    resource = models.ForeignKey('Resource', on_delete=models.CASCADE)
+    currently_stored = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.resource.name} in {self.storage_unit.storage_unit.name}"

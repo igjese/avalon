@@ -3,7 +3,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.core.serializers import serialize
 
-from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, StorageType
+from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, StorageType, StorageUnit, InstalledStorageUnit, StoredResource
 from . import ctrl  # Import the game_controller module
 from .game_logging  import parse_logs # Import the new game_logging file
 
@@ -14,12 +14,20 @@ def index(request):
     systems = ShipSystem.objects.all()
     components = Component.objects.all()
     storage_types = StorageType.objects.all()
+    storage_units = StorageUnit.objects.all()
+    installed_storage_units = InstalledStorageUnit.objects.all()
+    stored_resources = StoredResource.objects.all()
+    game_state = ctrl.get_game_state()
     return render(request, 'game/index.html', {
-        'resources': resources, 
-        'systems': systems, 
+        'resources': resources,
+        'systems': systems,
         'components': components,
-        'storage_types': storage_types
-        })
+        'storage_types': storage_types,
+        'storage_units': storage_units,
+        'installed_storage_units': installed_storage_units,
+        'stored_resources': stored_resources,
+        'ship_resources': game_state['resources']
+    })
 
 
 def advance_game_tick_and_get_game_state(request):
@@ -45,10 +53,22 @@ def get_data(request):
     components = serialize('json', Component.objects.all())
     installed_components = serialize('json', InstalledComponent.objects.all())
     resources = serialize('json',Resource.objects.all())
+    storage_units = serialize('json', StorageUnit.objects.all())
+    installed_storage_units = serialize('json', InstalledStorageUnit.objects.all())
+    stored_resources = serialize('json', StoredResource.objects.all())
+    
+    # Get aggregated ship data
+    game_state = ctrl.get_game_state()
+
     return JsonResponse({
         'systems': systems,
         'subsystems': subsystems,
         'components': components,
         'installed_components': installed_components,
-        'resources': resources
+        'resources': resources,
+        'storage_units': storage_units,
+        'installed_storage_units': installed_storage_units,
+        'stored_resources': stored_resources,
+        'ship_resources': game_state['resources'], # This is your new aggregated ship data
     }, safe=False)
+

@@ -46,15 +46,23 @@
                 <thead>
                     <tr>
                         <th scope="col">Resource</th>
-                        <th scope="col">Quantity</th>
+                        <th scope="col">In storage</th>
+                        <th scope="col">Capacity</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for resource in resources %}
-                    <tr>
-                        <td id="{{ resource.name }}_name">{{ resource.name }}</td>
-                        <td id="{{ resource.name }}_quantity">{{ resource.quantity }}</td>
-                    </tr>
+                    {% for resource_name, resource_data in ship_resources.items %}
+                        <tr>
+                            <td id="{{ resource_name }}_name">{{ resource_name }}</td>
+                            <td id="{{ resource_name }}_quantity">{{ resource_data.available }}</td>
+                            <td id="{{ resource_name }}_capacity">
+                                {{ resource_data.capacity }}
+                                {% if resource_data.storage_type == "General Cargo" %}
+                                    (shared)
+                                {% endif %}
+
+                            </td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -206,8 +214,15 @@
     function updateGameState(gameState) {
         // Update just the resources table cells directly
         var resources = gameState.resources;
-        $.each(resources, function(name, quantity) {
-            $("#" + name + "_quantity").text(quantity);
+        $.each(resources, function(name, data) {
+            $("#" + name + "_quantity").text(data.available);
+            // Check storage type and append '(shared)' if it is 'General Cargo'
+            var capacityText = data.capacity;
+            if (data.storage_type === 'General Cargo') {
+                capacityText += ' (shared)';
+            }
+
+            $("#" + name + "_capacity").text(capacityText);
         });
     }
 </script>

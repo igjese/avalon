@@ -3,7 +3,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.core.serializers import serialize
 
-from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent
+from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, StorageType
 from . import ctrl  # Import the game_controller module
 from .game_logging  import parse_logs # Import the new game_logging file
 
@@ -13,7 +13,13 @@ def index(request):
     resources = Resource.objects.all()
     systems = ShipSystem.objects.all()
     components = Component.objects.all()
-    return render(request, 'game/index.html', {'resources': resources, 'systems': systems, 'components': components})
+    storage_types = StorageType.objects.all()
+    return render(request, 'game/index.html', {
+        'resources': resources, 
+        'systems': systems, 
+        'components': components,
+        'storage_types': storage_types
+        })
 
 
 def advance_game_tick_and_get_game_state(request):

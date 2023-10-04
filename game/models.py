@@ -1,8 +1,16 @@
 from django.db import models
 
+class StorageType(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
 class Resource(models.Model):
     name = models.CharField(max_length=100)
     quantity = models.IntegerField()
+    storage_type = models.ForeignKey(StorageType, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -36,3 +44,22 @@ class InstalledComponent(models.Model):
 
     def __str__(self):
         return self.component.name
+
+class StorageUnit(models.Model):
+    name = models.CharField(max_length=100)
+    storage_type = models.ForeignKey(StorageType, on_delete=models.CASCADE)
+    capacity = models.IntegerField()
+    # Add any other fields as needed
+
+    def __str__(self):
+        return self.name
+
+class InstalledStorageUnit(models.Model):
+    storage_unit = models.ForeignKey('StorageUnit', on_delete=models.CASCADE)
+    resource = models.ForeignKey('Resource', on_delete=models.CASCADE, null=True, blank=True)
+    currently_stored = models.IntegerField()  # How much stuff is currently in the storage unit
+    subsystem = models.ForeignKey('Subsystem', on_delete=models.CASCADE, null=True, blank=True)
+    quantity = models.IntegerField()  # How many units are installed in the subsystem
+
+    def __str__(self):
+        return self.storage_unit.name

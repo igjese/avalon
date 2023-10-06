@@ -111,3 +111,35 @@ Tabs/Ship sections:
 
 ### Ship Composition
 - Hull, Engines, Fuel Tanks, Storage/Cargo Area, Manufacturing Bay, Crew Quarters, Life Support Systems, Navigation Systems, Power Generators, Sensor Arrays.
+
+## 6. Ship Blueprint with Fictional Component Names
+
+### Bridge (Managed by Captain)
+- **AstroCom Interface**: Main computer interface for managing ship operations.
+- **Holosphere**: 3D holographic display for situational awareness.
+- **StarLog**: Archive system to record ship logs and data.
+
+### Navigation (Managed by Pilot)
+- **PulsarNav System**: Advanced navigation system utilizing pulsar mapping.
+- **SkySight Sensor Suite**: A combination of radar, lidar, and other sensors.
+- **QuantCom Array**: Short-range and long-range communication system.
+
+### Engineering (Managed by Chief)
+- **IonTek Drive**: Main ion drive for system travel.
+- **Vortex Power Core**: Main power generator.
+- **NanoFix Drones**: Drones for internal and external repairs.
+- **StellarFusion Backup Generators**: Backup power units.
+- **CraftMaster 3000**: Manufacturing unit for making new components, repairs, etc.
+
+### Supplies and Cargo (Managed by Purser)
+- **StarHold Cargo Bays**: Main cargo holds.
+- **NutriPod Food Storage**: Temperature and environment-controlled food storage.
+- **TradeMate Interface**: Inventory management system.
+- **AquaPurifier Max**: Advanced water purification and filtration system.
+
+### Life Support and Cryo (Managed by Doc)
+- **BioSphere Hydroponics**: Food growing system.
+- **OxyGen Plus**: Main oxygen generation and regulation system.
+- **MediVault**: Medical supplies storage and emergency treatment unit.
+- **DeepSleep Cryo Pods**: Cryogenic sleeping pods.
+- **VitalGuard Emergency Systems**: Backup life support utilities.

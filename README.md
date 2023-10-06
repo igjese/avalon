@@ -517,3 +517,48 @@ Future consideration:
 - **Emergency Situations**: Captain can assign "priority requests" and allocate a percentage of bots.
 - **StoredResource Junction Table**: To manage multiple types and units of storage for one resource.
 
+## 20. Gameplay Constraints and Considerations
+
+### Component Processing
+
+- Components will be processed in a random order every tick.
+- Components may require multiple ticks to complete a production cycle.
+- If not enough inputs are available, the component reserves what it can but doesn't start the cycle.
+
+### Resource Management
+
+- Components will have a built-in buffer to reserve resources for up to two production cycles.
+- If a component can't output its production due to lack of storage, it waits for the next cycle.
+
+### Time Management
+
+- Game time will be mapped to real time, with 1 real-life minute equating to 1 in-game hour.
+- Component processing times will be defined in terms of in-game time.
+
+### Status and Reporting
+
+- Machines will have statuses like "Idle," "Running," "Paused for Input," etc.
+- These statuses can be aggregated for a global view, potentially aiding in player decision-making.
+
+### Buffering Considerations
+
+- Energy will not be buffered; it is consumed as generated.
+- Fluids will be buffered similarly to itemized resources.
+
+
+## 21. Resource Transaction Schema and Reporting
+
+### Resource Transaction Schema (Simplified)
+
+- **Timestamp**: When the transaction occurred in "game time."
+- **Resource Type**: The kind of resource involved (e.g., Energy, Oxygen).
+- **Transaction Type**: The type of transaction (Produced or Consumed).
+- **Amount**: The quantity of the resource involved.
+- **System ID**: Identifier for the system involved (e.g., Power Plant).
+- **Subsystem ID**: Identifier for the subsystem within the system (if applicable).
+- **Location ID**: Identifier for where this resource is stored or where the transaction happened.
+
+#### Example Log Line or Database Record (Simplified)
+Timestamp | Resource_Type | Transaction_Type | Amount | System_ID | Subsystem_ID
+1001 | Energy | Produce | 50 | 1 | 2
+1002 | Oxygen | Consume | 10 | 1 | 3

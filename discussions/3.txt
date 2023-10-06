@@ -1,0 +1,64 @@
+
+django templates but also:
+
+our whole game is a simulation, so time passing will be a factor for everything - we could end up with dozens of different timers
+
+maybe we could have a single timer (in whole game, forever) that fetches all the data needed by GUI every 10 seconds or so? any ideas?
+ChatGPT
+Having a single timer that fetches all relevant data at regular intervals can be a good optimization to reduce the number of timers and AJAX requests, especially as your game grows in complexity. This way, you would only need one setInterval call and one corresponding server-side endpoint to handle the state update.
+
+
+
+User
+what quantity of data are we talking about when discussing performance? if I send whole game state and database dump, I don't expect it to be over few hundred KB for foreseeable future
+ChatGPT
+Sending a few hundred KB every 10 seconds is generally not a big issue for modern internet connections and should be manageable for the server as well, especially for a small number of users. However, it's good to keep in mind some potential concerns:
+
+Bandwidth: While a few hundred KB may not sound like much, it can add up quickly if you have many users simultaneously connected. For example, 100 users would mean several MB of data transfer every few seconds.
+
+Server Load: Your server has to handle all incoming requests, process the game logic, access the database, and then send back the response. Depending on how optimized your code is, this could introduce latency or put a strain on server resources.
+
+Client Performance: The client's browser also needs to process the incoming data and update the UI accordingly. While modern computers should easily handle this, older devices or those with limited resources might struggle.
+
+Database Stress: If you're sending a database dump each time, it implies you're reading from the database frequently, which might put stress on it as the number of users grows.
+
+Network Latency: Last but not least, the round-trip time for a server request is not zero, especially for users with slower connections or those far from your server.
+
+Costs: More data transfer can lead to higher costs, depending on your hosting solution.
+
+If you don't anticipate a large user base or if your server is well-optimized, these concerns may not be too relevant. But they become increasingly important as the scale of your game grows. Optimizing your data transfers by only sending necessary updates (rather than the whole game state) can go a long way in mitigating these issues.
+
+
+
+
+User
+I'm creating a local prototype for single user (myself) on my laptop, I might occasionally deploy a stable version to show it to someone, so I don't bandwidth/performance will be a problem 
+
+let's stop for a moment anyway and discuss different approaches for this
+ChatGPT
+Certainly, here are some approaches for handling real-time updates in a web-based game like the one you're creating:
+
+Polling
+Simple Polling: Your client-side JavaScript can make an AJAX request every few seconds to get the latest game state. This is the simplest to implement but not the most efficient.
+
+Long Polling: Similar to simple polling but the server holds the request open until there is new data to send to the client. This can reduce network overhead but may keep server resources tied up for longer.
+
+Push Mechanisms
+WebSockets: A more advanced but also more efficient approach. With a WebSocket connection, the server can push updates to the client as soon as they occur. This is real-time and efficient but requires more effort to set up and manage.
+
+Server-Sent Events (SSE): A simpler form of push mechanism where the server can push updates to the client over a single HTTP connection. Easier to implement than WebSockets but not supported in all browsers (most notably, not fully supported in Internet Explorer).
+
+Hybrid Approach
+State Deltas: Instead of sending the entire game state every time, only send the changes (deltas) since the last update. This can significantly reduce the amount of data transferred. This can be combined with any of the above methods.
+
+Message Queue: For more complex games, a message queue (like RabbitMQ or AWS SQS) can handle events and updates, decoupling different parts of your system and ensuring they interact smoothly. This is usually overkill for a simple, single-user prototype but may be useful at scale.
+
+Given your specific scenario (single-user, local prototype), a simple AJAX polling mechanism with the entire game state being sent might be more than adequate. However, if you're looking to learn and possibly scale this later, WebSockets could be a valuable experience.
+
+
+
+
+User
+ok, let's go with the whole game state
+
+AND we are not just fetching the game state, our timer is the agency that actually advances the game loop

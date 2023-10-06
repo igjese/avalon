@@ -174,3 +174,40 @@ Notifications:
 
 - **Resource Management**: Challenges related to resource depletion alerts, resource surplus, and resource conversion.
 - **Logistics**: Challenges related to queue management, load balancing, and transport issues.
+
+## 8. Sensor Systems and Data Analysis
+
+### Sensor Types
+- **Astro-Body Sensor**: Detects planets, moons, asteroids, and other celestial bodies.
+- **Resource Sensor**: Specifically designed to locate valuable minerals, elements, or other types of resources.
+- **Life Form Sensor**: Detects biological entities.
+- **Hazard Sensor**: Detects environmental dangers like radiation zones, black holes, or solar flares.
+
+### Sensor Attributes
+- **Range**: How far the sensor can scan.
+- **Accuracy**: The likelihood that the data provided is correct.
+- **Speed**: How quickly it generates new scans.
+- **Power Consumption**: Higher-tier sensors might consume more power.
+
+### Player Decisions
+- **Sensor Management**: Deciding which sensors to run, considering their power consumption.
+- **Data Interpretation**: Making educated guesses or taking risks based on sensor data.
+- **Upgrade Planning**: When to invest in better sensors.
+
+### Sensor-to-Analysis Chain
+- **Raw Sensor Data**: Collected by various sensors.
+- **Basic Analysis**: Run by the ship's basic computing facilities.
+- **Advanced Analysis**: Requires specialized computing capabilities or algorithms.
+- **Result Interpretation**: The player interprets the analyzed data.
+
+### Upgrades
+- **Sensors**: Better range, accuracy, speed, and lower power consumption.
+- **Computing Hardware**: Faster processing speeds.
+- **Software/Algorithms**: More efficient or specialized algorithms.
+- **Data Storage**: Increased storage capabilities.
+
+### Advanced Sensor Types
+- **Spectral Sensors**: Used for identifying chemical compositions.
+- **Radio Sensors**: Detect radio waves.
+- **Gravitic Sensors**: Measure variations in gravitational fields.
+- **Thermal Sensors**: For measuring heat signatures.

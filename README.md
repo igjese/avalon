@@ -1,11 +1,5 @@
 # Game Design Document for Avalon Sigma
 
-## Table of Contents
-1. [Introduction](#introduction)
-2. [Gameplay Mechanics](#gameplay-mechanics)
-3. [UI and Technical Aspects](#ui-and-technical-aspects)
-4. [Additional Features](#additional-features)
-
 ---
 
 ## 1. Introduction
@@ -74,6 +68,8 @@ The game is designed for players who enjoy a single-player experience without ti
 
 ## 4. Additional Features
 - The game blends elements of logistics, resource management, and narrative choice into a compelling space exploration setting.
+
+---
 
 ## 5. Simplified Game Iteration
 

@@ -1,0 +1,114 @@
+
+# 12. storage model
+
+we have specific cargo, assigned to storage units, which keep track of what is there
+
+we have general cargo, which is not assigned to storage units, which means we are not keeping track of it anywhere for the moment
+ChatGPT
+Ah, I see the distinction. If I understand correctly:
+
+Specific Cargo: These are resources that are stored in specialized storage units. Each unit can store only one type of resource (e.g., a fuel tank for hydrogen fuel).
+
+General Cargo: These are resources or items that are not stored in specialized storage units. Essentially, these could be things that can be stored in any empty space like a general cargo hold (e.g., food supplies, miscellaneous items).
+
+Here are some thoughts on how to handle these:
+
+Specific Cargo
+Storage Logic: Keep track of each resource and its quantity in each storage unit.
+Retrieval Logic: When a subsystem needs a specific resource, it looks for available quantities in the corresponding specialized storage units.
+General Cargo
+Storage Logic: You could have a separate general cargo hold that is flexible in what it can store. It would have its own total capacity but would not be tied to a specific resource type.
+Retrieval Logic: When a subsystem needs a resource that's not in a specialized storage unit, it could look in the general cargo hold.
+How to Update Your Code Logic
+For the calculate_ship_resources() function, you could add another key to your ship dictionary, maybe something like 'general_cargo': {'available': 0, 'capacity': 0} to handle general cargo storage. When looping through the installed storage units, you could add the capacity and currently stored amount to this key if the unit has no specific Resource attached.
+
+Would you like to proceed with implementing these features?
+
+
+
+
+User
+before implementing calculation, we need to store general cargo somewhere
+
+maybe we can just assign it to general cargo hold, as everything else?
+ChatGPT
+Certainly, you can treat the general cargo hold similarly to how you treat specific storage units, but with the added flexibility that it can store multiple types of resources or items.
+
+Here's how it could work:
+
+Model: Create a model for a "GeneralCargoHold" if you haven't already.
+Attributes: This model would have attributes like total_capacity, currently_stored (this could be a list or a dictionary that contains what is currently stored and its amount), and location (which ship or station it's on).
+Database: You'll store instances of this "GeneralCargoHold" in your database, linked to a specific ship or other location.
+Calculation: During the calculate_ship_resources() function, you'd aggregate the values stored in "GeneralCargoHold" along with your specialized storage units to get a full view of what's available and where.
+This way, you're maintaining a consistent way to manage storage across both specific and general types of cargo. Does this approach sound good to you?
+
+
+
+
+User
+I have general cargo hold, but InstalledStorageUnit has fk to specific resource, not the other way around
+
+Resource: This is the master table that lists all possible resources.
+StorageUnit: Represents the storage units designed to hold specific resources. It has a foreign key (FK) to Resource.
+InstalledStorageUnit: These are instances of StorageUnit installed on a ship, station, etc. They have foreign keys to their location (location_id) and to Resource (resource_id), which can be nullable for general cargo holds.
+GeneralCargoHold: This represents the general cargo hold. It has a foreign key to its location (location_id). The currently_stored can be a dictionary or a serialized string that contains a mapping of Resource IDs to quantities.
+This structure allows you to:
+
+Link specific storage units to specific resources via StorageUnit -> Resource
+Handle general cargo holds without requiring a specific Resource via InstalledStorageUnit -> null
+Aggregate resources in the calculate_ship_resources() function by checking both InstalledStorageUnit and GeneralCargoHold.
+Would this structure work for you?
+
+
+
+
+User
+resource don't have fk to resource but to storage_type (at the moment)
+
+ChatGPT
+Ah, I see. If Resource has a foreign key to StorageType rather than StorageUnit, the ER diagram would be slightly different. Here's how it could look:
+
+Resource: The master table listing all resources now has a foreign key (FK) to StorageType (instead of StorageUnit).
+StorageType: Represents the types of storage possible.
+StorageUnit: Holds the actual storage units, which are linked to a storage type through storage_type_id.
+InstalledStorageUnit: Similar to before, represents storage units installed on a ship. It also has a nullable resource_id to allow for general storage.
+Does this revised structure make sense in the context of your game?
+
+
+
+
+User
+resource can't be held in specific installed storage unit, because we could have 100 water i 2 tanks that can hold 50 each
+ChatGPT
+Ah, I see the issue now. Your cargo isn't limited to one type of storage unit, and it doesn't make sense to directly link each resource to a specific storage unit. In a scenario like the one you mentioned (100 units of water spread across 2 tanks with a capacity of 50 each), the linking wouldn't work if each resource is tied to a specific InstalledStorageUnit.
+
+Here's a breakdown:
+
+Resource: This remains the same; it's the master list of all resources.
+StorageType: Represents the types of storage that are possible, such as tanks for liquids and crates for solids.
+StorageUnit: Details the actual storage units and is linked to StorageType via storage_type_id. Each StorageUnit has a capacity.
+InstalledStorageUnit: Represents the storage units actually installed on the ship. It no longer has a direct link to Resource, just to StorageUnit.
+GeneralCargoHold: This is a new table to represent a generic storage area that isn't tied to any specific storage type. Resources that aren't stored in a specific InstalledStorageUnit would go here.
+Would this revised model fit better with what you have in mind?
+
+
+
+
+User
+in this model, we can't store two different resources in general cargo hold
+
+which means we nead 1:N relationship here
+ChatGPT
+You're correct. If we want the General Cargo Hold to hold multiple types of resources, we'd need a 1:N relationship between GeneralCargoHold and Resource. You could create a junction table between these two to manage multiple types of resources in a single cargo hold.
+
+
+GeneralCargoResource: This is a new table that acts as a junction between GeneralCargoHold and Resource. Each record would represent a quantity of a specific type of resource in the general cargo hold.
+
+GeneralCargoHold: Now, this is just an identifier, no resource-specific fields.
+
+Resource: No change here.
+
+This way, you can have multiple types of resources in each general cargo hold, each with its own quantity.
+
+Does this design suit your requirements?
+

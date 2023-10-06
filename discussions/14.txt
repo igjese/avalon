@@ -1,0 +1,139 @@
+
+
+
+User
+let's take a step back and think
+
+resources model is still a placeholder itself, meaning we don't want big effort just to refactor part that will change later
+
+let's include resources in the discussion, so we hopefully solve the whole thing, then implement
+ChatGPT
+Certainly, it's a good idea to consider the long-term design as we go. Let's discuss resources in detail.
+
+As you mentioned, resources are a core element of the game, and how they are structured will have a ripple effect throughout the codebase. Below are some points to consider:
+
+Type of Resources: What kinds of resources are you considering? Are they all tangible items, or could they also be intangibles like "energy" or "manpower"?
+
+Resource Properties: Beyond the type and quantity, do resources have any other attributes? For example, quality, state (solid, liquid, gas), or any other meta-data?
+
+Resource Allocation: Can a resource only belong to a single container, or can it be distributed among multiple containers?
+
+Resource Flow: How do resources move from one place to another? Is it instant or over time?
+
+Resource Interactions: Do resources interact with each other? For example, can combining two resources create a third?
+
+Special Types of Storage: Will there be specialized storage units that can only hold specific resources, or can any storage unit hold any resource type, albeit maybe less efficiently?
+
+General vs Specific Storage: Is there any real difference in the game mechanics between resources in a general storage unit and those in a specific storage unit? For instance, are there pros and cons to storing something in a specialized unit versus a general one?
+
+Resource Discovery and Creation: How are new types of resources introduced into the game? Is it through discovery, research, or some other mechanism?
+
+Understanding the answers to these questions will help us create a more holistic and long-term viable model for resources and their interactions.
+
+
+
+
+User
+let me list what we know so far:
+- we do have intangible resource ("Air")
+- we do have special resources, that need separate containers
+- special containers contain only single resource
+- we have "energy" that's just available or not, on single location
+- we have "fluids" that we think we can abstract the flow, same as energy
+- we have tangibles, that bots (or other mechanisms) will need to transport to and from containers
+ChatGPT
+
+StorageUnitResource: This entity is a bridge table that allows you to assign multiple resources to a general cargo hold (StorageUnit). It also allows you to specify unique properties like CurrentlyStored and MaxCapacity for each resource in each unit. This would solve the issue of not being able to store two different resources in general cargo holds.
+
+Resource Type: Differentiates between tangible and intangible resources.
+
+StorageType: Differentiates between general storage units and specialized storage units that can only hold specific resources.
+
+TransportMechanism: Represents bots or other mechanisms used to move tangible items.
+
+Do these entities and relationships make sense for your game? Would you like to modify anything?
+
+
+
+
+User
+this might work, except maxcapacity doesn't belong to the model (it's a calculated value)
+
+pls now change your hat and try to find holes in the model :)
+ChatGPT
+Certainly, putting on my "critical reviewer" hat now! Here are some considerations and potential issues with the current ER model:
+
+Overlapping Resources: The StorageUnitResource table allows a resource to be stored in multiple general cargo holds. What happens if a resource is also in a specialized container? How is priority decided?
+
+Empty Storage Units: If a specialized storage unit is empty, does it switch to general storage? If not, it could be a waste of space.
+
+Intangible Resources: For intangible resources like "Air," are they also going through StorageUnitResource, or do we need a separate mechanism for them? Especially if they don't require "physical" storage space.
+
+Multiple Locations: Does the model handle resources or storage units that could be in multiple locations (e.g., multiple subsystems or systems)?
+
+Storage Type Flexibility: The StorageType (General, Special) is static. What if a unit can switch between being general and special?
+
+Resource Movement: How are resources moved from one unit to another? The model doesn't describe any "actions" or "events" for transferring resources.
+
+Energy and Fluid Flow: How are "energy" and "fluids" accounted for in terms of flow through the ship? If they are resources, do they also require storage units?
+
+Concurrency: If multiple systems are producing and consuming resources simultaneously, how does the model account for concurrency and priority?
+
+Scalability: As the number of resources, storage units, and systems grow, recalculating MaxCapacity (even if it's a derived field) and other aggregated values might become computationally expensive.
+
+Transport Mechanism Capacity: The model includes the Capacity attribute for TransportMechanism, but it doesn't specify what this capacity refers to. Is it volume, weight, or something else? And how does it relate to the resources it can carry?
+
+Resource Attributes: If resources have additional attributes (like spoilage time for food, or energy level for batteries), this is not accounted for in the model.
+
+Dependencies: The model doesn't specify any relationships that represent dependencies between systems or resources. For example, a life-support system might depend on both power and air filters.
+
+The existing model provides a good foundation, but it may require additional complexity to capture some of these nuances.
+
+
+
+
+User
+1. let's say specialized containers cannot be used by non-special cargo
+2. no, specialized storage is reserved for specific resource, it's part of "managing the ship"
+3. if we can, yes they should employ same mechanism, to keep the model simple (even if we have to create dummy junctions or similar)
+4. yes, we just replace location in the model with subsystem and that should cover it (subsystems belong to locations anyway)
+5. neither resources nor units can switch from general to special
+6. bots (for now) take X amount of Y tangible resource and take it where needed, it's "in transit" until it arrives but we don't need that in a model, since it can be aggregated if needed from the bots data
+7. energy and fluids and special fluids are all separate storage types, so should be accounted for (because we have separate storage units for each). flow is "magical", they are either available or not instantaneously
+8. no concurrency, they request resources and random one gets them (if not enough available). later on we might need to add priority (so e.g. life support gets enough resources even if there is not enough for e.g. ice-cream machine)
+9. maxcapacity as stored intermediate result can be easily added at any point. better start simple than complex (if change is easy to do as this one)
+10. I would like to not have transport mechanism in db for now, it is big discussion on its own and we just don't know enough yet. we just know we'll have bots (that have some capacity for tangibles) and shuttles (that can have different storage units installed themselves). pls tell whether you feel this should be discussed right now
+11. spoilage time we don't need for foreseeable future. battery capacity fits into currently_stored same as everything else
+12. dependencies on resources can be calculated from the components if needed. where we will actually need dependencies are blueprint rules, once we implement creating blueprints, but they will probably not include resources (at least can't see from top of my head why resources would be a dependency for creating a blueprint)
+
+pls comment
+ChatGPT
+Certainly, here are my comments on your responses:
+
+Overlapping Resources: That makes sense. If specialized containers are strictly reserved for their designated resources, it simplifies the logic.
+
+Empty Storage Units: If the game design allows specialized storage to be reserved, then this is a non-issue.
+
+Intangible Resources: Using the same mechanism simplifies the design but consider how intuitive this is from a gameplay and logic standpoint. You wouldn't want to mislead players.
+
+Multiple Locations: If subsystems are tied to locations, then this isn't an issue.
+
+Storage Type Flexibility: If it's part of the game logic that these can't switch, then this is resolved.
+
+Resource Movement: Since bots are responsible for this, it's outside the scope of this resource storage model, which is fine.
+
+Energy and Fluid Flow: If "magical" instantaneous flow is part of the game's logic, then this shouldn't be a problem. But it might make sense to document this assumption.
+
+Concurrency: This seems like a reasonable approach for a first version. However, implementing a priority system later could provide more depth to resource management.
+
+Scalability: Agreed. Starting simple is a good approach, especially if you know that optimizing is easy later on.
+
+Transport Mechanism Capacity: If you feel that transport mechanisms like bots and shuttles deserve their own separate design discussion, that's fine. The key is to ensure that their eventual inclusion doesn't require a complete overhaul of your current design.
+
+Resource Attributes: If you're sure you won't need attributes like spoilage time, then this is fine. However, it's often easier to design flexibility into the system upfront than to try to add it later.
+
+Dependencies: If dependencies can be derived from the components and don't need to be explicitly stored, that should be fine for now.
+
+Overall, it sounds like you have considered many of the nuances and are opting for a simpler initial design, which is often a wise choice. Just make sure that the assumptions and limitations are well-documented so you can revisit them easily when it's time to add more complexity.
+
+

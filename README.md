@@ -233,3 +233,29 @@ The game is designed for players who enjoy a single-player experience without ti
 - **Resource Consumption per Tick**: Game loop accounts for resource consumption and production.
 - **Efficiency in Numbers**: Represented as a fraction (e.g., 5/7 machines working).
 
+## 11. Systems and Components
+
+### Ship Systems and Subsystems
+
+- **ShipSystem**: An umbrella term for a specific system on the ship, such as "Power Generators," "Water Recycling," or "Hydroponics."
+- **Component**: A specific piece of hardware or software within a ShipSystem that does the actual work. For example, "Hydrogen Fuel Cell," "Solar Panel," or "Water Filter."
+
+### Crew as a System
+
+- **Crew**: Considered as a "system" within the ship.
+  - **Subsystems**: "Staff" and "Bots" (Bots not implemented yet).
+  - **Components**: "Specialists" under "Staff" subsystem.
+  
+### Resource Consumption and Production
+
+- **Staff**: Consumes 1 of each resource (Food, Water, Oxygen, maybe Energy) every tick.
+- **Bots**: Consume 0 resources for now but could consume Energy in the future.
+
+### Efficiency and Status
+
+- **Crew Member Efficiency**: Depends on health, morale, and the quality of their equipment.
+
+### Emergency Protocols
+
+- **Power-Saving Mode**: Could reduce everyone's workload but also lower the ship's overall efficiency.
+

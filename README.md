@@ -429,3 +429,27 @@ Future consideration:
 #### Bridge
 - Building a central dashboard for alerts, statuses, and visuals based on the ship's current location.
 
+## 18. Storage Model Revisions
+
+### Storage Types and Units
+
+- **Resource**: Master list of all resources, linked to `StorageType` via a foreign key.
+- **StorageType**: Types of storage possible (e.g., tanks, crates).
+- **StorageUnit**: Actual storage units, linked to `StorageType`.
+- **InstalledStorageUnit**: Storage units installed on the ship, linked to `StorageUnit`.
+
+### General Cargo Hold
+
+- **GeneralCargoHold**: A new table to represent a generic storage area.
+- **GeneralCargoResource**: A junction table between `GeneralCargoHold` and `Resource` to manage multiple types of resources in a single cargo hold.
+
+### Relationships
+
+- 1:N relationship between `GeneralCargoHold` and `Resource` through `GeneralCargoResource`.
+
+### Logic Changes
+
+- **Specific Cargo**: Resources are stored in specialized storage units (`InstalledStorageUnit`), each linked to a specific `StorageType`.
+- **General Cargo**: Resources not stored in specialized units go into `GeneralCargoHold`, managed through `GeneralCargoResource`.
+- The model allows for multiple types of resources in each `GeneralCargoHold`, each with its own quantity.
+

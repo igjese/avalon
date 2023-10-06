@@ -60,6 +60,12 @@ The game is designed for players who enjoy a single-player experience without ti
 - Purser: Manages the "Supplies and Cargo" section, responsible for keeping track of all resources and supplies.
 - Doc: Manages the Life Support section, initially responsible for maintaining oxygen levels, water recycling, and food production. Could later be expanded to cover science, healthcare, etc.
 
+### Other Mechanics
+
+- **Throughput-Sensitive Systems**: Consideration for systems sensitive to the rate of material throughput.
+- **Workflow Management Sub-System**: Manages the rate at which materials move through the manufacturing process.
+- **Foundational Blueprints**: Initial set of blueprints for essential systems and components like mining drills, nanoassemblers, shuttles, drones, and bots.
+
 ---
 
 ## 3. UI and Technical Aspects
@@ -78,17 +84,23 @@ Tabs/Ship sections:
 - Supplies and Cargo: Managed by the Purser, shows your current supplies including food, water, and other essential and non-essential supplies.
 - Life Support: Managed by Doc, shows the status of life-support systems like oxygen levels, water recycling, and food production.
 - 
-### Tables
+### UI elements
+Tables:
 - Display detailed information about inventory, crew status, and other logistical elements.
 
-### Buttons
+Buttons:
 - Interactive buttons for issuing commands and performing various tasks.
 
-### Progress Bars
+Progress Bars:
 - Display metrics like how much cargo or manufacturing space is left.
 
-### Notifications
+Notifications:
 - Informative alerts for key events or status changes.
+
+### Other Aspects
+
+- **Assembly Lines**: Specialized manufacturing lines with dedicated bots.
+- **Customizable Blueprints**: Allows players to design their own assembly lines with pre-defined settings.
 
 ---
 
@@ -157,3 +169,8 @@ Tabs/Ship sections:
 - **MediVault**: Medical supplies storage and emergency treatment unit.
 - **DeepSleep Cryo Pods**: Cryogenic sleeping pods.
 - **VitalGuard Emergency Systems**: Backup life support utilities.
+
+## 7. Minute-to-Minute Gameplay Challenges
+
+- **Resource Management**: Challenges related to resource depletion alerts, resource surplus, and resource conversion.
+- **Logistics**: Challenges related to queue management, load balancing, and transport issues.

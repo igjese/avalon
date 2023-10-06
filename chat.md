@@ -1,363 +1,6 @@
-# Concept
 
-Your game concept centers on a space exploration and logistics management experience. The setting is a half-broken ship at Alpha Centauri, where the player and a few crew members wake up from cryo-sleep. The end goal may involve reaching a mythical space colony like "Avalon Sigma."
 
-Gameplay Mechanics
-Resource Scarcity: The game starts with limited resources, adding an immediate layer of challenge and urgency.
-
-Planet vs. Ship Manufacturing: You have limited but mobile manufacturing capabilities on your ship, while planets offer extensive but stationary options. This creates an interesting strategic trade-off for players.
-
-Upgradable Ship: As you gather resources, you can upgrade different aspects of your ship, from cargo space to manufacturing efficiency or defense capabilities.
-
-Crew Management: The crew, including different section chiefs like Engineering, have unique skills and potential storylines that you must manage.
-
-Decision Trees: You'll make key choices that affect your resource allocation and strategy, like whether to explore potentially dangerous areas for valuable resources.
-
-Exploration and Expansion: Players have the choice to explore new planets and systems in the hopes of finding resources or even a permanent settlement.
-
-Crisis Events: Random crisis events like natural disasters or space pirate attacks can occur, requiring immediate decisions, though these won't be time-based to suit your preference for a more solitaire-like pace.
-
-UI and Technical Aspects
-Tech Stack: You'll use Django for the backend, likely coupled with jQuery and Bootstrap for the frontend.
-
-Interface: The UI is envisioned as a series of tabs representing different sections of the ship, like Navigation, Engineering, and Manufacturing.
-
-Tables: These will display detailed information about inventory, crew status, and other logistical elements.
-
-Buttons: Interactive buttons will be used to issue commands and perform various tasks.
-
-Progress Bars: To display how much cargo or manufacturing space is left, among other metrics.
-
-Notifications: Informative alerts for key events or status changes.
-
-Your game is designed to be a single-player experience without time pressures, allowing for more thoughtful and strategic play. Overall, it blends elements of logistics, resource management, and narrative choice into a compelling space exploration setting.
-
-# UI
-
-Office work is optimized for information presentation, same as games but in different way. If I don't have resources to do "game ui" then I could use "office ui" as-is, like balance sheets, work orders with line items, etc. 
-1. what do you think?
-2. any other branches of human activity (excluding multimedia) that optimize for information presentation?
-ChatGPT
-Using Office-Style UI in Games: This is an intriguing idea that could work well, especially for a logistics management game. Games in the "tycoon" or "management sim" genres often have deep systems that could be well-represented through tables, charts, and other forms of "office UI." This kind of interface can effectively convey a lot of information in a straightforward manner. It's also likely to be quicker to implement if you're already familiar with creating such UI elements. You could use it to emphasize the management and strategic planning aspects of the game.
-
-Other Fields Optimized for Information Presentation:
-
-Scientific Research: Data visualization is a crucial part of conveying complex scientific information. Graphs, tables, and schematics are often used.
-
-Finance and Trading: Real-time dashboards are essential in finance for monitoring various market metrics. These dashboards are optimized for quick comprehension and decision-making.
-
-Healthcare: Patient monitoring systems use UI optimized for quick comprehension of vital signs and other health metrics. Electronic Health Record (EHR) systems also focus on clear, easy-to-navigate information presentation.
-
-Industrial Control Systems: Think of control rooms for electricity grids or manufacturing plants. These systems often use a variety of gauges, charts, and alerts to present information.
-
-Navigation and GIS: Systems like Google Maps or specialized Geographic Information Systems (GIS) are optimized to convey spatial information efficiently.
-
-Educational Software: E-learning platforms often prioritize information presentation, using various metrics, charts, and progress indicators to help both teachers and students understand the educational journey.
-
-News and Journalism: The way articles, images, and multimedia are presented on news websites is optimized for clear information dissemination, including the use of infographics.
-
-Retail and eCommerce: Websites in these domains are optimized to present a large amount of product information in a clear and accessible manner, often through the use of filters, product comparisons, and customer reviews.
-
-Given your interest in a logistics game, the "office UI" approach could give your project a unique angle and help set it apart from other games in the genre. It could also allow players who are familiar with such interfaces in their professional lives to immediately understand and engage with your game.
-
-
-
-
-User
-Sounds like we could use primarily "office ui", with "industrial control systems ui" and "finance and trading ui" elements as secondary where needed - note that I'm solving for two variables: relevant for this kind of game and dirt-cheap to implement
-
-thoughts?
-ChatGPT
-Your idea of using a mix of "office UI," "industrial control systems UI," and "finance and trading UI" sounds both creative and practical, especially when you're solving for relevance and low-cost implementation.
-
-Office UI: This can serve as the main interface for tasks like resource management, scheduling, and general overview. Tables, lists, and simple forms are relatively easy to implement and understand. You could represent tasks like issuing work orders or managing crew assignments through simple forms and tables.
-
-Industrial Control Systems UI: For more real-time or immediate concerns like power management, emergency situations, or equipment monitoring, an industrial control system UI could be useful. Gauges, dials, and alert indicators can quickly convey the state of critical systems. This kind of UI is often designed to be easily understood at a glance, which could make it ideal for high-stakes or time-sensitive tasks within the game. However, they might be a bit more involved to implement, depending on the graphics and real-time updating involved.
-
-Finance and Trading UI: If your game involves resource trading or economic modeling, a finance and trading-style dashboard could work well. Simple line graphs, bar charts, or ticker-style updates could represent fluctuating resource values or summarize trade transactions. These kinds of UI elements are typically designed to convey a lot of information in a compact form, making them useful for parts of the game that involve complex decisions based on fluctuating variables.
-
-Implementation
-Since you're proficient with Django, you might find it straightforward to implement these UI elements using HTML tables and forms for the Office UI, and JavaScript libraries for more dynamic elements like charts or gauges. You could also use Bootstrap components for a cohesive and modern look.
-
-Given your dual goals of game relevance and low-cost implementation, this mix could offer a balanced approach. The Office UI covers a lot of ground and is easy to implement, while specific elements from the other two types of UI could add depth and engagement without adding excessive complexity or development cost.
-
-
-
-
-User
-ok, let's pretend designing a game - we simulate a real thing, but without actually implementing it or going into to much detail, to find flaws in the concept
-
-we start a game, now what:
-- what is on the UI
-- what is on our disposal
-- what immediate decisions/challenges we need to take on
-ChatGPT
-Absolutely, let's do a conceptual run-through of the game to examine the player's initial experience and identify potential design flaws or areas for improvement.
-
-Starting a New Game
-What is on the UI:
-Main Dashboard (Office UI):
-
-"Current Location": Displayed at the top (Alpha Centauri).
-"Ship Status": Table summarizing the condition of the ship (e.g., Hull Integrity, Power Levels, Fuel, etc.).
-"Crew Roster": A list of chiefs of sections (e.g., Engineering, Navigation, etc.).
-Resource Management Tab (Office UI):
-
-Tables displaying available resources like minerals, food, medicine, etc.
-Buttons to issue work orders for mining, refining, or producing goods.
-Navigation Tab (Industrial Control Systems UI):
-
-Map of nearby star systems, planets, etc.
-Current trajectory and options to set new courses.
-Market/Trade Dashboard (Finance and Trading UI):
-
-Tables and graphs displaying the value of resources.
-Options to trade with nearby stations or ships (if any).
-Command Center (Office UI):
-
-List of immediate tasks or decisions that need attention.
-Alerts and notifications pane.
-What is at our disposal:
-Ship: Half-broken, needs repairs.
-Crew: Chiefs for sections like Engineering, Navigation, etc., but with limited staff.
-Resources: Limited initial supplies of food, fuel, and raw materials.
-Manufacturing Capacity: Limited but upgradable space for cargo and manufacturing.
-Initial Capital: Some form of currency or tradeable goods for the market.
-Immediate Decisions/Challenges:
-Resource Allocation:
-
-Do you start immediate repairs on the ship using available resources, or save them for potential trade or other uses?
-Crew Assignments:
-
-Which sections should be prioritized? Do you focus on repairs (Engineering), exploration (Navigation), or something else?
-Destination Setting:
-
-Do you stay in the Alpha Centauri system to gather more resources, or set a course to a nearby system in hopes of finding something better?
-Trade Decisions:
-
-Do you trade away some of your limited resources for immediate gains, or hold onto them for future needs?
-Initial Research or Upgrades:
-
-Do you allocate resources to upgrade your ship's manufacturing capacity, or perhaps to research new technologies or abilities?
-By thinking through these elements, we can start to see how the game might play out and where potential issues or complexities might arise. What do you think? Would you like to adjust or add anything?
-
-
-User
-for this iteration: 
-no graphics , just text and tables
-no trade , we are alone
-crew is just numbers (so we still need food, water, oxygen... but no health or security issues etc for now)
-
-so we have bridge (summary and status), navigation (local system details, list of nearby stars with basic info), engineering (ship modules, manufacturing, blueprints), quartermaster (cargo and supplies), science (interpreting data, improving stuff)
-
-something like this?
-
-few questions immediately pop up:
-who is charting the system? 
-who is doing short and long range scans? 
-who is responsible for sensors?
-who will be going "out" when needed (installing equipment for e.g. mining) and with what?
-
-and then, directly inferred from the above:
-what should be proper names for ship sections we mentioned so far? (no real idea about military ships orgcharts, or even those in SF, sry)
-what our ship consists of? what does it have aboard?
-ChatGPT
-Based on your simplified approach, the game could focus more on resource management and strategic decisions rather than intricate crew interactions or trade dynamics. Here's a refinement based on your requirements:
-
-Updated UI Tabs:
-Bridge: This would serve as the summary and status area, showing basic information like your current location, ship status (e.g., hull integrity, fuel levels), and the number of crew members.
-
-Navigation: Detailed information about the local star system you're in, as well as basic information about nearby stars that you could potentially navigate to.
-
-Engineering: Information about ship modules, manufacturing capabilities, and blueprints for new modules or upgrades.
-
-Quartermaster: This would manage your cargo and supplies, listing quantities of food, water, oxygen, and other essential supplies.
-
-Science: A space for interpreting scanned data from celestial bodies, as well as managing research projects that could lead to improvements or new blueprints.
-
-# Ship sections and crew
-
-Updated UI Tabs:
-Bridge: The main dashboard displaying current location, ship status, and available crew members (i.e., captain, pilot, chief engineer, quartermaster, and life support manager).
-
-Navigation: Managed by the Pilot, this section shows detailed information about the current star system and options for setting a course to other star systems.
-
-Engineering: Managed by the Chief, it shows information about ship modules, power management, and available blueprints for upgrades or repairs.
-
-Quartermaster: Managed by the Quartermaster, this section shows your current supplies including food, water, and other essential and non-essential supplies.
-
-Life Support: Managed by the "Sustainability Officer," this section shows the status of life-support systems like oxygen levels, water recycling, and food production.
-
-Available Crew Members:
-Captain (Player): Responsible for overall decision-making.
-
-Pilot: Manages the Navigation section, responsible for steering the ship and making short-range scans.
-
-Chief Engineer (or simply Chief): Manages the Engineering section, responsible for repairs, upgrades, and power management.
-
-Quartermaster: Manages the Quartermaster section, responsible for keeping track of all resources and supplies.
-
-Sustainability Officer: Manages the Life Support section, responsible for maintaining oxygen levels, water recycling, and food production.
-
-Updated Ship Components:
-Hull: The main body of the ship.
-Engines: For propulsion, managed by Engineering.
-Fuel Tanks: To store fuel for the engines, managed by Quartermaster.
-Storage/Cargo Area: Managed by Quartermaster.
-Manufacturing Bay: Managed by Engineering.
-Crew Quarters: Living areas for the few crew members.
-Life Support Systems: Managed by the Sustainability Officer.
-Navigation Systems: Managed by Pilot.
-Power Generators: Managed by Engineering.
-Sensor Arrays: Managed by Pilot for Navigation purposes.
-This trimmed-down version of the game with a focus on specific roles should help create a tighter, more focused gameplay loop. What do you think? Would you like to add or adjust anything?
-
-
-
-
-User
-maybe life support boss should be "Doc" - so later on he could also do e.g. science, bio, healthcare etc
-ChatGPT
-That's a great idea! Using the title "Doc" could provide the character with a broader range of responsibilities and allow for easier expansion into areas like science, biology, and healthcare in future iterations of the game. It also adds a familiar yet informal touch, which could contribute to the atmosphere of the game.
-
-Revised Crew Members:
-Captain (Player): Responsible for overall decision-making.
-
-Pilot: Manages the Navigation section, responsible for steering the ship and making short-range scans.
-
-Chief Engineer (or simply Chief): Manages the Engineering section, responsible for repairs, upgrades, and power management.
-
-Quartermaster: Manages the Quartermaster section, responsible for keeping track of all resources and supplies.
-
-Doc: Manages the Life Support section, initially responsible for maintaining oxygen levels, water recycling, and food production. Could later be expanded to cover science, healthcare, etc.
-
-This title could allow you more flexibility in developing the game's mechanics and story, giving you the option to add more responsibilities for "Doc" as the game evolves. What do you think?
-
-
-
-
-User
-Quartermaster section should be "Supplies and Cargo".. any good sounding nickname its boss had in maritime navies in literature?
-ChatGPT
-In maritime and naval literature, the person responsible for supplies and cargo often goes by the title of "Quartermaster," as you've mentioned. However, they can sometimes be colloquially referred to as the "QM," "Purser," or even "Supply Officer."
-
-In a more fictional setting, you could invent a unique or catchy name to add some flair, such as "Provisioner" or "Logistics Chief," depending on the atmosphere you're trying to create.
-
-Updated Crew Members:
-Captain (Player): Responsible for overall decision-making.
-
-Pilot: Manages the Navigation section, responsible for steering the ship and making short-range scans.
-
-Chief Engineer (or simply Chief): Manages the Engineering section, responsible for repairs, upgrades, and power management.
-
-Logistics Chief: Manages the "Supplies and Cargo" section, responsible for keeping track of all resources and supplies.
-
-Doc: Manages the Life Support section, initially responsible for maintaining oxygen levels, water recycling, and food production. Could later be expanded to cover science, healthcare, etc.
-
-Would one of these names work for you?
-
-
-
-
-User
-ok, so we have captain, pilot, chief, purser and doc. later on we could add zillion quazi-random interactions that reveal quazi-random backstory and relationships (for "zilllion" I presume you could generate those, in some future iteration)
-
-how does it sound?
-ChatGPT
-That sounds like a compelling setup! The core roles of Captain, Pilot, Chief, Purser, and Doc provide a solid foundation for managing different aspects of the game's logistics and decision-making. Adding the quasi-random interactions for backstory and relationships can give the game a dynamic, unpredictable element that makes each playthrough unique.
-
-
-# ship components
-
-Revised Ship Blueprint with Fictional Component Names
-
-Bridge (Managed by Captain)
-AstroCom Interface: Main computer interface for managing ship operations.
-Holosphere: 3D holographic display for situational awareness.
-StarLog: Archive system to record ship logs and data.
-
-Navigation (Managed by Pilot)
-PulsarNav System: Advanced navigation system utilizing pulsar mapping.
-SkySight Sensor Suite: A combination of radar, lidar, and other sensors.
-QuantCom Array: Short-range and long-range communication system.
-
-Engineering (Managed by Chief)
-IonTek Drive: Main ion drive for system travel.
-Vortex Power Core: Main power generator.
-NanoFix Drones: Drones for internal and external repairs.
-StellarFusion Backup Generators: Backup power units.
-CraftMaster 3000: Manufacturing unit for making new components, repairs, etc.
-
-Supplies and Cargo (Managed by Purser)
-StarHold Cargo Bays: Main cargo holds.
-NutriPod Food Storage: Temperature and environment-controlled food storage.
-TradeMate Interface: Inventory management system.
-AquaPurifier Max: Advanced water purification and filtration system.
-
-Life Support and Cryo (Managed by Doc)
-BioSphere Hydroponics: Food growing system.
-OxyGen Plus: Main oxygen generation and regulation system.
-MediVault: Medical supplies storage and emergency treatment unit.
-DeepSleep Cryo Pods: Cryogenic sleeping pods.
-VitalGuard Emergency Systems: Backup life support utilities.
-
-# hierarchy of entities
-
-let's have a hierarchy:
-ship systems, that are assembled from components
-components, that are assembled from parts and possibly other components,
-parts, that are manufactured from materials
-materials, that are gathered or mined or refined from raw materials
-raw materials, that are found on planets, moons and asteroids
-
-how does it sound?
-
-ChatGPT
-That sounds like a very organized and well-structured hierarchy for categorizing the different elements of the ship's construction and logistics. It helps break down the process into manageable stages, and it clearly delineates between the different types of resources and where they come from. Here's how your terminology would look in a simple outline form for clarity:
-
-Ship Systems: High-level assemblies that serve major functions on the ship (e.g., IonTek Drive, Vortex Power Core).
-Assembled from Components
-Components: Individual elements that combine to form a Ship System (e.g., Thrust Coils, Ion Chamber).
-Assembled from Parts and possibly other Components
-Parts: Smaller elements that are used to assemble Components (e.g., High-Conductivity Wiring, Vacuum-Tight Casing).
-Manufactured from Materials
-Materials: Substances that are directly used to create Parts (e.g., Copper, Titanium).
-Gathered, Mined, or Refined from Raw Materials
-Raw Materials: Natural substances found on celestial bodies (e.g., Copper Ore, Iron Ore).
-Found on Planets, Moons, and Asteroids
-Does this encapsulate your vision effectively?
-
-
-
-
-User
-yes, it does. do you have better idea btw?
-ChatGPT
-Your hierarchy is well thought-out and does a good job of capturing the different levels of resource management and manufacturing in a logistics-focused game. It's simple enough to be easily understood yet comprehensive enough to allow for depth and complexity in gameplay. I don't have a significantly better idea; I think this works well for what you're aiming to achieve.
-
-One slight variation could be to add an intermediary level between Components and Systems to accommodate modular upgrades or different configurations of the same system. For example:
-
-Ship Systems: High-level assemblies (e.g., Propulsion, Life Support).
-Assembled from Sub-Systems
-Sub-Systems: Variants or modular upgrades within a System (e.g., IonTek Drive, Plasma Drive within Propulsion).
-Assembled from Components
-Components: Elements that form a Sub-System (e.g., Thrust Coils, Ion Chamber).
-Assembled from Parts and possibly other Components
-Parts: Smaller elements used to assemble Components (e.g., High-Conductivity Wiring, Vacuum-Tight Casing).
-Manufactured from Materials
-Materials: Substances used to create Parts (e.g., Copper, Titanium).
-Gathered, Mined, or Refined from Raw Materials
-Raw Materials: Natural substances (e.g., Copper Ore, Iron Ore).
-Found on Planets, Moons, and Asteroids
-This optional level could add an extra layer of customization and decision-making to the game but could also add complexity. It's entirely up to you whether this would enhance or detract from the experience you're aiming to create.
-
-
-
-
-User
-ok, sounds good, let's have sub-systems too
-
-# resource management and logistics
+# 1. resource management and logistics
 
 Gathering, Refining, Manufacturing, and Assembling
 Gathering: You would gather raw materials by sending out mining probes, rovers, or drones to nearby celestial bodies like planets, moons, and asteroids. This could be a job for a dedicated "Mining" or "Resource Gathering" Sub-System.
@@ -599,7 +242,7 @@ Resource Planning: The blueprint can display expected resource consumption rates
 Efficiency Tuning: Based on the ship's current needs, players can tweak the settings to produce different items or operate more/less efficiently.
 By offering a customizable blueprint for assembly lines, you would add an engaging gameplay element where players can express their creativity and optimize their ship to best meet their unique challenges and objectives.
 
-# sensors
+# 2. sensors
 
 each sensor could output N random locations per minute, we could have different types of sensors (for astro bodies, for resources)
 ChatGPT
@@ -648,7 +291,7 @@ Gravitic Sensors: Measure variations in gravitational fields, useful for detecti
 Thermal Sensors: For measuring heat signatures, useful in various scenarios from detecting lifeforms to measuring the viability of a planet for colonization.
 This sensor-to-analysis chain could tie in well with the existing systems of logistics, resource management, and manufacturing. For example, more advanced sensors and computers might require rare materials to build, pushing the player to prioritize certain types of resource gathering. The player would need to balance immediate needs (like resource gathering for survival) with longer-term goals (like advanced research for improved capabilities).
 
-# getting data to UI
+# 3. getting data to UI
 
 django templates but also:
 
@@ -657,41 +300,6 @@ our whole game is a simulation, so time passing will be a factor for everything 
 maybe we could have a single timer (in whole game, forever) that fetches all the data needed by GUI every 10 seconds or so? any ideas?
 ChatGPT
 Having a single timer that fetches all relevant data at regular intervals can be a good optimization to reduce the number of timers and AJAX requests, especially as your game grows in complexity. This way, you would only need one setInterval call and one corresponding server-side endpoint to handle the state update.
-
-Here's how you could adapt the previous example to this approach:
-
-JavaScript Timer for Global Refresh
-javascript
-Copy code
-setInterval(function() {
-    $.get("/refresh_all/", function(data) {
-        $('#food').text(data.resources.food);
-        $('#water').text(data.resources.water);
-        $('#oxygen').text(data.resources.oxygen);
-        // ... update other UI elements as needed
-    });
-}, 10000);  // refreshes every 10 seconds
-Django View for Refreshing All
-python
-Copy code
-from django.http import JsonResponse
-
-def refresh_all(request):
-    # Update and get all game states, not just resources
-    # ...
-    
-    response_data = {
-        'resources': {
-            'food': new_food_value,
-            'water': new_water_value,
-            'oxygen': new_oxygen_value,
-        },
-        # ... add other game states
-    }
-    
-    return JsonResponse(response_data)
-By doing this, you can have a single "heartbeat" for your game that keeps everything synchronized. Just be cautious as you expand this approach. If you end up having to send a lot of data back and forth, or if the server-side computation to generate that data becomes intensive, you may run into performance issues.
-
 
 
 
@@ -749,7 +357,7 @@ ok, let's go with the whole game state
 
 AND we are not just fetching the game state, our timer is the agency that actually advances the game loop
 
-# architecture
+# 4. architecture
 
 we are using django
 
@@ -766,7 +374,7 @@ model should just be fetching data by django orm
 we are using DataTables for jQuery for most of our UI
 
 
-# resources continued
+# 5. resources continued
 
 so, we already have Food, Water and Oxygen
 
@@ -1009,7 +617,7 @@ or since Staff is almost a synonym, let's call individuals Specialists.
 
 
 
-# more resources and components
+# 6. more resources and components
 
 alerts should probably be on the summary ("bridge") tab, which we don't have yet. but since there are no meaningful alerts yet (there is no consequences if e..g oxygen drops to 0, btw it can go below 0 for that matter at the moment) we can do it later.
 
@@ -1579,7 +1187,7 @@ Outputs: Air
 Description: The AeroMixer 5000 takes pure oxygen and combines it with trace gases to produce a breathable air mixture, carefully regulated to sustain human life in confined spaces.
 This system can take the oxygen generated by the OxyGenius S-2, combine it with trace gases (which could be another resource or assumed to be abundant for simplicity), and produce breathable air for the ship's environment. 
 
-# debug tab
+# 7.  debug tab
 
 would it make sense to have "debug" tab? for example, to dump database when I need to show it to you, etc
 ChatGPT
@@ -1611,7 +1219,7 @@ let's make separate debug page, it should
 - data tab should have a button "copy to clipboard"
 
 
-# logistics and storage
+# 8.  logistics and storage
 
 we were discussing logistics - resources need to come to the components somehow, we were thinking logistics bots
 ChatGPT
@@ -2113,7 +1721,7 @@ This way, the game has a systematic method of determining where resources can be
 User
 ok, let's create StorageType table in django, but just two columns - name, description
 
-# more storage
+# 9. more storage
 
 Resource Tracking Direction
 Tracking resources in Resource table and updating storage: This approach would mean that the Resource table serves as the single source of truth. Every time a resource quantity changes, you'll update the corresponding storage unit. This may simplify calculations and updates since you'll only have to update one table, but it could make your storage unit updates more complicated.
@@ -2302,7 +1910,7 @@ and we keep all of those in the database, got it
 
 for the moment, let's just have a world and a ship
 
-# locations
+# 10. locations
 
 ChatGPT
 Certainly, here's a simplified hierarchy without coordinates:
@@ -2402,7 +2010,7 @@ A navigation tab featuring star maps would offer an interactive and visually eng
 Bridge UI
 The bridge acting as the central hub for alerts and statuses is a great idea for an immersive experience. Having the bridge change its visual per orbited body would make each location feel unique and could potentially add a layer of realism to the game. Since you're considering changing the visuals based on the size and type of the body, you'd be creating a more dynamic and engaging user experience.
 
-# current milestones
+# 11. current milestones
 
 In Progress
 Storage Model: Refining and finalizing how resources are stored and managed in various storage units.
@@ -2415,7 +2023,7 @@ Admin Panel: Starting with basic features for now like export/import functionali
 Navigation: Adding a star map and a system map, potentially with some interactive features for route planning or exploration.
 Bridge: Building a central dashboard for alerts, statuses, and visuals like the view from the ship’s bridge based on its current location.
 
-# storage model
+# 12. storage model
 
 we have specific cargo, assigned to storage units, which keep track of what is there
 
@@ -3340,7 +2948,7 @@ Subsystem Location: Since storage units are now related to subsystems and subsys
 
 
 
-# constraints and considerations
+# 13. constraints and considerations
 
 there are several gameplay considerations we need to implement, let me list them now:
 - all ship's components are being "processed" every tick, we'll make it be in random order (at the moment it's sequential)
@@ -3520,7 +3128,7 @@ Fluids can be buffered similarly to itemized resources, especially if they are c
 Machine Status and Reporting:
 Status Reporting: Each machine can have a status attribute that could take values like "Idle", "Running", "Paused for Input", "Paused for Output", "Paused for Energy", etc. This status could be used both for individual machine reporting and for aggregated views.
 
-# historical data
+# 14. historical data
 
 Historical Data: You can also keep track of machine utilization, production rates, and other relevant metrics over time. This historical data can then be displayed in various formats, such as charts or logs, to help players make informed decisions.
 

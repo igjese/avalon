@@ -206,3 +206,30 @@ The game is designed for players who enjoy a single-player experience without ti
 
 ### Game Loop Advancement
 - **Concept**: The timer is not just fetching the game state; it actually advances the game loop.
+
+## 10. Resources and Systems
+
+### Food, Water, and Oxygen
+
+- **Food**: Consumed by the crew but can be produced in hydroponics facilities.
+  - **Resource Dependencies**: Consumes water, energy, and potentially nutrients.
+  - **Emergency Measures**: Rations can be reduced for a short time before causing health effects.
+  
+- **Water**: Consumed by the crew and used in hydroponics.
+  - **Resource Dependencies**: Requires energy for purification and recycling.
+  - **Emergency Measures**: Can be rationed more easily but with long-term consequences.
+  
+- **Oxygen**: Consumed by the crew.
+  - **Resource Dependencies**: Requires energy, and potentially water if using electrolysis.
+  - **Emergency Measures**: Can be rationed to an extent, but this has immediate health risks.
+
+### New Systems and UI
+
+- **Energy Stored**: A new resource, similar to food, water, and oxygen.
+- **Crew as a System**: Consumes resources like food, water, and oxygen.
+- **UI Tabs**: "Supplies and Cargo" for resources and "Ship Systems" for system efficiencies and statuses.
+- **Power Plants**: Produces energy and consumes fuel.
+- **Hydroponic Vats, Water Recyclers, Oxygen Generators**: Systems that produce essential resources.
+- **Resource Consumption per Tick**: Game loop accounts for resource consumption and production.
+- **Efficiency in Numbers**: Represented as a fraction (e.g., 5/7 machines working).
+

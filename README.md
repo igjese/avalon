@@ -68,39 +68,19 @@ The game is designed for players who enjoy a single-player experience without ti
 
 ---
 
-## 3. UI and Technical Aspects
+## 3. Architecture
 
 ### Tech Stack
-- Backend: Django
-- Frontend: jQuery and Bootstrap
+- **Backend**: Django is used for the backend.
+- **Frontend**: jQuery and Bootstrap are used for client-side interactions and styling.
+  
+### UI Components
+- **DataTables**: DataTables for jQuery is used for most of the UI.
 
-### Interface
-- UI envisioned as a series of tabs representing different sections of the ship, like Navigation, Engineering, and Manufacturing.
-
-Tabs/Ship sections:
-- Bridge: Managed by the Captain, displays current location, ship status, and available crew members.
-- Navigation: Managed by the Pilot, shows detailed information about the current star system and options for setting a course to other star systems.
-- Engineering: Managed by the Chief, shows information about ship modules, power management, and available blueprints for upgrades or repairs.
-- Supplies and Cargo: Managed by the Purser, shows your current supplies including food, water, and other essential and non-essential supplies.
-- Life Support: Managed by Doc, shows the status of life-support systems like oxygen levels, water recycling, and food production.
-- 
-### UI elements
-Tables:
-- Display detailed information about inventory, crew status, and other logistical elements.
-
-Buttons:
-- Interactive buttons for issuing commands and performing various tasks.
-
-Progress Bars:
-- Display metrics like how much cargo or manufacturing space is left.
-
-Notifications:
-- Informative alerts for key events or status changes.
-
-### Other Aspects
-
-- **Assembly Lines**: Specialized manufacturing lines with dedicated bots.
-- **Customizable Blueprints**: Allows players to design their own assembly lines with pre-defined settings.
+### MVC Architecture
+- **Controller**: Holds all logic and flow.
+- **View**: Responsible for routing requests and serving responses. When needed transforms data for UI consumption.
+- **Model**: Fetches data using Django ORM.
 
 ---
 
@@ -116,6 +96,7 @@ Notifications:
 ### UI Design
 - Text and tables-based interface, no graphics.
 - No trade interactions; the focus is on resource management and navigation.
+- **Notifications**: Informative alerts for key events or status changes.
 
 ### Crew Management
 - Crew members now have specific roles: Captain, Pilot, Chief Engineer (Chief), Purser, and Doc.
@@ -137,6 +118,11 @@ Notifications:
 
 ### Ship Composition
 - Hull, Engines, Fuel Tanks, Storage/Cargo Area, Manufacturing Bay, Crew Quarters, Life Support Systems, Navigation Systems, Power Generators, Sensor Arrays.
+
+### Other Aspects
+
+- **Assembly Lines**: Specialized manufacturing lines with dedicated bots.
+- **Customizable Blueprints**: Allows players to design their own assembly lines with pre-defined settings.
 
 ## 6. Ship Blueprint with Fictional Component Names
 

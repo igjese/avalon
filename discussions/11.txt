@@ -1,0 +1,100 @@
+
+# 10. locations
+
+ChatGPT
+Certainly, here's a simplified hierarchy without coordinates:
+
+Universe (or Galaxy)
+
+Name: Milky Way
+Star System
+
+Name: Alpha Centauri
+Parent: Milky Way
+Stars
+
+Name: Alpha Centauri A
+
+Parent: Alpha Centauri
+
+Name: Alpha Centauri B
+
+Parent: Alpha Centauri
+
+Name: Proxima Centauri (if you want to include it, it's much farther away)
+
+Parent: Alpha Centauri
+
+Exoplanets
+
+Name: Proxima Centauri b (if you're including Proxima)
+Parent: Proxima Centauri
+Moons
+
+(None confirmed as of last update)
+Artificial Structures
+
+Name: Alpha Centauri Space Station
+Parent: Alpha Centauri
+Ship
+
+Name: Your Ship
+Parent: Alpha Centauri Space Station (if docked)
+
+
+Types of Stars (adding Main Sequence Types):
+O-Type Main Sequence
+B-Type Main Sequence
+A-Type Main Sequence
+F-Type Main Sequence
+G-Type Main Sequence (Yellow Dwarf)
+K-Type Main Sequence
+M-Type Main Sequence (Red Dwarf)
+Red Giant
+White Dwarf
+Neutron Star
+Blue Giant
+
+Types of Planets:
+Rocky
+Gas Giant
+Ice Giant
+Volcanic
+Water World
+
+Types of Moons:
+Rocky
+Icy
+Volcanically Active
+Iron
+
+Characteristics (applicable to Planets and Moons):
+Tidally Locked
+Atmosphere-bearing
+
+
+another consideration is ship location - it might be in transit, or docked, or landed (?) or orbiting a body - what location model would account for that - maybe we need status ("in orbit", "docked" etc) and radial coordinates instead, or that would increase complexity (because we need it only for the ship)
+
+another is admin panel as you mention, we already have "data dump" button, we could use that page to expand from there
+
+another is drawing maps - with just dozen stars we can draw a nice starmap, or with dozen bodies a nice star system map. maps could be under navigation tab
+
+bridge would then hold alerts and statuses ("air level - nominal", "energy usage - 70% capacity", "food storage level - low") but also a single visual per orbited body, like a view from actual bridge, a planet (or star) horizon that could be single image per type  and smaller and bigger radius of the body depending on size, just to make each look a tiny bit different
+
+could you comment on each point
+ChatGPT
+Absolutely, let's delve into each point:
+
+Ship Location Model
+If you want to keep things simple, you could start by assigning the ship a "status" and "location." The status could include states like "in transit," "docked," "landed," or "in orbit." The location could be a reference to a body (star, planet, moon, etc.) or coordinates (for when it's in transit).
+
+If you're considering radial coordinates, it might increase the complexity, but it would also provide more granularity. You'd be able to represent the ship's exact location within a system, which could be useful for navigation and mission planning. If this level of detail is needed only for the ship, then the complexity might be worth it, especially if you plan to implement a more advanced navigation or combat system later.
+
+Admin Panel / Data Dump Button
+Expanding the current "data dump" button functionality into a full-fledged admin panel could offer you a convenient way to manage and visualize your game's data. You could consider features like data import/export, creating/editing/deleting entities, and perhaps even real-time analytics or diagnostics.
+
+Drawing Maps
+A navigation tab featuring star maps would offer an interactive and visually engaging way for players to explore the universe you've built. This could be useful for planning routes, marking notable locations, or even for strategic gameplay elements. It may require some advanced front-end work to create these maps, but it could be a significant feature.
+
+Bridge UI
+The bridge acting as the central hub for alerts and statuses is a great idea for an immersive experience. Having the bridge change its visual per orbited body would make each location feel unique and could potentially add a layer of realism to the game. Since you're considering changing the visuals based on the size and type of the body, you'd be creating a more dynamic and engaging user experience.

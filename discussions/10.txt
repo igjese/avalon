@@ -1,0 +1,189 @@
+
+# 9. more storage
+
+Resource Tracking Direction
+Tracking resources in Resource table and updating storage: This approach would mean that the Resource table serves as the single source of truth. Every time a resource quantity changes, you'll update the corresponding storage unit. This may simplify calculations and updates since you'll only have to update one table, but it could make your storage unit updates more complicated.
+
+Tracking resources in storage and updating Resource table: This way, the storage units themselves are the primary records of how much of each resource is available. The Resource table would then be updated based on the sum of all storage units holding that resource. This approach may give you more fine-grained control over resource allocation and usage at the expense of potentially complicating resource update operations.
+
+Both approaches have pros and cons, and the "best" approach depends on the specifics of your game mechanics, what you find easier to manage, and where you anticipate most of the complexity to lie.
+
+
+
+
+User
+we need single source of truth
+
+since actual resources are in storage, storage should be that
+
+but then we don't need to track it in resource itself at all, it will need to be calculated each tick anyway
+ChatGPT
+If you choose storage as the single source of truth, then indeed you wouldn't strictly need to keep a separate running total in the Resource table. Instead, you could calculate the total quantity of each resource dynamically whenever needed by summing up the quantities from all relevant storage units.
+
+Here's how this might work in terms of game mechanics and code:
+
+Resource Changes: Whenever a resource quantity changes (either increases or decreases), this change would be directly applied to the relevant storage units. If there are multiple storage units capable of holding the resource, you could distribute the change among them based on some logic (e.g., fill up one unit before moving to the next, distribute evenly, etc.).
+
+Resource Query: If you need to know the total quantity of a particular resource, you would query all storage units that can hold that resource and sum up their currently_stored quantities.
+
+Game Tick: At each game tick, you would:
+
+Update the currently_stored attribute of each storage unit based on production and consumption.
+Optionally, validate that the currently_stored amounts do not exceed their respective maximum capacities or go below zero.
+Resource Reports or UI Updates: Whenever you need to display the total amount of a resource to the player or make a calculation based on it, you perform the summing query.
+
+This approach ensures that your storage units are the canonical representation of the resource quantities, making it more straightforward to implement mechanics like storage limits, resource decay, etc.
+
+
+
+
+User
+another angle is that we might have "local " resources - for example when we create a manufactory on a planet we'll have two - one on a ship, another (or many) on other locations
+
+ChatGPT
+In that case, a "location-aware" or "scope-aware" storage system might be more appropriate. You could add a location field to your storage units to specify where each unit is located. This could be a string or an ID that represents a particular game location, like a ship, a planet, a manufactory, etc.
+
+Here's how this modified system could work:
+
+New Fields:
+StorageUnit: Add a location field that specifies the location of this unit.
+InstalledStorageUnit: Add a location field as well. This would allow you to know not just what storage unit it represents, but also where it is installed.
+Game Mechanics:
+Resource Changes: When you change the quantity of a resource, you'd need to specify not just what resource is changing but also where the change is happening. You then apply the change to the storage units that are at the specified location.
+
+Local and Global Queries: When you query for resource amounts, you could do either a global query that sums across all locations or a local query that sums only across a specific location.
+
+Resource Transfer: If you want to enable transferring resources from one location to another, you'd move them from the relevant storage units in the source location to the relevant units in the target location.
+
+Game Tick: The tick update would be location-aware. For example, maybe resource decay or production only happens at specific types of locations.
+
+UI Updates: The UI would need to be aware of locations when displaying resource amounts. It could show either the global total, the local total for the currently selected location, or both.
+
+Special Cases: For special storage like air in a ship or fuel in a specific engine, you would probably want to restrict those storage units to their relevant locations (e.g., the ship's location ID).
+
+This setup adds complexity but provides the flexibility to handle resources at various scopes and locations in your game world.
+
+
+
+
+User
+storage units are already local. we just need to count stuff in any storage (ship, planet, etc) and that's it
+ChatGPT
+If your storage units are already local to specific locations like ships or planets, then that simplifies matters. You can aggregate the amounts of each resource by summing over all storage units at the location. Each game tick, you'd update these localized storage units based on consumption, production, decay, etc.
+
+So for a resource like "Water," each storage unit in a given location (e.g., Ship A, Planet B) would have its own currently_stored value, and the total amount of Water at that location would be the sum of currently_stored for all water storage units at that location.
+
+Here's how this would work with your concerns:
+
+Single Source of Truth: currently_stored in each storage unit is the truth. To know how much of each resource you have, you would sum up currently_stored for that resource across all storage units in the current location.
+
+Game Tick: At each tick, you would update currently_stored in each storage unit based on the production/consumption mechanics for that location.
+
+Queries: When you need to know how much of a resource is available at a location, you can aggregate currently_stored across all relevant storage units at that location.
+
+Resource Transfers: When transferring resources between locations, you would update the currently_stored values of the corresponding storage units at each location.
+
+Does this setup align with what you had in mind?
+
+
+
+
+User
+yes, that's it
+
+then if we are aligned, how do we proceed? remove qty from resources, and start counting the storage instead?
+ChatGPT
+Exactly, since the currently_stored field in each storage unit will now be the "single source of truth" for how much of each resource you have, you can remove the quantity field from the Resource model. This will make your data model more straightforward and easier to manage.
+
+Here are the steps to proceed:
+
+Database Migration: Remove the quantity field from the Resource table/model. Run the migration to update the database.
+
+bash
+Copy code
+python manage.py makemigrations
+python manage.py migrate
+Update Storage Units: If you haven't done so, ensure each storage unit model has a field like currently_stored to hold the quantity of the stored resource.
+
+Aggregation Logic: Implement logic to aggregate the sum of currently_stored for each resource in each location, whenever that information is needed.
+
+This might be a method or function you call whenever you need to know how much of a resource is available at a location.
+Resource Transfer Logic: Implement logic to safely transfer resources between storage units, and between locations.
+
+Game Tick Update: Adapt your game loop to update the currently_stored values in each storage unit at each tick, taking into account consumption, production, etc.
+
+Testing: Make sure to thoroughly test your new storage and resource tracking systems to ensure they're working as intended.
+
+UI/UX Updates: If you have a UI for displaying resource levels, update it to pull from the aggregated currently_stored values rather than the now-removed quantity field from the Resource model.
+
+Once these steps are complete, your game should be operating with a more accurate and centralized resource tracking system.
+
+
+
+
+User
+lot of things depend on current quantity of something, we should probably be calculating it every tick - do you agree?
+ChatGPT
+Yes, recalculating the current quantity of resources every tick makes sense, especially in a game where resource levels can fluctuate frequently due to various actions, events, or automated processes. By doing this, you ensure that all components, subsystems, and mechanics that depend on these resource levels are working with the most current data.
+
+Since the currently_stored field in each storage unit is your single source of truth, aggregating these values at each tick can help maintain game state consistency. This calculation would be a part of the logic that gets executed every game tick, ensuring all systems are up-to-date.
+
+That said, it's important to keep an eye on performance, especially as the number of storage units and resources grows. If recalculating every tick becomes a performance bottleneck, you might have to look into optimization strategies, such as caching frequently-used calculations.
+
+
+
+
+User
+where to keep such intermediary data - game state? something else? how do we call it?
+ChatGPT
+In a typical game architecture, this kind of intermediary data is often stored in what's referred to as the "game state" or "world state." This object captures the current condition of the game world and all entities within it, providing a snapshot that can be acted upon and updated each tick.
+
+You could call this object something like CurrentGameState or WorldState, and it could have various attributes and methods to manage the data it holds. For example, it might have a method to recalculate the total amount of each resource available in the game world based on the currently_stored values in each storage unit. This would then be called each tick to update the game state.
+
+let's call it a World. then, we will have multiple locations. ship is only one of them. so under world, we might have world.ship
+
+sounds ok?
+ChatGPT
+Yes, that sounds like a well-structured approach. The World could serve as an overarching object that manages different locations or sub-systems, like ship, planet, or other possible locations where resources could be stored or activities could occur.
+
+This will allow you to manage each location's resources separately while still having a unified World object that oversees the entire game state. On each tick, calling recalculate_world_state would update the resources for all managed locations.
+
+
+
+
+User
+ship already contains systems, which contain stuff
+
+world would contain ship and e.g. planet manufactory, what else?
+ChatGPT
+The World object could contain a variety of other entities or locations that are important for your game. Here are some examples:
+
+Space Stations: These could be places where the ship can dock to exchange resources, undergo repairs, or receive upgrades.
+
+Asteroid Fields: Resource-rich but dangerous areas where the player can mine for valuable materials at the risk of damage to the ship.
+
+Other Ships: These could be friend or foe. Friendships could lead to trading or assistance, whereas foe ships may lead to combat scenarios.
+
+Anomalies: These could be mysterious phenomena that the ship can investigate for rewards, challenges, or story progression.
+
+Trade Routes: These could be economically beneficial paths between multiple locations (planets, space stations, etc.).
+
+Nebulae: Areas that could affect visibility or system functionality, introducing both challenges and opportunities.
+
+Black Markets: Secret locations where rare or illegal items can be bought or sold.
+
+Debris Fields: Locations of destroyed ships, stations, or other structures that can be scavenged for parts or resources but might be dangerous.
+
+Scientific Research Facilities: Special locations for gaining new technologies or information.
+
+Quest-Specific Locations: Places that the player needs to visit to complete certain missions or objectives.
+
+The World object would be the place to keep track of these. You could have different methods for interacting with each type of entity or location, and the world state would update based on these interactions.
+
+
+
+
+User
+and we keep all of those in the database, got it
+
+for the moment, let's just have a world and a ship

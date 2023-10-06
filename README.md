@@ -74,3 +74,29 @@ The game is designed for players who enjoy a single-player experience without ti
 
 ## 4. Additional Features
 - The game blends elements of logistics, resource management, and narrative choice into a compelling space exploration setting.
+
+## 5. Simplified Game Iteration
+
+### UI Design
+- Text and tables-based interface, no graphics.
+- No trade interactions; the focus is on resource management and navigation.
+
+### Crew Management
+- Crew members are represented as numbers.
+- No individual health or security metrics for crew members.
+
+### Game Sections
+- **Bridge**: Summary and status area.
+- **Navigation**: Local system details and list of nearby stars.
+- **Engineering**: Ship modules, manufacturing, and blueprints.
+- **Quartermaster**: Cargo and supplies management.
+- **Science**: Interpreting data and improving technologies.
+
+### Immediate Questions
+- Who is charting the system?
+- Who is doing short and long-range scans?
+- Who is responsible for sensors?
+- Who will go "out" for tasks like installing mining equipment?
+
+### Ship Composition
+- To be determined based on the answers to the immediate questions.

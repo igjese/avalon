@@ -1,7 +1,5 @@
 # Game Design Document for Avalon Sigma
 
----
-
 ## 1. Introduction
 
 ### Concept
@@ -41,6 +39,13 @@ The game is designed for players who enjoy a single-player experience without ti
 - Random events like natural disasters or space pirate attacks can occur, requiring immediate decisions.
 - These events are not time-based to suit a more solitaire-like pace.
 
+### Crew Roles and Responsibilities
+- Captain (Player): Responsible for overall decision-making.
+- Pilot: Manages the Navigation section, responsible for steering the ship and making short-range scans.
+- Chief Engineer (or simply Chief): Manages the Engineering section, responsible for repairs, upgrades, and power management.
+- Purser: Manages the "Supplies and Cargo" section, responsible for keeping track of all resources and supplies.
+- Doc: Manages the Life Support section, initially responsible for maintaining oxygen levels, water recycling, and food production. Could later be expanded to cover science, healthcare, etc.
+
 ---
 
 ## 3. UI and Technical Aspects
@@ -52,6 +57,13 @@ The game is designed for players who enjoy a single-player experience without ti
 ### Interface
 - UI envisioned as a series of tabs representing different sections of the ship, like Navigation, Engineering, and Manufacturing.
 
+Tabs/Ship sections:
+- Bridge: Managed by the Captain, displays current location, ship status, and available crew members.
+- Navigation: Managed by the Pilot, shows detailed information about the current star system and options for setting a course to other star systems.
+- Engineering: Managed by the Chief, shows information about ship modules, power management, and available blueprints for upgrades or repairs.
+- Supplies and Cargo: Managed by the Purser, shows your current supplies including food, water, and other essential and non-essential supplies.
+- Life Support: Managed by Doc, shows the status of life-support systems like oxygen levels, water recycling, and food production.
+- 
 ### Tables
 - Display detailed information about inventory, crew status, and other logistical elements.
 
@@ -68,6 +80,8 @@ The game is designed for players who enjoy a single-player experience without ti
 
 ## 4. Additional Features
 - The game blends elements of logistics, resource management, and narrative choice into a compelling space exploration setting.
+- Quasi-Random Interactions: The game includes quasi-random interactions that reveal the backstory and relationships between crew members. These interactions add a dynamic, unpredictable element to each playthrough, making the game more engaging and replayable.
+
 
 ---
 
@@ -78,21 +92,22 @@ The game is designed for players who enjoy a single-player experience without ti
 - No trade interactions; the focus is on resource management and navigation.
 
 ### Crew Management
-- Crew members are represented as numbers.
+- Crew members now have specific roles: Captain, Pilot, Chief Engineer (Chief), Purser, and Doc.
+- Each role comes with specific responsibilities and manages different sections of the ship.
 - No individual health or security metrics for crew members.
 
 ### Game Sections
-- **Bridge**: Summary and status area.
-- **Navigation**: Local system details and list of nearby stars.
-- **Engineering**: Ship modules, manufacturing, and blueprints.
-- **Quartermaster**: Cargo and supplies management.
-- **Science**: Interpreting data and improving technologies.
+- **Bridge (Captain)**: Summary and status area.
+- **Navigation (Pilot)**: Local system details and list of nearby stars.
+- **Engineering (Chief)**: Ship modules, manufacturing, and blueprints.
+- **Supplies and Cargo (Purser)**: Cargo and supplies management.
+- **Life Support (Doc)**: Interpreting data and improving technologies.
 
 ### Immediate Questions
-- Who is charting the system?
-- Who is doing short and long-range scans?
-- Who is responsible for sensors?
-- Who will go "out" for tasks like installing mining equipment?
+- Who is charting the system? (Pilot)
+- Who is doing short and long-range scans? (Pilot)
+- Who is responsible for sensors? (Pilot)
+- Who will go "out" for tasks like installing mining equipment? (To be determined)
 
 ### Ship Composition
-- To be determined based on the answers to the immediate questions.
+- Hull, Engines, Fuel Tanks, Storage/Cargo Area, Manufacturing Bay, Crew Quarters, Life Support Systems, Navigation Systems, Power Generators, Sensor Arrays.

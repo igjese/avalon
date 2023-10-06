@@ -1,0 +1,31 @@
+debug tab
+
+would it make sense to have "debug" tab? for example, to dump database when I need to show it to you, etc
+ChatGPT
+Yes, a "Debug" tab can be incredibly useful for development and debugging purposes. Some potential features you could include on this tab:
+
+Database Dump: A button that, when clicked, exports the current state of relevant database tables to a text or JSON format. This can help you share the database state or analyze it offline.
+
+Log Viewer: A section that displays logs, warnings, and errors directly in the UI. This can be especially useful for debugging issues that are hard to replicate outside of specific game states.
+
+Resource Modifiers: A set of buttons or sliders that allow you to manually adjust the quantities of resources for testing purposes.
+
+Tick Controls: Buttons that allow you to manually advance, pause, or reset the game's tick cycle. This can help with debugging issues related to timing and resource consumption/production.
+
+Reload Configuration: If you have game settings in external files (like your starting resources dictionary), a button to reload these could be useful.
+
+Show Current Game Variables: A table or list that shows the current state of important variables, like the efficiency of each system, the current tick, etc.
+
+Having a "Debug" tab will make it easier to troubleshoot issues, tune game parameters, and understand the game's internal state. However, you should probably include a way to hide this tab or disable its features in a production/release build.
+
+
+
+
+User
+let's make separate debug page, it should
+- freeze the game loop (if it's a separate page, that should be already solved)
+- have two tabs "logs" and "data"
+- display log on "logs" tab, for which we need to create a log instead of print commands
+- dump database as json on-screen into "data" tab 
+- data tab should have a button "copy to clipboard"
+

@@ -259,3 +259,97 @@ The game is designed for players who enjoy a single-player experience without ti
 
 - **Power-Saving Mode**: Could reduce everyone's workload but also lower the ship's overall efficiency.
 
+### Food Production System
+- **Subsystem**: Hydroponic Vats
+- **Component**: AgroVats2400
+  - **Consumes**: Energy, Water, Nutrients
+  - **Produces**: Food
+
+#### AgroVats2400 Sub-components
+- **UV Lights**: Consumes energy, necessary for plant growth.
+- **Planting Boxes**: Holds the plants; doesn't consume or produce resources but might affect efficiency.
+- **Nutrient Dispensers**: Consumes "Nutrients," necessary for plant growth.
+
+### New Resources Introduced
+- **Nutrients**: Consumed by Hydroponic Vats for food production.
+  
+### Design Decisions
+
+#### Blueprint Designer
+- Allows players to customize the AgroVats2400 component.
+- Once a blueprint is designed, its inputs and outputs are fixed.
+
+#### Resource Management
+- Introduce "Nutrients" as a new resource for Hydroponic Vats.
+
+### Updated Systems and Components
+
+#### Galley and Provisions
+- **Subsystem**: Astro-Farms
+- **Component**: AgroGenesis 9000
+  - **Inputs**: Energy, Water, Nutrients
+  - **Outputs**: Food
+  - **Description**: Employs cutting-edge hydroponics to cultivate food in a closed-loop system, minimizing waste and maximizing yield.
+
+#### Environmental Control
+- **Subsystem**: Liquid Reclamation Unit
+- **Component**: AquaPurifier Mk IV
+  - **Inputs**: Waste Water
+  - **Outputs**: Water
+  - **Description**: Converts waste water back into clean, usable water through a series of filtration and distillation processes.
+
+#### Life Support Systems
+- **Subsystem**: Atmosphere Control Unit
+- **Component**: OxyGenius S-2
+  - **Inputs**: Water, Energy
+  - **Outputs**: Air, Waste Water
+  - **Description**: Employs electrolysis to split water molecules into breathable air and waste byproducts.
+
+- **Subsystem**: Air Circulation Unit
+- **Component**: AeroMixer 5000
+  - **Inputs**: Oxygen, Trace Gases (Nitrogen, Argon, etc.)
+  - **Outputs**: Air
+  - **Description**: Takes pure oxygen and combines it with trace gases to produce a breathable air mixture.
+
+#### Engineering Bay
+- **Subsystem**: Power Plant
+- **Component**: FusionMaster Alpha
+  - **Inputs**: Fuel Cells, Water
+  - **Outputs**: Energy, Waste Water
+  - **Description**: Utilizes fuel cells and a water-cooling system to generate a constant and reliable flow of energy.
+
+### New Resources Introduced
+- **Air**: Produced by the AeroMixer 5000 and consumed by the ship's crew.
+- **Fuel Cells**: Used by the FusionMaster Alpha for energy production.
+
+### Design Decisions
+- Renamed "Fuel" to "Fuel Cells."
+- Introduced "Air" as a new resource.
+- Updated component names to be more thematic (navy and/or SF).
+
+## 12. Debug Page
+
+### Overview
+- The Debug Page is a separate interface for development and debugging purposes.
+- It should freeze the game loop to allow for real-time analysis and adjustments.
+- The page will have two main tabs: "Logs" and "Data."
+
+### Logs Tab
+- **Purpose**: To display logs for debugging.
+- **Features**: 
+  - Real-time log display.
+  - Replaces the use of print commands for debugging.
+  
+### Data Tab
+- **Purpose**: To display and manipulate game data.
+- **Features**: 
+  - Database dump in JSON format displayed on-screen.
+  - "Copy to Clipboard" button to easily share or save the database state.
+
+### Design Decisions
+- The Debug Page will be accessible only in development builds to prevent end-users from accessing it.
+- It will have the capability to freeze the game loop for in-depth analysis.
+
+## 13. Model
+
+StorageType - type of Storage required by a resource (Cargo, SpecialCargo, Fluid, SpecialFluid, Air, Energy, etc)

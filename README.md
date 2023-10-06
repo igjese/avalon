@@ -1,4 +1,4 @@
-# Game Design Document for [Your Game's Name]
+# Game Design Document for Avalon Sigma
 
 ## Table of Contents
 1. [Introduction](#introduction)

@@ -1,0 +1,113 @@
+
+
+# systems and components
+
+ShipSystem: An umbrella term for a specific system on the ship, such as "Power Generators," "Water Recycling," or "Hydroponics."
+Component: A specific piece of hardware or software within a ShipSystem that does the actual work. For example, "Hydrogen Fuel Cell," "Solar Panel," or "Water Filter."
+
+don't do code yet, let's finish discussing systems first
+
+previously we decided to have systems and subsystems, which would logically represent what is on the ship
+
+then subsystems would consist of components, which can be manufactured from parts and other components, parts can be manufactured from materials and raw resources, raw resources are refined into materials
+
+let's think about crew this way
+ChatGPT
+Absolutely, it sounds like we're layering on more complexity, but in a way that can add depth to the gameplay. Let's talk about the crew in this new model of systems, subsystems, and components.
+
+Crew as a System
+If we consider the crew as a "system," then we can think of various "subsystems" within that larger system. These subsystems could be different departments or teams, like "Engineering," "Medical," "Security," etc.
+
+Subsystems and Components
+Each subsystem might have "components," which are the specific roles or responsibilities within that subsystem. For example, the Medical subsystem might have a "Surgeon," "Nurse," and "Pharmacist" as its components.
+
+Parts, Materials, and Raw Resources
+When it comes to humans, we obviously won't be breaking them down into parts and materials! However, we could consider their training, equipment, or even morale as the "parts" that go into making a crew member effective.
+
+Resource Consumption and Production
+Crew members would consume resources like food, water, and oxygen but produce "work" that affects the efficiency of other systems. For example, engineers could enhance the performance of the ship's engines, medical staff could improve the crew's overall health, and so on.
+
+Efficiency and Status
+Each crew member could have an efficiency rating that depends on their health, morale, and the quality of their equipment. A well-fed, well-rested, and happy engineer with high-quality tools would be far more effective than one who is hungry, exhausted, and using subpar equipment.
+
+Emergency Protocols
+Finally, in emergency situations, you could enact various protocols that affect crew behavior. For instance, a "power-saving mode" could reduce everyone's workload (and therefore resource consumption) but also lower the ship's overall efficiency.
+
+Do these concepts align with what you're imagining?
+
+
+
+
+User
+to keep it simple, for the moment we could have "Crew" ship system, with subsystems "Staff" and "Bots". Bots we don't have yet. Staff could produce nothing and consume 1 of each resource every tick
+
+something like this?
+ChatGPT
+Yes, that sounds like a straightforward way to begin implementing the concept of ship systems and crew into your game.
+
+Structure:
+Ship System: "Crew"
+Subsystem: "Staff"
+Components: None for now (could add roles like "Engineer," "Doctor," etc., later)
+Subsystem: "Bots"
+Components: None for now (could add types of bots like "Repair Bot," "Medical Bot," etc., later)
+Resource Interactions:
+"Staff" consumes 1 of each resource (Food, Water, Oxygen, maybe Energy) every tick.
+"Bots" consume 0 resources for now but could consume Energy in the future.
+This approach provides a basic framework that can be easily expanded upon later as you add more complexity and features to your game. Would you like to proceed with this model?
+
+
+
+
+User
+almost there
+
+since systems and subsystems don't consume resources themselves, we still need components for the Staff. at the moment. since roles don't matter for the moment, we could just add "crew member" components with amount e.g. 5
+ChatGPT
+Absolutely, adding "Crew Member" as a component under the "Staff" subsystem makes sense. You can specify that each "Crew Member" consumes a certain amount of resources each tick. This aligns well with the idea that systems and subsystems are containers for components, which are the actual units that interact with resources.
+
+Updated Structure:
+Ship System: "Crew"
+Subsystem: "Staff"
+Components: "Crew Member" (Quantity: 5)
+Subsystem: "Bots"
+Components: None for now
+Resource Interactions:
+Each "Crew Member" component consumes 1 of each resource (Food, Water, Oxygen, maybe Energy) every tick.
+"Bots" (when implemented) could consume Energy.
+By doing it this way, you can later add more specialized types of crew or bots as components under their respective subsystems, each with their own resource consumption and production rules. Shall we proceed with implementing this?
+
+
+
+
+User
+any better name than "crew member"?
+ChatGPT
+Certainly! The name "crew member" is quite generic. Depending on the level of detail you'd like to add or the ambiance you want to create, you could use more specific names. Some options could include:
+
+Crewmate
+Personnel
+Officer
+Team Member
+Staff Member
+Operator
+Specialist
+Ensign
+Astronaut
+Cosmonaut
+Each of these terms carries its own connotations and could fit various narrative or game mechanics needs. "Personnel" or "Operator," for example, could be more general, whereas "Officer" or "Astronaut" could imply a higher level of training or specialization.
+
+
+
+
+User
+let's go with "Personnel" for the moment
+ChatGPT
+Great choice! "Personnel" is a versatile term that can cover a wide range of roles and responsibilities onboard your spaceship. It allows for a lot of flexibility as you further develop your game. You could eventually introduce various types of specialized personnel, like engineers, medical officers, or scientists, as you expand the game's mechanics. But for now, "Personnel" should work well as a general term for your crew members.
+
+
+
+
+User
+or since Staff is almost a synonym, let's call individuals Specialists.
+

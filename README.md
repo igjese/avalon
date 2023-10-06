@@ -11,6 +11,20 @@ The end goal may involve reaching a mythical space colony like "Avalon Sigma."
 ### Target Audience
 The game is designed for players who enjoy a single-player experience without time pressures, allowing for more thoughtful and strategic play.
 
+### Ship Construction and Logistics Hierarchy
+- **Ship Systems**: High-level assemblies that serve major functions on the ship (e.g., IonTek Drive, Vortex Power Core).
+  - Assembled from Sub-Systems
+- **Sub-Systems**: Variants or modular upgrades within a System (e.g., IonTek Drive, Plasma Drive within Propulsion).
+  - Assembled from Components
+- **Components**: Individual elements that combine to form a Sub-System (e.g., Thrust Coils, Ion Chamber).
+  - Assembled from Parts and possibly other Components
+- **Parts**: Smaller elements that are used to assemble Components (e.g., High-Conductivity Wiring, Vacuum-Tight Casing).
+  - Manufactured from Materials
+- **Materials**: Substances that are directly used to create Parts (e.g., Copper, Titanium).
+  - Gathered, Mined, or Refined from Raw Materials
+- **Raw Materials**: Natural substances found on celestial bodies (e.g., Copper Ore, Iron Ore).
+  - Found on Planets, Moons, and Asteroids
+
 ---
 
 ## 2. Gameplay Mechanics

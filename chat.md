@@ -1,25 +1,5 @@
 
 
-
-# 3. getting data to UI
-
-# 4. architecture
-
-we are using django
-
-for styling we are using bootstrap
-
-we minimize interactions (outside request/response), but where needed we use jQuery
-
-controller should hold all logic and flow
-
-view should be stupid, just routing requests and serving responses
-
-model should just be fetching data by django orm
-
-we are using DataTables for jQuery for most of our UI
-
-
 # 5. resources continued
 
 so, we already have Food, Water and Oxygen

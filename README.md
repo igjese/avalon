@@ -211,3 +211,12 @@ Notifications:
 - **Radio Sensors**: Detect radio waves.
 - **Gravitic Sensors**: Measure variations in gravitational fields.
 - **Thermal Sensors**: For measuring heat signatures.
+
+## 9. Game State and Real-Time Updates
+
+### Single Timer Mechanism
+- **Concept**: A single timer fetches all relevant data at regular intervals.
+- **Advantages**: Reduces the number of timers and AJAX requests, optimizing the game as it grows in complexity.
+
+### Game Loop Advancement
+- **Concept**: The timer is not just fetching the game state; it actually advances the game loop.

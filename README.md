@@ -353,3 +353,79 @@ The game is designed for players who enjoy a single-player experience without ti
 ## 13. Model
 
 StorageType - type of Storage required by a resource (Cargo, SpecialCargo, Fluid, SpecialFluid, Air, Energy, etc)
+
+## 14. Resource Tracking
+
+- **Single Source of Truth**: Storage units will serve as the single source of truth for resource quantities.
+- **Resource Table**: The `Resource` table will no longer have a `quantity` field. Resource quantities will be calculated dynamically based on storage units.
+- **Game Tick**: At each game tick, resource quantities will be recalculated based on the `currently_stored` values in each storage unit.
+
+## 15. World State
+
+- **World Object**: Introduce a `World` object to manage the game state.
+- **Locations**: The `World` object will manage various locations, starting with the ship.
+- **Database**: All entities managed by the `World` object will be stored in the database.
+
+Future consideration:
+- The `World` object can be extended to manage other locations like planets, space stations, and more.
+
+## 16. Universe and Ship Location Models
+
+### Universe Model
+
+- **Hierarchy**: Universe > Star System > Stars > Planets > Moons, also: Artificial Structures, Ship
+- **Types of Stars**: O-Type, B-Type, A-Type, F-Type, G-Type, K-Type, M-Type, Red Giant, White Dwarf, Neutron Star, Blue Giant
+- **Types of Planets**: Rocky, Gas Giant, Ice Giant, Volcanic, Water World
+- **Types of Moons**: Rocky, Icy, Volcanically Active, Iron
+- **Characteristics**: Tidally Locked, Atmosphere-bearing
+
+### Ship Location Model
+
+- **Status**: In transit, Docked, Landed, In orbit
+- **Location**: Reference to a celestial body or coordinates
+- **Consideration**: Radial coordinates for more granularity
+
+### Admin Panel
+
+- **Data Dump Button**: Expand into a full-fledged admin panel
+- **Features**: Data import/export, entity management, real-time analytics
+
+### Drawing Maps
+
+- **Navigation Tab**: Feature star maps for interactive exploration
+- **Purpose**: Planning routes, marking notable locations, strategic gameplay
+
+### Bridge UI
+
+- **Alerts and Statuses**: Central hub for game alerts
+- **Visuals**: Change per orbited body for a dynamic experience
+
+## 17. Current Milestones
+
+### In Progress
+
+#### Storage Model
+- Finalizing how resources are stored and managed in various storage units.
+
+#### Location Model
+- Deciding how to model locations such as planets, moons, and star systems, and how to track the ship's current location.
+
+#### Admin Panel
+- Starting with basic features like export/import functionality.
+- Incorporating logs that are already in place.
+
+### Upcoming Milestones
+
+#### Logistic Bots
+- Implementing bots that handle the transferring, stocking, and management of resources.
+
+#### Celestial Hierarchy
+- Setting up a model to describe the hierarchy of celestial bodies like stars, planets, moons, etc.
+- Creating basic rules for procedurally generating these celestial bodies.
+
+#### Navigation
+- Adding a star map and a system map, potentially with some interactive features for route planning or exploration.
+
+#### Bridge
+- Building a central dashboard for alerts, statuses, and visuals based on the ship's current location.
+

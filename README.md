@@ -453,3 +453,67 @@ Future consideration:
 - **General Cargo**: Resources not stored in specialized units go into `GeneralCargoHold`, managed through `GeneralCargoResource`.
 - The model allows for multiple types of resources in each `GeneralCargoHold`, each with its own quantity.
 
+### Key Points (continued)
+
+- Specialized containers are strictly reserved for their designated resources.
+- Intangible resources like "Air" will use the same storage mechanism as tangible resources.
+- Energy and fluids have "magical" instantaneous flow and are either available or not.
+- No concurrency in resource allocation; a random system gets the resources if not enough are available.
+- MaxCapacity is a calculated value and will not be stored in the database.
+- Transport mechanisms like bots and shuttles are outside the scope of this resource storage model for now.
+
+### Assumptions and Limitations
+
+- Specialized storage units cannot be used for general cargo.
+- Energy, fluids, and special fluids each have their own separate storage types.
+- Resource dependencies can be calculated from the components and don't need to be explicitly stored.
+
+### Future Considerations
+
+- A priority system for resource allocation may be implemented later for more depth in resource management.
+- Transport mechanisms like bots and shuttles may require a separate design discussion.
+
+### Implementation Steps
+
+1. Maintain the reservation of specialized containers for specific resources.
+2. Implement the same storage mechanism for both tangible and intangible resources.
+3. Document the assumptions of "magical" instantaneous flow for energy and fluids.
+4. Keep the initial design simple, with the option to optimize MaxCapacity calculations later.
+
+## 19. Bots and Shuttles in Resource Management
+
+### Bots
+
+1. **Capacity**: Fixed amount X, upgradable for better bots.
+2. **Transport Time**: 1 tick within a subsystem, 5 ticks within a system, 10 ticks within a ship.
+3. **Resource Types**: Can carry any "itemized" resource, defined by storage types.
+4. **Task Assignment**: Two methods: A. Component requests and B. Captain's orders.
+5. **Resource Prioritization**: Bots are designed to be "stupid" for gameplay challenge.
+6. **Concurrency**: Operate in ticks, take random requests from a list.
+7. **Energy Requirement**: Require power, slow down when power is low.
+8. **Bot Assignment**: Some bots are "free roaming," others are system-specific.
+
+### Shuttles
+
+1. **Capacity**: Depends on installed storage units.
+2. **Transport Time**: X ticks depending on distance.
+3. **Resource Types**: Depends on installed storage units.
+4. **Task Assignment**: Manual and automatic, player-driven.
+5. **Inter-ship Transfer**: Possible, based on route and wishlist.
+6. **Docking Requirements**: To be determined.
+7. **Energy Requirement**: Require fuel, possibly the same as the ship.
+
+### General Considerations
+
+1. **Pathfinding**: None, by design.
+2. **Failures/Breakdowns**: Not yet implemented.
+3. **Upgrades**: Bots can be upgraded, shuttles depend on blueprint.
+
+### Additional Points
+
+- **Transition**: Resources will magically appear in storage, tracked in a "ship's log."
+- **UI/UX**: Office-like UI table for shuttles, no tracking for bots.
+- **Load Balancing**: Random task selection for bots, manual assignment for shuttles.
+- **Emergency Situations**: Captain can assign "priority requests" and allocate a percentage of bots.
+- **StoredResource Junction Table**: To manage multiple types and units of storage for one resource.
+

@@ -198,7 +198,7 @@ ResourceTransaction:
 - Types of Stars: O-Type, B-Type, A-Type, F-Type, G-Type, K-Type, M-Type, Red Giant, White Dwarf, Neutron Star, Blue Giant
 - Types of Planets: Rocky, Gas Giant, Ice Giant, Volcanic, Water World
 - Types of Moons: Rocky, Icy, Volcanically Active, Iron
-- Characteristics for planets and moons: Tidally Locked, Atmosphere-bearing
+- Characteristics for planets and moons: Tidally Locked, Atmosphere-bearing, Waterless
 
 ### Ship and Locations
 

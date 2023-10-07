@@ -234,9 +234,9 @@ ResourceTransaction:
 | Component    | SubSystem                | Produces           | Consumes                 | Byproduct  |
 |--------------|--------------------------|--------------------|--------------------------|------------|
 | AgroVats     | Hydroponic Vats          | Food               | Energy, Water, Nutrients | -          |
-| AquaPurifier | Liquid Reclamation Unit  | Water              | WasteWater               |            |
+| AquaPurifier | Liquid Reclamation Unit  | Water              | WasteWater               | -          |
 | OxyGenius    | Atmosphere Control Unit  | Air                | Water, Energy            | WasteWater |
-| AeroMixer    | Air Circulation Unit     | Air                | Oxygen, Air              |            |
+| AeroMixer    | Air Circulation Unit     | Air                | Oxygen, Air              | -          |
 | FusionMaster | Power Plant              | Energy             | Fuel Cells, Water        | WasteWater |
 
 

@@ -231,13 +231,13 @@ ResourceTransaction:
 
 ### Production Chains
 
-| Component    | SubSystem                | Produces           | Consumes                 |
-|--------------|--------------------------|--------------------|--------------------------|
-| AgroVats     | Hydroponic Vats          | Food               | Energy, Water, Nutrients |
-| AquaPurifier | Liquid Reclamation Unit  | Water              | WasteWater               |
-| OxyGenius    | Atmosphere Control Unit  | Air, WasteWater    | Water, Energy            |
-| AeroMixer    | Air Circulation Unit     | Air                | Oxygen, Air              |
-| FusionMaster | Power Plant              | Energy, WasteWater | Fuel Cells, Water        |
+| Component    | SubSystem                | Produces           | Consumes                 | Byproduct  |
+|--------------|--------------------------|--------------------|--------------------------|------------|
+| AgroVats     | Hydroponic Vats          | Food               | Energy, Water, Nutrients | -          |
+| AquaPurifier | Liquid Reclamation Unit  | Water              | WasteWater               |            |
+| OxyGenius    | Atmosphere Control Unit  | Air                | Water, Energy            | WasteWater |
+| AeroMixer    | Air Circulation Unit     | Air                | Oxygen, Air              |            |
+| FusionMaster | Power Plant              | Energy             | Fuel Cells, Water        | WasteWater |
 
 
 ### Customizable Blueprints

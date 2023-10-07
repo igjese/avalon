@@ -2,152 +2,154 @@
 
 ## 1. Introduction
 
-### Concept
-The game is a space exploration and logistics management experience set in a half-broken ship at Alpha Centauri. Players wake up from cryo-sleep with a few crew members and aim to reach a mythical space colony, "Avalon Sigma."
+- **Concept**: A space exploration and logistics management game set in a half-broken ship at Alpha Centauri. Players wake up from cryo-sleep with a few crew members.
+  
+- **Objective**: Aim to reach a mythical space colony, "Avalon Sigma."
 
-### Objective
-The end goal may involve reaching a mythical space colony like "Avalon Sigma."
+- **Target Audience**: Designed for players who enjoy a single-player experience without time pressures, allowing for thoughtful and strategic play.
 
-### Target Audience
-The game is designed for players who enjoy a single-player experience without time pressures, allowing for more thoughtful and strategic play.
 
-### Ship Construction and Logistics Hierarchy
-- **Ship Systems**: High-level assemblies that serve major functions on the ship (e.g., IonTek Drive, Vortex Power Core).
-  - Assembled from Sub-Systems
-- **Sub-Systems**: Variants or modular upgrades within a System (e.g., IonTek Drive, Plasma Drive within Propulsion).
-  - Assembled from Components
-- **Components**: Individual elements that combine to form a Sub-System (e.g., Thrust Coils, Ion Chamber).
-  - Assembled from Parts and possibly other Components
-- **Parts**: Smaller elements that are used to assemble Components (e.g., High-Conductivity Wiring, Vacuum-Tight Casing).
-  - Manufactured from Materials
-- **Materials**: Substances that are directly used to create Parts (e.g., Copper, Titanium).
-  - Gathered, Mined, or Refined from Raw Materials
-- **Raw Materials**: Natural substances found on celestial bodies (e.g., Copper Ore, Iron Ore).
-  - Found on Planets, Moons, and Asteroids
+## 2. Story and Setting
 
----
+Player wakes up from cryo-sleep on FSS Adequate, together with a few crew members as refugees from Earth. Their aim is to reach a mythical space colony, "Avalon Sigma." 
 
-## 2. Gameplay Mechanics
+Setting is deep-space and lonely. Player does most of interaction from bridge of the spaceship, checking reports and issuing commands.
 
-### Resource Scarcity
-- The game starts with limited resources, adding an immediate layer of challenge and urgency.
 
-### Planet vs. Ship Manufacturing
-- Limited but mobile manufacturing capabilities on the ship.
-- Extensive but stationary manufacturing options on planets.
-- Creates an interesting strategic trade-off for players.
+## 3. Core Game Mechanics
 
-### Upgradable Ship
-- Upgrade different aspects of the ship, from cargo space to manufacturing efficiency or defense capabilities.
+- Managing and automating production
+- Strategic resource allocation
+- Upgrading ship capabilities
+- Exploration and travel to different star systems
+- Design blueprints for new components 
 
-### Crew Management
-- Unique skills and potential storylines for each crew member, including different section chiefs like Engineering.
-
-### Decision Trees
-- Key choices affect resource allocation and strategy, such as whether to explore potentially dangerous areas for valuable resources.
-
-### Exploration and Expansion
-- Players can explore new planets and systems to find resources or even a permanent settlement.
-
-### Crisis Events
-- Random events like natural disasters or space pirate attacks can occur, requiring immediate decisions.
-- These events are not time-based to suit a more solitaire-like pace.
-
-### Crew Roles and Responsibilities
-- Captain (Player): Responsible for overall decision-making.
-- Pilot: Manages the Navigation section, responsible for steering the ship and making short-range scans.
-- Chief Engineer (or simply Chief): Manages the Engineering section, responsible for repairs, upgrades, and power management.
-- Purser: Manages the "Supplies and Cargo" section, responsible for keeping track of all resources and supplies.
-- Doc: Manages the Life Support section, initially responsible for maintaining oxygen levels, water recycling, and food production. Could later be expanded to cover science, healthcare, etc.
-
-### Other Mechanics
-
-- **Throughput-Sensitive Systems**: Consideration for systems sensitive to the rate of material throughput.
-- **Workflow Management Sub-System**: Manages the rate at which materials move through the manufacturing process.
-- **Foundational Blueprints**: Initial set of blueprints for essential systems and components like mining drills, nanoassemblers, shuttles, drones, and bots.
-
----
-
-## 3. Architecture
+## 4. Technology and Architecture
 
 ### Tech Stack
 - **Backend**: Django is used for the backend.
 - **Frontend**: jQuery and Bootstrap are used for client-side interactions and styling.
-  
+
 ### UI Components
 - **DataTables**: DataTables for jQuery is used for most of the UI.
 
 ### MVC Architecture
 - **Controller**: Holds all logic and flow.
-- **View**: Responsible for routing requests and serving responses. When needed transforms data for UI consumption.
+- **View**: Responsible for routing requests and serving responses. When needed, transforms data for UI consumption.
 - **Model**: Fetches data using Django ORM.
 
----
+## 5. Art and Audio
 
-## 4. Additional Features
-- The game blends elements of logistics, resource management, and narrative choice into a compelling space exploration setting.
-- Quasi-Random Interactions: The game includes quasi-random interactions that reveal the backstory and relationships between crew members. These interactions add a dynamic, unpredictable element to each playthrough, making the game more engaging and replayable.
+- No audio for now, maybe later ambiental space-music (open source)
+- Single visual: Bridge shows orbited body on big screen.
+- Visual for celestial bodies varies by type (e.g. rocky planet) and size, to give some differentiation.
+
+## 6. User Interface
+
+### Overall Approach
+
+- Office-like UI: Text and tables-based interface with almost no graphics.
+- Ship's Bridge is the center. From the bridge player access all sections of a ship, and through them everything else.
+- There is big visual of orbited body on the bridge.
+- Bridge has alert feed: notifications of key alerts or status change.
+- Some dashboards for statuses.
+- Charts for production/consumption data.
+
+### Tabs
+- **Supplies and Cargo**: Tab for managing resources.
+- **Ship Systems**: Tab for system efficiencies and statuses.
+- **Admin/Debug**: Development tools, logs, export/import, etc
+
+## 7. Models
+
+### Ship 
+
+Ship consists of ShipSystems, which consist of Components:
+- **ShipSystem**: Logical groups of ship's sub-systems, organized by ship's high-level functions. E.g., Navigation, Engineering, etc.
+- **SubSystem**: Collection of components that together provide single function within a ship's sytem. E.g. Atmosphere control subsystem within Life Support system.
+- **Component**: Individual elements that consume and produce stuff (resources, parts, components). Assembled from Parts and possibly other Components
+- **Part**: Smaller elements that are used to assemble Components (e.g., High-Conductivity Wiring, Vacuum-Tight Casing). Manufactured from Materials
+
+Ship systems and their subsystems in the game:
+- **Bridge**: MainComputer, ShipsLog
+- **Navigation**: Communication, Sensors, Astrogation
+- **Engineering**: Propulsion, Power, Manufacturing, Maintenance
+- **Supplies and Cargo**: CargoBay
+- **Provisions**: Hydroponics, FoodFarms
+- **Life Support**: WaterReclamation, AtmosphereControl, Cryonics, Medical
+- **Crew**: Personell
+
+### Resources and Storage
+
+Resource:
+- Represent anything that can be stored, produced, consumed
+- Each resource has StorageType, defining where it can be stored
+- Resources in the game are: Air, Nutrients, Water, WasteWater, FuelCells, Energy, Hydrogen, Oxygen, Food
+
+StorageType:
+- Represent in what kind of StorageUnit resource can be stored
+- Storage types in the game are: Air, GeneralCargo, SpecialCargo, Fluid, SpecialFluid, Energy
+
+StorageUnit:
+- Storage container for specific StorageType
+- Can be installed in ship's subsystem as InstalledStorageUnit
+- Storage units in the game: BatteryBank (for Energy), CargoHold (for general cargo), RegulatedCargoHold (for Food), FluidTank (for Water, WasteWater), PressurizedFluidTank (for Oxygen, Hydrogen), GeneralShipAir (for Air)
+- RegulatedCargoHold, FluidTank and PressurizedFluidTank can store only single type of resource at one time
+- CargoHold stores any number of resources at same time
+
+InstalledStorageUnit:
+- Specific storage unit installed into specific ship subsystem
+- Subsystem can have multiple installed storage units of the same type
+
+### Components
 
 
----
+### Universe and Ship Location Models
+- **Universe Model**: Describes the hierarchy of celestial bodies.
+- **Ship Location Model**: Describes the ship's status and location.
 
-## 5. Simplified Game Iteration
+### Bots and Shuttles in Resource Management
+- **Bots**: Handle resource transport within the ship.
+- **Shuttles**: Handle resource transport outside the ship.
 
-### UI Design
-- Text and tables-based interface, no graphics.
-- No trade interactions; the focus is on resource management and navigation.
-- **Notifications**: Informative alerts for key events or status changes.
+### Resource Transaction Schema and Reporting
+- **Resource Transaction Schema**: Describes how resource transactions are logged and reported.
 
-### Crew Management
-- Crew members now have specific roles: Captain, Pilot, Chief Engineer (Chief), Purser, and Doc.
-- Each role comes with specific responsibilities and manages different sections of the ship.
-- No individual health or security metrics for crew members.
 
-### Game Sections
+## 8. Gameplay Mechanics
+  
+
+### Production Chains
+- Food: Needs water, energy, and nutrients.
+- Any production requires energy.
+
+### Strategy and Planning
+- Resource Scarcity: Planets and other locations offer limited resources.
+- Planet vs Ship manufacturing: Limited but mobile manufacturing capabilities on the ship, vs extensive but stationary manufacturing options on planets.
+- Upgradable Ship: Spend resources and manufacturing capacity to upgrade different aspects of the ship, from cargo space to manufacturing efficiency or defense capabilities.
+- Exploration and Expansion: Player can explore new planets and systems to find resources or even a permanent settlement.
+
+### Crew Responsibilities
+- **Captain**: Player. Responsible for overall decision-making.
+- **Pilot**: Manages Navigation, responsible for steering and scans.
+- **Chief Engineer**: Manages Engineering, responsible for repairs, power and drives.
+- **Purser**: Manages Supplies and Cargo, responsible for resources and supplies.
+- **Doc**: Manages Life Support, responsible for oxygen, food and water.
+
+### Ship Sections
 - **Bridge (Captain)**: Summary and status area.
 - **Navigation (Pilot)**: Local system details and list of nearby stars.
 - **Engineering (Chief)**: Ship modules, manufacturing, and blueprints.
 - **Supplies and Cargo (Purser)**: Cargo and supplies management.
 - **Life Support (Doc)**: Interpreting data and improving technologies.
 
-### Immediate Questions
-- Who is charting the system? (Pilot)
-- Who is doing short and long-range scans? (Pilot)
-- Who is responsible for sensors? (Pilot)
-- Who will go "out" for tasks like installing mining equipment? (To be determined)
+### Customizable Blueprints
 
-### Ship Composition
-- Hull, Engines, Fuel Tanks, Storage/Cargo Area, Manufacturing Bay, Crew Quarters, Life Support Systems, Navigation Systems, Power Generators, Sensor Arrays.
+- Player can design new components by creating blueprints.
+- Ship starts with initial set of blueprints for essential systems and components like mining drills, nanoassemblers, shuttles, drones, and bots.
 
-### Other Aspects
 
-- **Assembly Lines**: Specialized manufacturing lines with dedicated bots.
-- **Customizable Blueprints**: Allows players to design their own assembly lines with pre-defined settings.
 
-## 6. Ship Blueprint with Fictional Component Names
-
-### Bridge (Managed by Captain)
-- **AstroCom Interface**: Main computer interface for managing ship operations.
-- **Holosphere**: 3D holographic display for situational awareness.
-- **StarLog**: Archive system to record ship logs and data.
-
-### Navigation (Managed by Pilot)
-- **PulsarNav System**: Advanced navigation system utilizing pulsar mapping.
-- **SkySight Sensor Suite**: A combination of radar, lidar, and other sensors.
-- **QuantCom Array**: Short-range and long-range communication system.
-
-### Engineering (Managed by Chief)
-- **IonTek Drive**: Main ion drive for system travel.
-- **Vortex Power Core**: Main power generator.
-- **NanoFix Drones**: Drones for internal and external repairs.
-- **StellarFusion Backup Generators**: Backup power units.
-- **CraftMaster 3000**: Manufacturing unit for making new components, repairs, etc.
-
-### Supplies and Cargo (Managed by Purser)
-- **StarHold Cargo Bays**: Main cargo holds.
-- **NutriPod Food Storage**: Temperature and environment-controlled food storage.
-- **TradeMate Interface**: Inventory management system.
-- **AquaPurifier Max**: Advanced water purification and filtration system.
 
 ### Life Support and Cryo (Managed by Doc)
 - **BioSphere Hydroponics**: Food growing system.

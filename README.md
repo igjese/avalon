@@ -49,7 +49,7 @@ What wil NOT be implemented:
 - Game time is mapped to real time, with 1 real-life minute equating to 1 in-game hour.
 - Component processing times are defined in terms of in-game time.
 
-## Debug Page
+### Debug Page
 - The Debug Page is a separate interface for development and debugging purposes.
 - It should freeze the game loop to allow for real-time analysis and adjustments.
 - The page will have two main tabs: "Logs" and "Data."
@@ -63,12 +63,12 @@ Data:
 - "Copy to Clipboard" button to easily share or save the database state.
 - Import/Export data
 
-## Resource Tracking
+### Resource Tracking
 
 - **Single Source of Truth**: Storage units serve as the single source of truth for resource quantities.
 - **Aggregations**: total resource quantities are recalculated each tick, for easier processing
 
-## Game State
+### Game State
 
 - **World Object**: Introduce a `World` object to manage the game state.
 

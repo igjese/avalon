@@ -9,7 +9,7 @@
 
 ## 2. Story and Setting
 
-Player wakes up from cryo-sleep as captain of FSS Adequate. Few crew members are aboard. They are fleeing from Earthm, trying to reach a mythical space colony, "Avalon Sigma." 
+Player wakes up from cryo-sleep as captain of FSS Adequate, with several crew members aboard. They are fleeing from Earth, trying to reach a mythical space colony, "Avalon Sigma." 
 
 Setting is deep-space and lonely. Player does most of interaction from bridge of the spaceship, checking reports and issuing commands.
 

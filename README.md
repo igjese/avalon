@@ -97,9 +97,29 @@ Data:
 - Some dashboards for statuses.
 - Charts for production/consumption data.
 
-## 7. Models
+## 7. Database Models
 
-### Ship 
+Database Entities:
+- **ShipSystem**: Logical containers for groups of sub-systems, organized by the ship's high-level functions.
+- **SubSystem**: Collections of components that together provide a single function within a ship's system.
+- **Component**: Specific pieces of hardware within a ShipSystem that consume and produce resources.
+- **Resource**: Anything that can be stored, produced, or consumed.
+- **StorageType**: Defines what kind of StorageUnit a resource can be stored in.
+- **StorageUnit**: Containers for specific types of resources.
+- **InstalledStorageUnit**: Specific storage units installed into specific ship subsystems.
+- **StoredResource**: Specific resources assigned to be stored in specific installed storage units.
+- **InstalledComponent**: Specific components installed into specific ship subsystems.
+- **World Object**: Manages the overall game state.
+
+Not implemented yet:
+- **Part**: Smaller elements used to assemble Components.
+- **ResourceTransaction**: Source for historical data for resource production and consumption.
+- **Crew Members**: Characters with unique skills and responsibilities.
+- **Bots**: Handle internal transport of resources.
+- **Shuttles**: Handle resource transport outside the ship.
+
+
+### Ship
 
 Ship consists of ShipSystems, which consist of Components:
 - **ShipSystem**: An umbrella term for a logical container for group of sub-systems, organized by ship's high-level functions. E.g., Navigation, Engineering, etc.
@@ -126,6 +146,7 @@ In general:
 - Specialized storage units cannot be used for general cargo.
 - Energy, fluids, and special fluids each have their own separate storage types.
 
+#### Models
 
 Resource:
 - Master list of all resources
@@ -321,4 +342,4 @@ Advanced Sensor Types
 - **Radio Sensors**: Detect radio waves.
 - **Gravitic Sensors**: Measure variations in gravitational fields.
 - **Thermal Sensors**: For measuring heat signatures.
-
+- 

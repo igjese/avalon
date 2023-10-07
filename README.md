@@ -9,18 +9,18 @@
 
 ## 2. Story and Setting
 
-Player wakes up from cryo-sleep as captain of FSS Adequate. Few crew members are aboard. They are fleeing from Earthm, trying to reach a mythical space colony, "Avalon Sigma." 
+Player wakes up from cryo-sleep as captain of FSS Adequate, with several crew members aboard. They are fleeing from Earth, trying to reach a mythical space colony, "Avalon Sigma." 
 
-Setting is deep-space and lonely. Player does most of interaction from bridge of the spaceship, checking reports and issuing commands.
+Setting is deep-space and lonely. Player does most of the interaction from bridge of the spaceship, checking reports and issuing commands.
 
 
 ## 3. Core Game Mechanics
 
-- **Automate Production**: Keep your ship's systems running smoothly by automating resource production.
-- **Resource Strategy**: Decide where to put your resources for the best long-term gains.
-- **Ship Upgrades**: Use resources to make your ship better, faster, and more efficient.
-- **Explore Star Systems**: Hop between star systems to find new resources or a place to call home.
-- **Make Blueprints**: Design and build new components to improve your ship's capabilities.
+- **Automate Production**: Set up systems to automatically create and manage resources, to scale up your own capabilities.
+- **Resource Strategy**: Decide where to put your resources, to prioritize short- or long-term needs.
+- **Ship Upgrades**: Design better parts and components to make your ship and other assets more effective.
+- **Explore Star Systems**: Travel between star systems in search for resources and places suitable as base of operations.
+- **Make Blueprints**: Design and build new components to create specialized hardware for specific situations.
 
 What wil NOT be implemented:
 - Trade, Multiplayer
@@ -49,7 +49,7 @@ What wil NOT be implemented:
 - Game time is mapped to real time, with 1 real-life minute equating to 1 in-game hour.
 - Component processing times are defined in terms of in-game time.
 
-## Debug Page
+### Debug Page
 - The Debug Page is a separate interface for development and debugging purposes.
 - It should freeze the game loop to allow for real-time analysis and adjustments.
 - The page will have two main tabs: "Logs" and "Data."
@@ -63,15 +63,20 @@ Data:
 - "Copy to Clipboard" button to easily share or save the database state.
 - Import/Export data
 
-## Resource Tracking
+### Resource Tracking
 
 - **Single Source of Truth**: Storage units serve as the single source of truth for resource quantities.
 - **Aggregations**: total resource quantities are recalculated each tick, for easier processing
 
-## Game State
+### Game State
 
 - **World Object**: Introduce a `World` object to manage the game state.
 
+### View Model
+
+- Instead of complex data transformations on the frontend, we'll have separate data model for presentation
+- This View Model will be prepared by the View every time it needs to send data to the frontend
+- Example: data for consumption/production charts, which needs to be aggregated first
 
 ## 5. Art and Audio
 
@@ -92,6 +97,14 @@ Data:
 - **Admin/Debug**: Development tools, logs, export/import, etc
 - **Navigation**: Stars map, System map
 - **Bridge**: Alerts, Statuses, Visual of orbited body
+
+### Production/Consumption Charts
+- Display resource quantities like Water and Oxygen over time.
+- Use Highcharts on frontend
+- Data source is view model, passed through game state (which we poll every 10 seconds anyway).
+- **User Interaction**: 
+  - Timeframe Selection: Ability to change focus (minute/hour/day).
+  - Resource Toggling: Option to toggle display of specific resources.
 
 #### Future Considerations
 - Some dashboards for statuses.
@@ -198,7 +211,7 @@ ResourceTransaction:
 - Types of Stars: O-Type, B-Type, A-Type, F-Type, G-Type, K-Type, M-Type, Red Giant, White Dwarf, Neutron Star, Blue Giant
 - Types of Planets: Rocky, Gas Giant, Ice Giant, Volcanic, Water World
 - Types of Moons: Rocky, Icy, Volcanically Active, Iron
-- Characteristics for planets and moons: Tidally Locked, Atmosphere-bearing
+- Characteristics for planets and moons: Tidally Locked, Atmosphere-bearing, Waterless
 
 ### Ship and Locations
 
@@ -231,13 +244,13 @@ ResourceTransaction:
 
 ### Production Chains
 
-| Component    | SubSystem                | Produces           | Consumes                 |
-|--------------|--------------------------|--------------------|--------------------------|
-| AgroVats     | Hydroponic Vats          | Food               | Energy, Water, Nutrients |
-| AquaPurifier | Liquid Reclamation Unit  | Water              | WasteWater               |
-| OxyGenius    | Atmosphere Control Unit  | Air, WasteWater    | Water, Energy            |
-| AeroMixer    | Air Circulation Unit     | Air                | Oxygen, Air              |
-| FusionMaster | Power Plant              | Energy, WasteWater | Fuel Cells, Water        |
+| Component    | SubSystem                | Produces           | Consumes                 | Byproduct  |
+|--------------|--------------------------|--------------------|--------------------------|------------|
+| AgroVats     | Hydroponic Vats          | Food               | Energy, Water, Nutrients | -          |
+| AquaPurifier | Liquid Reclamation Unit  | Water              | WasteWater               | -          |
+| OxyGenius    | Atmosphere Control Unit  | Air                | Water, Energy            | WasteWater |
+| AeroMixer    | Air Circulation Unit     | Air                | Oxygen, Air              | -          |
+| FusionMaster | Power Plant              | Energy             | Fuel Cells, Water        | WasteWater |
 
 
 ### Customizable Blueprints
@@ -342,4 +355,4 @@ Advanced Sensor Types
 - **Radio Sensors**: Detect radio waves.
 - **Gravitic Sensors**: Measure variations in gravitational fields.
 - **Thermal Sensors**: For measuring heat signatures.
-- 
+

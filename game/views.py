@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.core.serializers import serialize
+import json
 
 from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, StorageType, StorageUnit, InstalledStorageUnit, StoredResource
 from . import ctrl  # Import the game_controller module
@@ -27,7 +28,7 @@ def index(request):
         'installed_storage_units': installed_storage_units,
         'stored_resources': stored_resources,
         'ship_resources': game_state['resources'],
-        'history': game_state['history']
+        'history': json.dumps(game_state['history'])
     })
 
 

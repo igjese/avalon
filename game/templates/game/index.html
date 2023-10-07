@@ -253,11 +253,13 @@
             $("#" + name + "_capacity").text(capacityText);
         });
     }
+</script>
 
+<script>
     // Updating charts
     document.addEventListener("DOMContentLoaded", function() {
         // Assuming 'history' is passed from Django as a JSON object
-        const historyData = JSON.parse('{{ history|safe }}');
+        const historyData = JSON.parse('{{ history | safe }}');
 
         // Prepare data for Highcharts
         const ticks = historyData.map(item => item.tick);

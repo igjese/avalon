@@ -26,7 +26,8 @@ def index(request):
         'storage_units': storage_units,
         'installed_storage_units': installed_storage_units,
         'stored_resources': stored_resources,
-        'ship_resources': game_state['resources']
+        'ship_resources': game_state['resources'],
+        'history': game_state['history']
     })
 
 

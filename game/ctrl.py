@@ -75,9 +75,25 @@ def get_game_state():
     # Your logic to collect and return the current state of the game
     calculate_ship_resources()
 
+    # Dummy data for Highcharts
+    example_data = [
+        {'tick': 1, 'water': 2000, 'oxygen': 500},
+        {'tick': 2, 'water': 1950, 'oxygen': 520},
+        {'tick': 3, 'water': 1900, 'oxygen': 540},
+        {'tick': 4, 'water': 1850, 'oxygen': 560},
+        {'tick': 5, 'water': 1800, 'oxygen': 580},
+        {'tick': 6, 'water': 1750, 'oxygen': 600},
+        {'tick': 7, 'water': 1700, 'oxygen': 620},
+        {'tick': 8, 'water': 1650, 'oxygen': 640},
+        {'tick': 9, 'water': 1600, 'oxygen': 660},
+        {'tick': 10, 'water': 1550, 'oxygen': 680},
+    ]
+
+
     # Add any additional game state information you may have
     game_state = {
-        'resources': ship['resources']
+        'resources': ship['resources'],
+        'history': example_data
     }
 
     return game_state

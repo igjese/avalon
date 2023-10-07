@@ -9,6 +9,12 @@
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 
+    <!-- Highcharts CDN -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
     <title>Avalon Sigma</title>
 </head>
 <body>
@@ -42,30 +48,52 @@
 
         <div class="tab-pane fade show active" id="supplies">
             <!-- Supplies and Cargo -->
-            <table id="suppliesTable" class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Resource</th>
-                        <th scope="col">In storage</th>
-                        <th scope="col">Capacity</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for resource_name, resource_data in ship_resources.items %}
-                        <tr>
-                            <td id="{{ resource_name }}_name">{{ resource_name }}</td>
-                            <td id="{{ resource_name }}_quantity">{{ resource_data.available }}</td>
-                            <td id="{{ resource_name }}_capacity">
-                                {{ resource_data.capacity }}
-                                {% if resource_data.storage_type == "General Cargo" %}
-                                    (shared)
-                                {% endif %}
+            <div class="tab-pane fade show active" id="supplies">
+                <!-- Sub Tabs -->
+                <ul class="nav nav-tabs" id="suppliesSubTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="currentStorageLevels-tab" data-toggle="tab" href="#currentStorageLevels" role="tab" aria-controls="currentStorageLevels" aria-selected="true">Current Storage Levels</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="productionConsumption-tab" data-toggle="tab" href="#productionConsumption" role="tab" aria-controls="productionConsumption" aria-selected="false">Production/Consumption</a>
+                    </li>
+                </ul>
 
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                <!-- Sub Tab Contents -->
+                <div class="tab-content" id="suppliesSubTabContents">
+                    <div class="tab-pane fade show active" id="currentStorageLevels" role="tabpanel" aria-labelledby="currentStorageLevels-tab">
+                        <table id="suppliesTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Resource</th>
+                                    <th scope="col">In storage</th>
+                                    <th scope="col">Capacity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for resource_name, resource_data in ship_resources.items %}
+                                    <tr>
+                                        <td id="{{ resource_name }}_name">{{ resource_name }}</td>
+                                        <td id="{{ resource_name }}_quantity">{{ resource_data.available }}</td>
+                                        <td id="{{ resource_name }}_capacity">
+                                            {{ resource_data.capacity }}
+                                            {% if resource_data.storage_type == "General Cargo" %}
+                                                (shared)
+                                            {% endif %}
+
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade" id="productionConsumption" role="tabpanel" aria-labelledby="productionConsumption-tab">
+                        <!-- Place for Highcharts -->
+                            <div id="waterChart"></div>
+                            <div id="oxygenChart"></div>
+                    </div>
+                </div>
+            </div>
         </div> <!-- Supplies -->
 
         <div class="tab-pane fade" id="systems">
@@ -225,6 +253,40 @@
             $("#" + name + "_capacity").text(capacityText);
         });
     }
+
+    // Updating charts
+    document.addEventListener("DOMContentLoaded", function() {
+        // Assuming 'history' is passed from Django as a JSON object
+        const historyData = JSON.parse('{{ history|safe }}');
+
+        // Prepare data for Highcharts
+        const ticks = historyData.map(item => item.tick);
+        const waterData = historyData.map(item => item.water);
+        const oxygenData = historyData.map(item => item.oxygen);
+
+        // Initialize Highcharts for Water
+        Highcharts.chart('waterChart', {
+            title: { text: 'Water Quantity Over Time' },
+            xAxis: { categories: ticks },
+            yAxis: { title: { text: 'Quantity (liters)' } },
+            series: [{
+                name: 'Water',
+                data: waterData
+            }]
+        });
+
+        // Initialize Highcharts for Oxygen
+        Highcharts.chart('oxygenChart', {
+            title: { text: 'Oxygen Quantity Over Time' },
+            xAxis: { categories: ticks },
+            yAxis: { title: { text: 'Quantity (liters)' } },
+            series: [{
+                name: 'Oxygen',
+                data: oxygenData
+            }]
+        });
+    });
+
 </script>
 
 </body>

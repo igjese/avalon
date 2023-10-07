@@ -342,4 +342,4 @@ Advanced Sensor Types
 - **Radio Sensors**: Detect radio waves.
 - **Gravitic Sensors**: Measure variations in gravitational fields.
 - **Thermal Sensors**: For measuring heat signatures.
-- 
+

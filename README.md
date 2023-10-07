@@ -16,11 +16,11 @@ Setting is deep-space and lonely. Player does most of the interaction from bridg
 
 ## 3. Core Game Mechanics
 
-- **Automate Production**: Keep your ship's systems running smoothly by automating resource production.
-- **Resource Strategy**: Decide where to put your resources for the best long-term gains.
-- **Ship Upgrades**: Use resources to make your ship better, faster, and more efficient.
-- **Explore Star Systems**: Hop between star systems to find new resources or a place to call home.
-- **Make Blueprints**: Design and build new components to improve your ship's capabilities.
+- **Automate Production**: Set up systems to automatically create and manage resources, to scale up your own capabilities.
+- **Resource Strategy**: Decide where to put your resources, to prioritize short- or long-term needs.
+- **Ship Upgrades**: Design better parts and components to make your ship and other assets more effective.
+- **Explore Star Systems**: Travel between star systems in search for resources and places suitable as base of operations.
+- **Make Blueprints**: Design and build new components to create specialized hardware for specific situations.
 
 What wil NOT be implemented:
 - Trade, Multiplayer

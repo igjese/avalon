@@ -72,6 +72,11 @@ Data:
 
 - **World Object**: Introduce a `World` object to manage the game state.
 
+### View Model
+
+- Instead of complex data transformations on the frontend, we'll have separate data model for presentation
+- This View Model will be prepared by the View every time it needs to send data to the frontend
+- Example: data for consumption/production charts, which needs to be aggregated first
 
 ## 5. Art and Audio
 
@@ -92,6 +97,14 @@ Data:
 - **Admin/Debug**: Development tools, logs, export/import, etc
 - **Navigation**: Stars map, System map
 - **Bridge**: Alerts, Statuses, Visual of orbited body
+
+### Production/Consumption Charts
+- Display resource quantities like Water and Oxygen over time.
+- Use Highcharts on frontend
+- Data source is view model, passed through game state (which we poll every 10 seconds anyway).
+- **User Interaction**: 
+  - Timeframe Selection: Ability to change focus (minute/hour/day).
+  - Resource Toggling: Option to toggle display of specific resources.
 
 #### Future Considerations
 - Some dashboards for statuses.

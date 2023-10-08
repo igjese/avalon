@@ -326,38 +326,18 @@ Shuttles handle resource transport outside the ship.
 
 ### Future Considerations
 
-#### Logistics
-- **Drones**: Mining drones.
-- **Shuttles**: 
+#### Resource Management
+- **Drones**: Similar to bots but bigger and specialized for heavy-duty tasks like e.g.mining.
 
 ### Sensors
-Sensor Types
-- **Astro-Body Sensor**: Detects planets, moons, asteroids, and other celestial bodies.
-- **Resource Sensor**: Specifically designed to locate valuable minerals, elements, or other types of resources.
-- **Life Form Sensor**: Detects biological entities.
-- **Hazard Sensor**: Detects environmental dangers like radiation zones, black holes, or solar flares.
+Sensors are additional components planned for future implementation. They will assist in various tasks like resource discovery and hazard detection.
 
-Sensor Attributes
-- **Range**: How far the sensor can scan.
-- **Accuracy**: The likelihood that the data provided is correct.
-- **Speed**: How quickly it generates new scans.
-- **Power Consumption**: Higher-tier sensors might consume more power.
+**Types**: Astro-Body, Resource, Life Form, Hazard, etc.
 
-Sensor-to-Analysis Chain
-- **Raw Sensor Data**: Collected by various sensors.
-- **Basic Analysis**: Run by the ship's basic computing facilities.
-- **Advanced Analysis**: Requires specialized computing capabilities or algorithms.
-- **Result Interpretation**: The player interprets the analyzed data.
+**Attributes**: Range, Accuracy, Speed, Power Consumption.
 
-Upgrades
-- **Sensors**: Better range, accuracy, speed, and lower power consumption.
-- **Computing Hardware**: Faster processing speeds.
-- **Software/Algorithms**: More efficient or specialized algorithms.
-- **Data Storage**: Increased storage capabilities.
+**Upgrades**: Improved sensors, faster computing hardware, specialized algorithms, and increased data storage.
 
-Advanced Sensor Types
-- **Spectral Sensors**: Used for identifying chemical compositions.
-- **Radio Sensors**: Detect radio waves.
-- **Gravitic Sensors**: Measure variations in gravitational fields.
-- **Thermal Sensors**: For measuring heat signatures.
+**Advanced Types**: Spectral, Radio, Gravitic, Thermal.
 
+**Data Analysis**: From raw sensor data to player interpretation, various levels of data analysis will be available. This analysis process may itself function as a "production chain" within the game.

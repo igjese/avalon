@@ -31,7 +31,7 @@ What wil NOT be implemented:
 - **Backend**: Django is used for the backend.
 - **Frontend**: jQuery and Bootstrap are used for client-side interactions and styling.
 
-### UI 
+### UI Components
 - **Bootstrap Tabs** represent ship sections and sub-tabs display relevant info and data for each section.
 - **Django Templates** populate the data in request/response cycle.
 - **single js timer** updates "realtime" data every game tick.

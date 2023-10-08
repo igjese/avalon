@@ -21,6 +21,7 @@ Setting is deep-space and lonely. Player does most of the interaction from bridg
 - **Ship Upgrades**: Design better parts and components to make your ship and other assets more effective.
 - **Explore Star Systems**: Travel between star systems in search for resources and places suitable as base of operations.
 - **Make Blueprints**: Design and build new components to create specialized hardware for specific situations.
+- **No Dying**: Instead of dying, game employs emergency backup systems, which apply penalties instead until the crisis is resolved.
 
 What wil NOT be implemented:
 - Trade, Multiplayer
@@ -146,7 +147,7 @@ Ship consists of ShipSystems, which consist of Components:
 - **Part**: Smaller elements that are used to assemble Components. Manufactured from Resources and Parts.
 
 Ship systems and their subsystems in the game:
-- **Bridge**: MainComputer, ShipsLog
+- **Bridge**: MainComputer, ShipsLog, EmergencyBackups
 - **Navigation**: Communication, Sensors, Astrogation
 - **Engineering**: Propulsion, Power, Manufacturing, Maintenance
 - **Supplies and Cargo**: CargoBay
@@ -247,6 +248,28 @@ ResourceHistory:
 - **Engineering (Chief)**: Ship modules, manufacturing, and blueprints.
 - **Supplies and Cargo (Purser)**: Cargo and supplies management.
 - **Life Support (Doc)**: Interpreting data and improving technologies.
+
+## Emergency Backups (Bridge Subsystem)
+
+- Those activate when otherwise the crew would die (no dying in this game).
+- BUT while active penalties apply.
+
+### Components
+
+#### Emergency Neural Command Interface (ENCI)
+- **Status**: Standby/[Percentage]
+- **Penalties**: Player can issue commands only when full, then it slowly fills again.
+- **In-Game**: Activates a neural link so captain can issue commands even while in ELS stasis field. Issuing a command depletes it, then it slowly fills again.
+
+#### Emergency Life Support (ELS)
+- **Status**: Standby/Active
+- **Activation**: Auto-activates itself and ENCI at low air, water, or food levels.
+- **In-Game**: Generates a stasis field to reduce metabolic rates and resource consumption.
+
+#### Emergency Power Core (EPC)
+- **Status**: Idle/Standby/Active
+- **Power Output**: [X] units/tick indefinitely.
+- **In-Game**: Utilizes a compact fusion reactor for minimal, indefinite energy output.
 
 
 ### Production Chains

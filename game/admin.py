@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, StorageType, StorageUnit, InstalledStorageUnit, StoredResource, Location, World
+from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, StorageType, StorageUnit, InstalledStorageUnit, StoredResource, Location, World, ResourceHistory
 
 class ResourceAdmin(admin.ModelAdmin):
     list_display = ('name', 'storage_type')
@@ -34,6 +34,9 @@ class LocationAdmin(admin.ModelAdmin):
 class WorldAdmin(admin.ModelAdmin):
     list_display = ('id','current_tick')
 
+class ResourceHistoryAdmin(admin.ModelAdmin):
+    list_display = ('tick', 'quantity_data', 'production_data', 'consumption_data')
+
 admin.site.register(Resource, ResourceAdmin)
 admin.site.register(ShipSystem, ShipSystemAdmin)
 admin.site.register(SubSystem, SubSystemAdmin)
@@ -45,3 +48,4 @@ admin.site.register(InstalledStorageUnit, InstalledStorageUnitAdmin)
 admin.site.register(StoredResource, StoredResourceAdmin)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(World, WorldAdmin)
+admin.site.register(ResourceHistory, ResourceHistoryAdmin)

@@ -45,7 +45,7 @@ def updateResourceHistory():
     
     # Store this data in your Django model
     ResourceHistory.objects.create(
-        tick=current_tick, 
+        tick=World.objects.get(pk=1).current_tick, 
         quantity_data=resource_quantity, 
         production_data=aggregated_production, 
         consumption_data=aggregated_consumption
@@ -160,6 +160,16 @@ def restart_game():
     clear_logs()
     calculate_ship_resources()
 
+    # Reset aggregation variables for the new tick
+    global aggregated_production
+    global aggregated_consumption
+        
+    for resource_name in ship['resources'].keys():
+        aggregated_production[resource_name] = 0
+        aggregated_consumption[resource_name] = 0
+
+    updateResourceHistory()
+    
 def calculate_ship_resources():
     # Reset to zero for each tick
     for resource_key in ship['resources']:

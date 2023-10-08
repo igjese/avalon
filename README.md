@@ -26,6 +26,18 @@ Setting is deep-space and lonely. Player does most of the interaction from bridg
 What wil NOT be implemented:
 - Trade, Multiplayer
 
+### Example: First Minutes of Gameplay
+
+1. **Air supply is dwindling**: Player realizes the air supply is dwindling.
+3. **Because components are broken**: Player checks life support status to identify 2 out of 3 OxyGeniuses are broken.
+4. **We need parts to fix it**: Player checks inventory for repair bots and parts, considering specific or generic "repair packs."
+5. **Scan the system for the resources we need**: Player uses sensors to scan for needed resources, possibly needing to repair sensors first.
+6. **Drones gather resources**: Player travels to resource location or use shuttles, to employ mining drones.
+7. **Refine them into usable materials**: Player refines raw resources into usable materials.
+8. **Manufacture repair parts**: Player uses production facilities to create repair parts or packs.
+9. **Repair broken components**: Player allocates repair bots and parts to fix malfunctioning OxyGeniuses.
+
+
 ## 4. Implementation
 
 ### Tech Stack
@@ -129,10 +141,10 @@ Database Entities:
 - **InstalledStorageUnit**: Specific storage units installed into specific ship subsystems.
 - **StoredResource**: Specific resources assigned to be stored in specific installed storage units.
 - **InstalledComponent**: Specific components installed into specific ship subsystems.
-- **World Object**: Manages the overall game state.
 - **ResourceHistory**: Each tick stores aggregated resource quantity, production and consumption.
 
 Not implemented yet:
+- **World Object**: Manages the overall game state.
 - **Part**: Smaller elements used to assemble Components.
 - **Bots**: Handle internal transport of resources.
 - **Shuttles**: Handle resource transport outside the ship.
@@ -249,24 +261,22 @@ ResourceHistory:
 - **Supplies and Cargo (Purser)**: Cargo and supplies management.
 - **Life Support (Doc)**: Interpreting data and improving technologies.
 
-## Emergency Backups (Bridge Subsystem)
+### Emergency Backups (Bridge Subsystem)
 
 - Those activate when otherwise the crew would die (no dying in this game).
-- BUT while active penalties apply.
+- BUT while active, the penalties apply.
 
-### Components
-
-#### Emergency Neural Command Interface (ENCI)
+Emergency Neural Command Interface (ENCI):
 - **Status**: Standby/[Percentage]
 - **Penalties**: Player can issue commands only when full, then it slowly fills again.
 - **In-Game**: Activates a neural link so captain can issue commands even while in ELS stasis field. Issuing a command depletes it, then it slowly fills again.
 
-#### Emergency Life Support (ELS)
+Emergency Life Support (ELS):
 - **Status**: Standby/Active
 - **Activation**: Auto-activates itself and ENCI at low air, water, or food levels.
 - **In-Game**: Generates a stasis field to reduce metabolic rates and resource consumption.
 
-#### Emergency Power Core (EPC)
+Emergency Power Core (EPC):
 - **Status**: Idle/Standby/Active
 - **Power Output**: [X] units/tick indefinitely.
 - **In-Game**: Utilizes a compact fusion reactor for minimal, indefinite energy output.
@@ -347,6 +357,25 @@ Shuttles handle resource transport outside the ship.
 5. **Inter-ship Transfer**: Possible, based on route and wishlist.
 6. **Docking Requirements**: To be determined.
 7. **Energy Requirement**: Require fuel, possibly the same as the ship.
+
+### Repairs
+
+- When a component breaks down:
+    - It immediately adds a maintenance request for repair drones.
+    - It also indicates which "simple part" is needed for repair. 
+    - These "simple parts" are limited to the ones used to manufacture the component or its subcomponents. 
+- "Wear and tear" occasionally causes a random component to break.
+- The captain can prioritize maintenance requests.
+
+#### Simple Parts
+
+- There are "simple parts" commonly used in manufacturing various components. 
+- These are the only parts that will be required for repairs. 
+- Examples include: Electronics Controller, Hydraulic Pump, Power Converter, Cooling Unit, etc
+
+#### Repair Drones
+
+- Repair drones randomly select a maintenance request to fulfill, if the required part is available. 
 
 
 ### Future Considerations

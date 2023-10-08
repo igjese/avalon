@@ -15,12 +15,12 @@
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 
-    <title>Avalon Sigma</title>
+    <title>FSS Adequate</title>
 </head>
 <body>
 
 <nav class="navbar navbar-expand-sm navbar-light bg-light py-0 mb-2 justify-content-between">
-    <a class="navbar-brand" href="/game/"><em class="fa fa-jedi"></em> Avalon Sigma 0.1</a>
+    <a class="navbar-brand" href="/game/"><em class="fa fa-jedi"></em> FSS Adequate 0.1</a>
     <ul class="navbar-nav">
         <li class="nav-item">
             <a class="nav-link" href="/game/debug/">Debug</a>
@@ -34,10 +34,10 @@
 <div class="container m-3">
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" id="supplies-tab" data-toggle="tab" href="#supplies">Supplies and Cargo</a>
+            <a class="nav-link" id="bridge-tab" data-toggle="tab" href="#bridge">Bridge</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="systems-tab" data-toggle="tab" href="#systems">Ship Systems</a>
+            <a class="nav-link active" id="supplies-tab" data-toggle="tab" href="#supplies">Supplies and Cargo</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" id="reference-tab" data-toggle="tab" href="#reference">Reference</a>
@@ -45,6 +45,43 @@
     </ul>
 
     <div class="tab-content mt-3">
+
+        <div class="tab-pane fade" id="bridge">
+            <!-- Bridge Content -->
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" id="systems-tab" data-toggle="tab" href="#systems">Ship Systems</a>
+                </li>
+                <!-- Add more sub-tabs here -->
+            </ul>
+            <div class="tab-content mt-3">
+                <!-- Existing Ship Systems content here -->
+                <table id="systemsTable" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">System</th>
+                            <th scope="col">Subsystem</th>
+                            <th scope="col">Component</th>
+                            <th scope="col">Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for system in systems %}
+                            {% for subsystem in system.subsystems.all %}
+                                {% for component in subsystem.components.all %}
+                                <tr>
+                                    <td>{{ system.name }}</td>
+                                    <td>{{ subsystem.name }}</td>
+                                    <td>{{ component.component.name }}</td>
+                                    <td>{{ component.quantity }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+            </div>
 
         <div class="tab-pane fade show active" id="supplies">
             <!-- Supplies and Cargo -->
@@ -96,34 +133,6 @@
                 </div>
             </div>
         </div> <!-- Supplies -->
-
-        <div class="tab-pane fade" id="systems">
-            <!-- Ship Systems -->
-            <table id="systemsTable" class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">System</th>
-                        <th scope="col">Subsystem</th>
-                        <th scope="col">Component</th>
-                        <th scope="col">Quantity</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for system in systems %}
-                        {% for subsystem in system.subsystems.all %}
-                            {% for component in subsystem.components.all %}
-                            <tr>
-                                <td>{{ system.name }}</td>
-                                <td>{{ subsystem.name }}</td>
-                                <td>{{ component.component.name }}</td>
-                                <td>{{ component.quantity }}</td>
-                            </tr>
-                            {% endfor %}
-                        {% endfor %}
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div> <!-- Ship Systems -->
 
         <div class="tab-pane fade" id="reference">
             <!-- Reference Content -->         

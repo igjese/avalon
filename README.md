@@ -29,8 +29,8 @@ What wil NOT be implemented:
 ### Example: First Minutes of Gameplay
 
 1. **Air supply is dwindling**: Player realizes the air supply is dwindling.
-2. **Because components are broken**: Player checks life support status to identify 2 out of 3 OxyGeniuses are broken.
-3. **We need parts to fix it**: Player checks inventory for repair bots and parts, considering specific or generic "repair packs."
+2. **Some components are broken**: Player checks life support status to identify 2 out of 3 OxyGeniuses are broken.
+3. **We lack parts to fix them**: Player checks inventory for repair bots and parts, considering specific or generic "repair packs."
 4. **Scan the system for the resources we need**: Player uses sensors to scan for needed resources, possibly needing to repair sensors first.
 5. **Drones gather resources**: Player travels to resource location or use shuttles, to employ mining drones.
 6. **Refine them into usable materials**: Player refines raw resources into usable materials.
@@ -106,15 +106,20 @@ Data:
 
 - Office-like UI: Text and tables-based interface with almost no graphics.
 - Ship's Bridge is the center. From the bridge player access all sections of a ship, and through them everything else.
+- there is Debug page, with development and debugging tools, such as logs, imports/exports etc
 
-### Tabs
-- **Supplies and Cargo**: Tab for managing resources.
-- **Ship Systems**: Tab for system efficiencies and statuses.
-- **Admin/Debug**: Development tools, logs, export/import, etc
+### Tabs and Sub-Tabs
+- **Supplies and Cargo**:
+    - **Current storage levels**: Displays for each resource quantity in storage plus max storage capacity. Shared capacity is indicated as e.g. "1000 (shared)"
+    - **Production/Consumption**: Displays Production/Consumption charts (explained below)
+- **Ship Systems**: Shows components installed in each subsystem, along with which system it belongs to, plus how many are operational out of total installed number i.e. 3/5
 - **Navigation**: Stars map, System map
 - **Bridge**: Alerts, Statuses, Visual of orbited body
+- **Reference**: displays all the game info player needs about game systems and mechanics
+    - **Components**: For each available component: how it functions, what does it consume and produce.
+    - **Storage Types**: Game storage types, and explanation for each.
 
-### Resource Analytics Charts
+### Production/Consumption Charts
 
 - Three interactive charts provide resources overview over time:
   - Resource Quantity

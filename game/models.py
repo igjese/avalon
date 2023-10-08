@@ -3,7 +3,9 @@ import jsonfield  # You'll need to install this package
 
 class ResourceHistory(models.Model):
     tick = models.IntegerField()
-    data = jsonfield.JSONField()  # Stores the resource data as JSON
+    quantity_data = jsonfield.JSONField(default=dict)  # Stores the resource quantity data as JSON
+    production_data = jsonfield.JSONField(default=dict)  # Stores the aggregated production data as JSON
+    consumption_data = jsonfield.JSONField(default=dict)  # Stores the aggregated consumption data as JSON
 
 class StorageType(models.Model):
     name = models.CharField(max_length=50, unique=True)

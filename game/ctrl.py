@@ -10,25 +10,45 @@ ship = {
     'resources': {}
 }
 
+# aggregated production and consumption data for single tick
+aggregated_production = {}
+aggregated_consumption = {}
+
+
 # Initialize logging
 init_logs()
 
 def advance_game_tick():
     global current_tick
+    global aggregated_production
+    global aggregated_consumption
+    
     current_tick += 1
+    
+    # Reset aggregation variables for the new tick
+    aggregated_production = {}
+    aggregated_consumption = {}
+    
     # Any game logic that advances the state of the game by one tick
     calculate_ship_resources()
     process_ship_systems()
-    logResourceHistory()
+    
+    # Update resource history and aggregated data
+    updateResourceHistory()
 
-def logResourceHistory():
+def updateResourceHistory():
     # Capture current resource state
-    resource_data = {}
+    resource_quantity = {}
     for resource_name, resource_info in ship['resources'].items():
-        resource_data[resource_name] = resource_info['available']
+        resource_quantity[resource_name] = resource_info['available']
     
     # Store this data in your Django model
-    ResourceHistory.objects.create(tick=current_tick, data=resource_data)
+    ResourceHistory.objects.create(
+        tick=current_tick, 
+        quantity_data=resource_quantity, 
+        production_data=aggregated_production, 
+        consumption_data=aggregated_consumption
+    )
  
 
 def process_ship_systems():
@@ -66,6 +86,10 @@ def process_installed_component(installed_component):
         stored_resource.currently_stored -= amount
         stored_resource.save()
 
+        # Update aggregated consumption
+        for resource_name, amount in consumes.items():
+            aggregated_consumption[resource_name] = aggregated_consumption.get(resource_name, 0) + amount
+
     # Handle production
     for resource_name, amount in produces.items():
         # Increase the resource in the ship's available resources
@@ -77,6 +101,10 @@ def process_installed_component(installed_component):
         stored_resource.currently_stored += amount
         stored_resource.save()
 
+        # Update aggregated production
+        for resource_name, amount in produces.items():
+            aggregated_production[resource_name] = aggregated_production.get(resource_name, 0) + amount
+
     consume_text = consume_text[:-2] if consume_text else "-"
     produce_text = produce_text[:-2] if produce_text else "-"
 
@@ -86,11 +114,13 @@ def get_game_state():
     # Your logic to collect and return the current state of the game
     calculate_ship_resources()
 
+    # Fetch the resource history data
+    history_data = list(ResourceHistory.objects.values('tick', 'quantity_data', 'production_data', 'consumption_data'))
+
     # Add any additional game state information you may have
     game_state = {
         'resources': ship['resources'],
-        'history': list(ResourceHistory.objects.values('tick', 'data'))
-
+        'history': history_data
     }
 
     return game_state
@@ -98,6 +128,20 @@ def get_game_state():
 def restart_game():
     global current_tick
     current_tick = 0
+
+    # Delete all records from the ResourceHistory table
+    ResourceHistory.objects.all().delete()
+
+    # Reset resource quantities to half of their storage capacities
+    StoredResource.objects.filter(resource__name='Energy').update(currently_stored=50)
+    StoredResource.objects.filter(resource__name='Air').update(currently_stored=100)
+    StoredResource.objects.filter(resource__name='Food').update(currently_stored=50)
+    StoredResource.objects.filter(resource__name='FuelCells').update(currently_stored=500)
+    StoredResource.objects.filter(resource__name='Hydrogen').update(currently_stored=50)
+    StoredResource.objects.filter(resource__name='Nutrients').update(currently_stored=500)
+    StoredResource.objects.filter(resource__name='Oxygen').update(currently_stored=50)
+    StoredResource.objects.filter(resource__name='WasteWater').update(currently_stored=250)
+    StoredResource.objects.filter(resource__name='Water').update(currently_stored=250)
 
     clear_logs()
     calculate_ship_resources()

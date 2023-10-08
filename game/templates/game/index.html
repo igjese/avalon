@@ -89,7 +89,9 @@
                     </div>
                     <div class="tab-pane fade" id="productionConsumption" role="tabpanel" aria-labelledby="productionConsumption-tab">
                         <!-- Place for Highcharts -->
-                            <div id="productionConsumption"></div>
+                            <div id="quantityHistory"></div>
+                            <div id="productionHistory"></div>
+                            <div id="consumptionHistory"></div>
                     </div>
                 </div>
             </div>
@@ -258,31 +260,55 @@
     // Updating charts
     document.addEventListener("DOMContentLoaded", function() {
         // Assuming 'history' is passed from Django as a JSON object
+        console.log('{{history | safe }}')
         const historyData = JSON.parse('{{ history | safe }}');
-        console.log(historyData)
+        console.log(historyData);
 
         // Prepare data for Highcharts
         const ticks = historyData.map(item => item.tick);
-        
+
         // Check if historyData has data and if it's not empty
-        if (historyData && historyData.length > 0 && historyData[0].data) {
-            // Collect all unique resource names from the first 'data' object
-            const resourceNames = Object.keys(historyData[0].data);
-            
-            // Create series dynamically
-            const series = resourceNames.map(resourceName => {
-                return {
-                    name: resourceName,
-                    data: historyData.map(item => item.data ? item.data[resourceName] : null)
-                };
-            });
-            
-            // Initialize Highcharts
-            Highcharts.chart('productionConsumption', {
+        if (historyData && historyData.length > 0) {
+            // Collect all unique resource names from the first 'quantity_data' object
+            const resourceNames = Object.keys(historyData[0].quantity_data);
+
+            // Function to create series
+            const createSeries = (dataKey, titlePrefix) => {
+                return resourceNames.map(resourceName => {
+                    return {
+                        name: `${resourceName}`,
+                        data: historyData.map(item => item[dataKey] ? item[dataKey][resourceName] : null)
+                    };
+                });
+            };
+
+            // Create series dynamically for quantities, production, and consumption
+            const quantitySeries = createSeries('quantity_data', 'Quantity');
+            const productionSeries = createSeries('production_data', 'Production');
+            const consumptionSeries = createSeries('consumption_data', 'Consumption');
+
+            // Initialize Highcharts for Quantity
+            Highcharts.chart('quantityHistory', {
                 title: { text: 'Resource Quantities Over Time' },
                 xAxis: { categories: ticks },
                 yAxis: { title: { text: 'Quantity' } },
-                series: series
+                series: quantitySeries
+            });
+
+            // Initialize Highcharts for Production
+            Highcharts.chart('productionHistory', {
+                title: { text: 'Resource Production Over Time' },
+                xAxis: { categories: ticks },
+                yAxis: { title: { text: 'Production' } },
+                series: productionSeries
+            });
+
+            // Initialize Highcharts for Consumption
+            Highcharts.chart('consumptionHistory', {
+                title: { text: 'Resource Consumption Over Time' },
+                xAxis: { categories: ticks },
+                yAxis: { title: { text: 'Consumption' } },
+                series: consumptionSeries
             });
         }
     });

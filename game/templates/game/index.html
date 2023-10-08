@@ -369,6 +369,48 @@
             $("#alert" + name).attr('class', data.level.toLowerCase() + ' text-white');
         });
 
+        // Assuming 'gameState' contains 'history' as a JSON object
+        const historyData = gameState.history;
+
+        // Prepare data for Highcharts
+        const ticks = historyData.map(item => item.tick);
+
+        // Collect all unique resource names from the first 'quantity_data' object
+        const resourceNames = Object.keys(historyData[0].quantity_data);
+
+        // Function to create series
+        const createSeries = (dataKey, titlePrefix) => {
+            return resourceNames.map(resourceName => {
+                return {
+                    name: `${resourceName}`,
+                    data: historyData.map(item => item[dataKey] ? item[dataKey][resourceName] : null)
+                };
+            });
+        };
+
+        // Create series dynamically for quantities, production, and consumption
+        const quantitySeries = createSeries('quantity_data', 'Quantity');
+        const productionSeries = createSeries('production_data', 'Production');
+        const consumptionSeries = createSeries('consumption_data', 'Consumption');
+
+        // Update Highcharts for Quantity
+        Highcharts.charts[0].update({
+            xAxis: { categories: ticks },
+            series: quantitySeries
+        });
+
+        // Update Highcharts for Production
+        Highcharts.charts[1].update({
+            xAxis: { categories: ticks },
+            series: productionSeries
+        });
+
+        // Update Highcharts for Consumption
+        Highcharts.charts[2].update({
+            xAxis: { categories: ticks },
+            series: consumptionSeries
+        });
+
     }
 </script>
 
@@ -400,9 +442,6 @@
             const quantitySeries = createSeries('quantity_data', 'Quantity');
             const productionSeries = createSeries('production_data', 'Production');
             const consumptionSeries = createSeries('consumption_data', 'Consumption');
-            console.log(quantitySeries)
-            console.log(productionSeries)
-            console.log(consumptionSeries)
 
             // Initialize Highcharts for Quantity
             Highcharts.chart('quantityHistory', {

@@ -32,7 +32,7 @@ What wil NOT be implemented:
 - **Frontend**: jQuery and Bootstrap are used for client-side interactions and styling.
 
 ### UI 
-- **Bootstrap Tabs** group data by ship sections
+- **Bootstrap Tabs** represent ship sections and sub-tabs display relevant info and data for each section.
 - **Django Templates** populate the data in request/response cycle.
 - **single js timer** updates "realtime" data every game tick.
 - **DataTables** for jQuery are used for most of the complex data.

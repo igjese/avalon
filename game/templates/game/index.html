@@ -78,9 +78,69 @@
             <div class="tab-content mt-3">
                 <div class="tab-pane fade show active" id="shipStatus">
                     <!-- Ship Status content here -->
-                    <p>TODO: critical resources alert</p>
-                    <p>TODO: maintenance alert</p>
-                </div>
+                    <div class="container">
+
+                        <div class="row">
+                            <!-- Main Viewport -->
+                            <div class="col-md-6">
+                                <h4>Main Viewport</h4>
+                                {% load static %}
+                                <img src="{% static 'star.jpg' %}" class="img-fluid">
+                                <table class="table table-striped">
+                                    <tbody>
+                                    <!-- Critical Resources -->
+                                    <tr>
+                                        <td>Name</td>
+                                        <td>Unknown</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Classification</td>
+                                        <td>G-Type Main Sequence</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Distance</td>
+                                        <td>20 AU</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Alerts -->
+                            <div class="col-md-6">
+                                <h4>Alerts</h4>
+                                <table class="table table-striped">
+                                    <tbody>
+                                    <!-- Critical Resources -->
+                                    <tr>
+                                        <td>Air</td>
+                                        <td class="bg-success text-white">98%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Water</td>
+                                        <td class="bg-warning text-dark">50%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Food</td>
+                                        <td class="bg-danger text-white">20%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Energy</td>
+                                        <td class="bg-success text-white">90%</td>
+                                    </tr>
+                                    <!-- Maintenance Alerts -->
+                                    <tr>
+                                        <td>Maintenance Requests</td>
+                                        <td class="bg-success text-white">0</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div><!-- Ship Status -->
+
                 <div class="tab-pane fade" id="shipSystems">
                     <!-- Existing Ship Systems content here -->
                     <table id="systemsTable" class="table table-striped">
@@ -107,7 +167,7 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                </div>
+                </div> <!-- Ship Systems -->
                 <!-- Add more sub-tab content here -->
             </div>
         </div>

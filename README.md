@@ -112,7 +112,7 @@ Data:
 - **Bridge**: 
     - **Ship Status**: Critical resources, Maintenance alerts
     - **Ship Systems**: Shows components installed in each subsystem, along with which system it belongs to, plus how many are operational out of total installed number i.e. 3/5
-- **Engineering**: Displays a list of maintenance requests. Each line item has toggle for "Priority repair".
+- **Engineering**: Displays a list of maintenance requests. Each line item displays what part is needed and has toggle for "Priority repair".
 - **Navigation**: Stars map, System map
 - **Supplies and Cargo**:
     - **Current storage levels**: Displays for each resource quantity in storage plus max storage capacity. Shared capacity is indicated as e.g. "1000 (shared)"
@@ -251,7 +251,7 @@ Notes:
 - Setting up a model to describe the hierarchy of celestial bodies like stars, planets, moons, etc.
 - Creating basic rules for procedurally generating these celestial bodies.
 
-### Bots
+### Logistic Bots
 
 Bots handle internal transport of resources.
 
@@ -263,6 +263,7 @@ Bots handle internal transport of resources.
 6. **Concurrency**: Operate in ticks, take random requests from a list.
 7. **Energy Requirement**: Require power, slow down when power is low.
 8. **Bot Assignment**: Some bots are "free roaming," others are system-specific.
+- They are components, so can break down themselves, but not the last one (so we don't get into a deadlock)
 
 ### Shuttles
 
@@ -276,7 +277,7 @@ Shuttles handle resource transport outside the ship.
 6. **Docking Requirements**: To be determined.
 7. **Energy Requirement**: Require fuel, possibly the same as the ship.
 
-#### Drones
+### Drones
 
 - Similar to bots but bigger and specialized for specific tasks like e.g. repairs or mining.
 - Types:
@@ -287,8 +288,9 @@ Shuttles handle resource transport outside the ship.
 
 - When a component breaks down:
     - It immediately adds a maintenance request for repair drones.
-    - It also indicates which "simple part" is needed for repair. 
+    - It also indicates which "simple part" is needed for repair, and number of ticks needed for repair 
     - These "simple parts" are limited to the ones used to manufacture the component or its subcomponents. 
+    - Needed part and repair time are random (part from valid options, repair time 1-10)
 - "Wear and tear" occasionally causes a random component to break.
 - The captain can prioritize maintenance requests.
 
@@ -300,8 +302,10 @@ Shuttles handle resource transport outside the ship.
 
 #### Repair Drones
 
-- Repair drones randomly select a maintenance request to fulfill, if the required part is available. 
-
+- Repair drones randomly select a maintenance request to fulfill, but only if the required part is available. They chose from prioritized requests first
+- Travel time: same as for Logistic Bots
+- They are components, so can break down themselves, but not the last one (so we don't get into a deadlock)
+- Require power, slow down when power is low.
 
 ### Future Considerations
 

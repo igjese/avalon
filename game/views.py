@@ -8,6 +8,12 @@ from .models import Resource, ShipSystem, SubSystem, Component, InstalledCompone
 from . import ctrl  # Import the game_controller module
 from .game_logging  import parse_logs # Import the new game_logging file
 
+# Global variables for resource thresholds
+AIR_THRESHOLDS = {'Green': 99, 'Yellow': 51, 'Red': 0}
+WATER_THRESHOLDS = {'Green': 81, 'Yellow': 51, 'Red': 0}
+FOOD_THRESHOLDS = {'Green': 81, 'Yellow': 51, 'Red': 0}
+ENERGY_THRESHOLDS = {'Green': 81, 'Yellow': 51, 'Red': 0}
+
 
 # Create your views here.
 def index(request):
@@ -28,14 +34,21 @@ def index(request):
         'installed_storage_units': installed_storage_units,
         'stored_resources': stored_resources,
         'ship_resources': game_state['resources'],
-        'history': json.dumps(game_state['history'])
+        'history': json.dumps(game_state['history']),
+        'alerts': get_alerts(game_state['resources']),
     })
 
 
 def advance_game_tick_and_get_game_state(request):
     ctrl.advance_game_tick()  # Advance the game by one tick
     game_state = ctrl.get_game_state()  # Get the current game state
-    
+
+    # Prepare the alerts data
+    alerts = get_alerts(game_state['resources'])
+
+    # Include alerts in the response
+    game_state['alerts'] = alerts
+
     return JsonResponse(game_state)
 
 def restart_game(request):
@@ -72,5 +85,32 @@ def get_data(request):
         'installed_storage_units': installed_storage_units,
         'stored_resources': stored_resources,
         'ship_resources': game_state['resources'], # This is your new aggregated ship data
+        'history': json.dumps(game_state['history']),
+        'alerts': get_alerts(game_state['resources']),
     }, safe=False)
+
+def get_alerts(ship_resources):
+    alerts = {}
+    thresholds = {
+        'Air': AIR_THRESHOLDS,
+        'Water': WATER_THRESHOLDS,
+        'Food': FOOD_THRESHOLDS,
+        'Energy': ENERGY_THRESHOLDS,
+    }
+
+    for resource_name, threshold in thresholds.items():
+        available = ship_resources[resource_name]['available']
+        capacity = ship_resources[resource_name]['capacity']
+        percentage = (available / capacity) * 100
+
+        if percentage >= threshold['Green']:
+            level = 'bg-success'
+        elif percentage >= threshold['Yellow']:
+            level = 'bg-warning'
+        else:
+            level = 'bg-danger'
+
+        alerts[resource_name] = {'percentage': round(percentage, 2), 'level': level}
+
+    return alerts
 

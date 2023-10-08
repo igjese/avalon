@@ -113,24 +113,32 @@
                                     <!-- Critical Resources -->
                                     <tr>
                                         <td>Air</td>
-                                        <td class="bg-success text-white">98%</td>
+                                        <td id="alertAir" class="{{ alerts.Air.level|lower }} text-white">
+                                            {{ alerts.Air.percentage }}%
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Water</td>
-                                        <td class="bg-warning text-dark">50%</td>
+                                        <td id="alertWater" class="{{ alerts.Water.level|lower }} text-white">
+                                            {{ alerts.Water.percentage }}%
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Food</td>
-                                        <td class="bg-danger text-white">20%</td>
+                                        <td id="alertFood" class="{{ alerts.Food.level|lower }} text-white">
+                                            {{ alerts.Food.percentage }}%
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Energy</td>
-                                        <td class="bg-success text-white">90%</td>
+                                        <td id="alertEnergy" class="{{ alerts.Energy.level|lower }} text-white">
+                                            {{ alerts.Energy.percentage }}%
+                                        </td>
                                     </tr>
                                     <!-- Maintenance Alerts -->
                                     <tr>
                                         <td>Maintenance Requests</td>
-                                        <td class="bg-success text-white">0</td>
+                                        <td id="alertMaintenanceRequests" class="bg-success text-white">0</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -351,6 +359,14 @@
 
             $("#" + name + "_capacity").text(capacityText);
         });
+
+        // update alerts directly
+        var alerts = gameState.alerts;  // Replace with the actual path to the alerts in your game state object
+        $.each(alerts, function(name, data) {
+            $("#alert" + name).text(data.percentage + '%');
+            $("#alert" + name).attr('class', data.level.toLowerCase() + ' text-white');
+        });
+
     }
 </script>
 
@@ -358,9 +374,7 @@
     // Updating charts
     document.addEventListener("DOMContentLoaded", function() {
         // Assuming 'history' is passed from Django as a JSON object
-        console.log('{{history | safe }}')
         const historyData = JSON.parse('{{ history | safe }}');
-        console.log(historyData);
 
         // Prepare data for Highcharts
         const ticks = historyData.map(item => item.tick);

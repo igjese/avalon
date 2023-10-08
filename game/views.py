@@ -50,7 +50,18 @@ def advance_game_tick_and_get_game_state(request):
     game_state['alerts'] = alerts
 
     # Calculate game time
-    game_state['game_time'] = calculate_gametime(game_state['current_tick'])
+    game_time = calculate_gametime(game_state['current_tick'])
+    game_state['game_time'] = game_time
+
+    # Transform history data to have game time instead of ticks
+    transformed_history = []
+    for entry in game_state['history']:
+        transformed_entry = entry.copy()
+        transformed_entry['game_time'] = calculate_short_gametime(entry['tick'])
+        del transformed_entry['tick']
+        transformed_history.append(transformed_entry)
+
+    game_state['history'] = transformed_history
 
     return JsonResponse(game_state)
 
@@ -62,6 +73,20 @@ def calculate_gametime(current_tick):
     minutes = elapsed_minutes % 60
 
     return f"{days} days, {hours} hours, {minutes} minutes"
+
+def calculate_short_gametime(tick_count):
+    total_minutes = tick_count * 5  # 5 minutes per tick
+
+    days = total_minutes // (24 * 60)
+    hours = (total_minutes % (24 * 60)) // 60
+    minutes = total_minutes % 60
+
+    short_time = ''
+    if days > 0:
+        short_time += f"{days}:"
+    short_time += f"{hours}:{str(minutes).zfill(2)}"
+
+    return short_time
 
 def restart_game(request):
     ctrl.restart_game()

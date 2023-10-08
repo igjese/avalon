@@ -373,7 +373,7 @@
         const historyData = gameState.history;
 
         // Prepare data for Highcharts
-        const ticks = historyData.map(item => item.tick);
+        const gameTimes = historyData.map(item => item.game_time);  // Use game_time instead of tick
 
         // Collect all unique resource names from the first 'quantity_data' object
         const resourceNames = Object.keys(historyData[0].quantity_data);
@@ -395,19 +395,19 @@
 
         // Update Highcharts for Quantity
         Highcharts.charts[0].update({
-            xAxis: { categories: ticks },
+            xAxis: { categories: gameTimes },  // Use gameTimes instead of ticks
             series: quantitySeries
         });
 
         // Update Highcharts for Production
         Highcharts.charts[1].update({
-            xAxis: { categories: ticks },
+            xAxis: { categories: gameTimes },  // Use gameTimes instead of ticks
             series: productionSeries
         });
 
         // Update Highcharts for Consumption
         Highcharts.charts[2].update({
-            xAxis: { categories: ticks },
+            xAxis: { categories: gameTimes },  // Use gameTimes instead of ticks
             series: consumptionSeries
         });
 

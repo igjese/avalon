@@ -72,43 +72,54 @@ def process_installed_component(installed_component):
     consumes = component.consumes
     produces = component.produces
 
-    consume_text = ""
-    produce_text = ""
+    # Check if enough resources are available for consumption
+    can_consume = all(ship['resources'][resource_name]['available'] >= amount for resource_name, amount in consumes.items())
 
-    # Handle consumption
-    for resource_name, amount in consumes.items():
-        # Reduce the resource in the ship's available resources
-        ship['resources'][resource_name]['available'] -= amount
-        consume_text += f"{amount} {resource_name}, "
+    # Check if enough capacity is available for production
+    can_produce = all(ship['resources'][resource_name]['available'] + amount <= ship['resources'][resource_name]['capacity'] for resource_name, amount in produces.items())
 
-        # Update the database
-        stored_resource = StoredResource.objects.get(resource__name=resource_name)
-        stored_resource.currently_stored -= amount
-        stored_resource.save()
+    if can_consume and can_produce:
+        consume_text = ""
+        produce_text = ""
 
-        # Update aggregated consumption
+        # Handle consumption
         for resource_name, amount in consumes.items():
-            aggregated_consumption[resource_name] = aggregated_consumption.get(resource_name, 0) + amount
+            # Reduce the resource in the ship's available resources
+            ship['resources'][resource_name]['available'] -= amount
+            consume_text += f"{amount} {resource_name}, "
 
-    # Handle production
-    for resource_name, amount in produces.items():
-        # Increase the resource in the ship's available resources
-        ship['resources'][resource_name]['available'] += amount
-        produce_text += f"{amount} {resource_name}, "
+            # Update the database
+            stored_resource = StoredResource.objects.get(resource__name=resource_name)
+            stored_resource.currently_stored -= amount
+            stored_resource.save()
 
-        # Update the database
-        stored_resource, created = StoredResource.objects.get_or_create(resource__name=resource_name)
-        stored_resource.currently_stored += amount
-        stored_resource.save()
+            # Update aggregated consumption
+            for resource_name, amount in consumes.items():
+                aggregated_consumption[resource_name] = aggregated_consumption.get(resource_name, 0) + amount
 
-        # Update aggregated production
+        # Handle production
         for resource_name, amount in produces.items():
-            aggregated_production[resource_name] = aggregated_production.get(resource_name, 0) + amount
+            # Increase the resource in the ship's available resources
+            ship['resources'][resource_name]['available'] += amount
+            produce_text += f"{amount} {resource_name}, "
 
-    consume_text = consume_text[:-2] if consume_text else "-"
-    produce_text = produce_text[:-2] if produce_text else "-"
+            # Update the database
+            stored_resource, created = StoredResource.objects.get_or_create(resource__name=resource_name)
+            stored_resource.currently_stored += amount
+            stored_resource.save()
 
-    log(f"{component.name} in {installed_component.parent_subsystem}/{installed_component.parent_subsystem.parent_system} # In: {consume_text} # Out: {produce_text}")
+            # Update aggregated production
+            for resource_name, amount in produces.items():
+                aggregated_production[resource_name] = aggregated_production.get(resource_name, 0) + amount
+
+        consume_text = consume_text[:-2] if consume_text else "-"
+        produce_text = produce_text[:-2] if produce_text else "-"
+
+        log(f"{component.name} in {installed_component.parent_subsystem}/{installed_component.parent_subsystem.parent_system} # In: {consume_text} # Out: {produce_text}")
+ 
+    else:
+        # Log or handle the case where the component can't process due to insufficient resources or capacity
+        log(f"Component {component.name} could not process due to insufficient resources or capacity.")
 
 def get_game_state():
     # Your logic to collect and return the current state of the game

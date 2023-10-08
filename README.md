@@ -33,7 +33,8 @@ What wil NOT be implemented:
 
 ### UI Components
 - Most of the data is shown using Django templates, based on request/response.
-- **DataTables**: DataTables for jQuery is used for most of the complex data.
+- **DataTables** for jQuery are used for most of the complex data.
+- **Highcharts** is used for charting
 
 ### MVC Architecture
 - **Controller** (ctrl.py): Holds all logic and flow.
@@ -98,17 +99,20 @@ Data:
 - **Navigation**: Stars map, System map
 - **Bridge**: Alerts, Statuses, Visual of orbited body
 
-### Production/Consumption Charts
-- Display resource quantities like Water and Oxygen over time.
-- Use Highcharts on frontend
+### Resource Analytics Charts
+
+- Three interactive charts provide resources overview over time:
+  - Resource Quantity
+  - Resource Production
+- Highcharts is used on frontend
 - Data source is view model, passed through game state (which we poll every 10 seconds anyway).
 - **User Interaction**: 
   - Timeframe Selection: Ability to change focus (minute/hour/day).
-  - Resource Toggling: Option to toggle display of specific resources.
+  - Resource Toggling: Option to toggle display of specific resources (out-of-box with Highcharts)
+  
 
 #### Future Considerations
 - Some dashboards for statuses.
-- Charts for production/consumption data.
 
 ## 7. Database Models
 
@@ -123,11 +127,10 @@ Database Entities:
 - **StoredResource**: Specific resources assigned to be stored in specific installed storage units.
 - **InstalledComponent**: Specific components installed into specific ship subsystems.
 - **World Object**: Manages the overall game state.
+- **ResourceHistory**: Each tick stores aggregated resource quantity, production and consumption.
 
 Not implemented yet:
 - **Part**: Smaller elements used to assemble Components.
-- **ResourceTransaction**: Source for historical data for resource production and consumption.
-- **Crew Members**: Characters with unique skills and responsibilities.
 - **Bots**: Handle internal transport of resources.
 - **Shuttles**: Handle resource transport outside the ship.
 
@@ -198,9 +201,11 @@ InstalledComponent:
 - Specific component installed into specific ship subsystem
 - Quantity defines how many are installed there
 
-ResourceTransaction:
-- Source for historical data for charts etc
-- Fields: timestamp, resource id, produced qty, consumed qty, system id, subsystem id
+ResourceHistory:
+- Source for historical data (for charts etc) for resource quantity, production, consumption over time
+- each record represents aggregated data for single tick
+- Fields: tick, quantity_data, production_data, consumption_data
+- data fields are JSON dictionaries 
 
 ### Future Considerations
 

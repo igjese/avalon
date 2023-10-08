@@ -20,7 +20,7 @@
 <body>
 
 <nav class="navbar navbar-expand-sm navbar-light bg-light py-0 mb-2 justify-content-between">
-    <a class="navbar-brand" href="/game/"><em class="fa fa-jedi"></em> FSS Adequate 0.1</a>
+    <a class="navbar-brand" href="/game/"><em class="fa fa-jedi"></em> FSS Adequate</a>
     <ul class="navbar-nav">
         <li class="nav-item">
             <a class="nav-link" href="/game/debug/">Debug</a>
@@ -34,13 +34,16 @@
 <div class="container m-3">
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link" id="bridge-tab" data-toggle="tab" href="#bridge">Bridge</a>
+            <a class="nav-link active" id="bridge-tab" data-toggle="tab" href="#bridge">Bridge</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" id="engineering-tab" data-toggle="tab" href="#engineering">Engineering</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link active" id="supplies-tab" data-toggle="tab" href="#supplies">Supplies and Cargo</a>
+            <a class="nav-link" id="navigation-tab" data-toggle="tab" href="#navigation">Navigation</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="supplies-tab" data-toggle="tab" href="#supplies">Supplies and Cargo</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" id="reference-tab" data-toggle="tab" href="#reference">Reference</a>
@@ -54,7 +57,13 @@
             <p>TODO: maintenance requests</p>
         </div>
 
-        <div class="tab-pane fade" id="bridge">
+        <div class="tab-pane fade" id="navigation">
+            <!-- Navigation Content -->
+            <p>TODO: Galaxy map</p>
+            <p>TODO: Local system map</p>
+        </div>
+
+        <div class="tab-pane fade show active" id="bridge">
             <!-- Bridge Content -->
             <ul class="nav nav-tabs">
                 <li class="nav-item">
@@ -103,9 +112,9 @@
             </div>
         </div>
 
-        <div class="tab-pane fade show active" id="supplies">
+        <div class="tab-pane fade show" id="supplies">
             <!-- Supplies and Cargo -->
-            <div class="tab-pane fade show active" id="supplies">
+            <div class="tab-pane fade show" id="supplies">
                 <!-- Sub Tabs -->
                 <ul class="nav nav-tabs" id="suppliesSubTabs" role="tablist">
                     <li class="nav-item">

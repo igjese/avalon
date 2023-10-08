@@ -106,15 +106,17 @@ Data:
 
 - Office-like UI: Text and tables-based interface with almost no graphics.
 - Ship's Bridge is the center. From the bridge player access all sections of a ship, and through them everything else.
-- there is Debug page, with development and debugging tools, such as logs, imports/exports etc
+- There is separate Debug page, with development and debugging tools, such as logs, imports/exports etc
 
 ### Tabs and Sub-Tabs
+- **Bridge**: 
+    - **Ship Status**: Critical resources, Maintenance alerts
+    - **Ship Systems**: Shows components installed in each subsystem, along with which system it belongs to, plus how many are operational out of total installed number i.e. 3/5
+- **Engineering**: Displays a list of maintenance requests. Each line item has toggle for "Priority repair".
+- **Navigation**: Stars map, System map
 - **Supplies and Cargo**:
     - **Current storage levels**: Displays for each resource quantity in storage plus max storage capacity. Shared capacity is indicated as e.g. "1000 (shared)"
     - **Production/Consumption**: Displays Production/Consumption charts (explained below)
-- **Ship Systems**: Shows components installed in each subsystem, along with which system it belongs to, plus how many are operational out of total installed number i.e. 3/5
-- **Navigation**: Stars map, System map
-- **Bridge**: Alerts, Statuses, Visual of orbited body
 - **Reference**: displays all the game info player needs about game systems and mechanics
     - **Components**: For each available component: how it functions, what does it consume and produce.
     - **Storage Types**: Game storage types, and explanation for each.
@@ -176,12 +178,12 @@ Emergency Power Core (EPC):
 - **Power Output**: [X] units/tick indefinitely.
 - **In-Game**: Utilizes a compact fusion reactor for minimal, indefinite energy output.
 
-### Bridge Dashboard
+### Bridge Dashboards
+
+#### Critical Resources
 - Primary mechanism for the player to recognize unfolding emergencies.
 - Displays the quantity of critical resources: Air, Water, Food, and Energy. 
 - They are color coded Green/Yellow/Red (and blinking) per defined thresholds
-
-#### Alert Thresholds
 
 | Resource | Green    | Yellow  | Red    | % of What          |
 |----------|----------|---------|--------|--------------------|
@@ -190,20 +192,12 @@ Emergency Power Core (EPC):
 | Food     | 81-100%  | 51-80%  | 0-50%  | defined quantity   |
 | Energy   | 81-100%  | 51-80%  | 0-50%  | battery bank level |
 
+#### Maintenance Alerts
 
-#### Resource Monitoring
-
-- **Numeric Display**: Each essential resource is represented by a numeric value on the dashboard.
-- **Color-coded Thresholds**: The numbers change color based on set thresholds to indicate the resource's status.
-    - **Green**: Resource levels are stable.
-    - **Yellow**: Resource levels are approaching critical levels.
-    - **Red**: Resource levels are at a critical low.
-- **Blinking Alerts**: When a resource reaches a critical level, the corresponding number on the dashboard will start blinking to draw the player's attention.
-
-#### Gameplay Impact
-
-- **Immersive**: Provides a realistic and intuitive way for the player to monitor the ship's status.
-- **User-friendly**: Color-coded thresholds and blinking alerts make it easy for the player to recognize and prioritize emergencies.
+- Shows number of maintenance requests
+- Green means no requests
+- Yellow: requests exist, all required parts are available
+- Red: requests exist, some required parts are not available
 
 
 ### Production Chains

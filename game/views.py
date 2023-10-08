@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.core.serializers import serialize
 import json
 
-from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, StorageType, StorageUnit, InstalledStorageUnit, StoredResource
+from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, StorageType, StorageUnit, InstalledStorageUnit, StoredResource, World
 from . import ctrl  # Import the game_controller module
 from .game_logging  import parse_logs # Import the new game_logging file
 
@@ -25,6 +25,7 @@ def index(request):
     installed_storage_units = InstalledStorageUnit.objects.all()
     stored_resources = StoredResource.objects.all()
     game_state = ctrl.get_game_state()
+    current_tick = World.objects.get(pk=1).current_tick
     return render(request, 'game/index.html', {
         'resources': resources,
         'systems': systems,
@@ -36,6 +37,7 @@ def index(request):
         'ship_resources': game_state['resources'],
         'history': json.dumps(game_state['history']),
         'alerts': get_alerts(game_state['resources']),
+        'game_time': calculate_gametime(current_tick),
     })
 
 
@@ -45,11 +47,21 @@ def advance_game_tick_and_get_game_state(request):
 
     # Prepare the alerts data
     alerts = get_alerts(game_state['resources'])
-
-    # Include alerts in the response
     game_state['alerts'] = alerts
 
+    # Calculate game time
+    game_state['game_time'] = calculate_gametime(game_state['current_tick'])
+
     return JsonResponse(game_state)
+
+def calculate_gametime(current_tick):
+    elapsed_minutes = current_tick * 5
+
+    days = elapsed_minutes // (24 * 60)
+    hours = (elapsed_minutes % (24 * 60)) // 60
+    minutes = elapsed_minutes % 60
+
+    return f"{days} days, {hours} hours, {minutes} minutes"
 
 def restart_game(request):
     ctrl.restart_game()

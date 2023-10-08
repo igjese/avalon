@@ -1,9 +1,7 @@
-from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, InstalledStorageUnit, StoredResource, ResourceHistory
+from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, InstalledStorageUnit, StoredResource, ResourceHistory, World
 import logging
 import json
 from .game_logging import log, init_logs, clear_logs  # Import the new game_logging 
-
-current_tick = 0  # This should be updated as the game progresses
 
 ship = {
     'name': "FSS Adequate",
@@ -19,13 +17,15 @@ aggregated_consumption = {}
 init_logs()
 
 def advance_game_tick():
-    global current_tick
+    # advance tick
+    world = World.objects.get(pk=1)  # Assuming you have only one game state
+    world.current_tick += 1
+    world.save()
+
+    # Reset aggregation variables for the new tick
     global aggregated_production
     global aggregated_consumption
-    
-    current_tick += 1
-    
-    # Reset aggregation variables for the new tick
+        
     for resource_name in ship['resources'].keys():
         aggregated_production[resource_name] = 0
         aggregated_consumption[resource_name] = 0
@@ -132,14 +132,16 @@ def get_game_state():
     # Add any additional game state information you may have
     game_state = {
         'resources': ship['resources'],
-        'history': history_data
+        'history': history_data,
+        'current_tick': World.objects.get(pk=1).current_tick
     }
 
     return game_state
 
 def restart_game():
-    global current_tick
-    current_tick = 0
+    world = World.objects.get(pk=1)
+    world.current_tick = 0
+    world.save()
 
     # Delete all records from the ResourceHistory table
     ResourceHistory.objects.all().delete()

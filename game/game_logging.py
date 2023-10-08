@@ -1,5 +1,6 @@
 import json
 import logging
+from .models import World
 
 log_filename = 'game.log'
 
@@ -10,7 +11,7 @@ def init_logs():
                         datefmt='%Y%m%d%H%M%S')
 
 def log(message):
-    from .ctrl import current_tick
+    current_tick = World.objects.get(pk=1).current_tick
     logging.debug(f"Tick {current_tick}| {message}")
 
 def parse_logs():

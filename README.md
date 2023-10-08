@@ -62,7 +62,8 @@ What wil NOT be implemented:
 
 ### Time Management
 
-- Game time is mapped to real time, with 1 real-life minute equating to 1 in-game hour.
+- Game time is mapped to real time, with 10 seconds real-time (1 tick) equating to 5 in-game minutes.
+- This makes 2hr playing session advance the in-game time by 2.5 days, while 8hr session advances the game by 10 in-game days
 - Component processing times are defined in terms of in-game time.
 
 ### Debug Page
@@ -306,6 +307,7 @@ Shuttles handle resource transport outside the ship.
 - Travel time: same as for Logistic Bots
 - They are components, so can break down themselves, but not the last one (so we don't get into a deadlock)
 - Require power, slow down when power is low.
+- 
 
 ### Future Considerations
 

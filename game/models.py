@@ -1,6 +1,9 @@
 from django.db import models
 import jsonfield  # You'll need to install this package
 
+class World(models.Model):
+    current_tick = models.IntegerField(default=0)
+
 class ResourceHistory(models.Model):
     tick = models.IntegerField()
     quantity_data = jsonfield.JSONField(default=dict)  # Stores the resource quantity data as JSON

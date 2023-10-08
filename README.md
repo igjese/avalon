@@ -326,18 +326,16 @@ Shuttles handle resource transport outside the ship.
 
 ### Future Considerations
 
-#### Resource Management
+#### Drones
+
 - **Drones**: Similar to bots but bigger and specialized for heavy-duty tasks like e.g.mining.
 
 ### Sensors
+
 Sensors are additional components planned for future implementation. They will assist in various tasks like resource discovery and hazard detection.
 
-**Types**: Astro-Body, Resource, Life Form, Hazard, etc.
-
-**Attributes**: Range, Accuracy, Speed, Power Consumption.
-
-**Upgrades**: Improved sensors, faster computing hardware, specialized algorithms, and increased data storage.
-
-**Advanced Types**: Spectral, Radio, Gravitic, Thermal.
-
-**Data Analysis**: From raw sensor data to player interpretation, various levels of data analysis will be available. This analysis process may itself function as a "production chain" within the game.
+- **Types**: Astro-Body, Resource, Life Form, Hazard, etc.
+- **Attributes**: Range, Accuracy, Speed, Power Consumption.
+- **Upgrades**: Improved sensors, faster computing hardware, specialized algorithms, and increased data storage.
+- **Advanced Types**: Spectral, Radio, Gravitic, Thermal.
+- **Data Analysis**: From raw sensor data to player interpretation, various levels of data analysis will be available. This analysis process may itself function as a "production chain" within the game.

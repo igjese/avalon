@@ -29,13 +29,13 @@ What wil NOT be implemented:
 ### Example: First Minutes of Gameplay
 
 1. **Air supply is dwindling**: Player realizes the air supply is dwindling.
-3. **Because components are broken**: Player checks life support status to identify 2 out of 3 OxyGeniuses are broken.
-4. **We need parts to fix it**: Player checks inventory for repair bots and parts, considering specific or generic "repair packs."
-5. **Scan the system for the resources we need**: Player uses sensors to scan for needed resources, possibly needing to repair sensors first.
-6. **Drones gather resources**: Player travels to resource location or use shuttles, to employ mining drones.
-7. **Refine them into usable materials**: Player refines raw resources into usable materials.
-8. **Manufacture repair parts**: Player uses production facilities to create repair parts or packs.
-9. **Repair broken components**: Player allocates repair bots and parts to fix malfunctioning OxyGeniuses.
+2. **Because components are broken**: Player checks life support status to identify 2 out of 3 OxyGeniuses are broken.
+3. **We need parts to fix it**: Player checks inventory for repair bots and parts, considering specific or generic "repair packs."
+4. **Scan the system for the resources we need**: Player uses sensors to scan for needed resources, possibly needing to repair sensors first.
+5. **Drones gather resources**: Player travels to resource location or use shuttles, to employ mining drones.
+6. **Refine them into usable materials**: Player refines raw resources into usable materials.
+7. **Manufacture repair parts**: Player uses production facilities to create repair parts or packs.
+8. **Repair broken components**: Player allocates repair bots and parts to fix malfunctioning OxyGeniuses.
 
 
 ## 4. Implementation
@@ -239,7 +239,7 @@ ResourceHistory:
 - **Location**: Reference to a celestial body or coordinates
 
 
-## 8. Gameplay Mechanics
+## 7. Gameplay Mechanics
 
 ### Strategy and Planning
 - Resource Scarcity: Planets and other locations offer limited resources.
@@ -280,6 +280,35 @@ Emergency Power Core (EPC):
 - **Status**: Idle/Standby/Active
 - **Power Output**: [X] units/tick indefinitely.
 - **In-Game**: Utilizes a compact fusion reactor for minimal, indefinite energy output.
+
+### Bridge Dashboard
+- Primary mechanism for the player to recognize unfolding emergencies.
+- Displays the quantity of critical resources: Air, Water, Food, and Energy. 
+- They are color coded Green/Yellow/Red (and blinking) per defined thresholds
+
+#### Alert Thresholds
+
+| Resource | Green    | Yellow  | Red    | % of What          |
+|----------|----------|---------|--------|--------------------|
+| Air      | 99-100%  | 51-98%  | 0-50%  | breathable air     |
+| Water    | 81-100%  | 51-80%  | 0-50%  | defined quantity   |
+| Food     | 81-100%  | 51-80%  | 0-50%  | defined quantity   |
+| Energy   | 81-100%  | 51-80%  | 0-50%  | battery bank level |
+
+
+#### Resource Monitoring
+
+- **Numeric Display**: Each essential resource is represented by a numeric value on the dashboard.
+- **Color-coded Thresholds**: The numbers change color based on set thresholds to indicate the resource's status.
+    - **Green**: Resource levels are stable.
+    - **Yellow**: Resource levels are approaching critical levels.
+    - **Red**: Resource levels are at a critical low.
+- **Blinking Alerts**: When a resource reaches a critical level, the corresponding number on the dashboard will start blinking to draw the player's attention.
+
+#### Gameplay Impact
+
+- **Immersive**: Provides a realistic and intuitive way for the player to monitor the ship's status.
+- **User-friendly**: Color-coded thresholds and blinking alerts make it easy for the player to recognize and prioritize emergencies.
 
 
 ### Production Chains
@@ -358,6 +387,13 @@ Shuttles handle resource transport outside the ship.
 6. **Docking Requirements**: To be determined.
 7. **Energy Requirement**: Require fuel, possibly the same as the ship.
 
+#### Drones
+
+- Similar to bots but bigger and specialized for specific tasks like e.g. repairs or mining.
+- Types:
+    - Mining Drone
+    - Repair Drone
+    
 ### Repairs
 
 - When a component breaks down:
@@ -379,13 +415,6 @@ Shuttles handle resource transport outside the ship.
 
 
 ### Future Considerations
-
-#### Drones
-
-- Similar to bots but bigger and specialized for heavy-duty tasks like e.g.repairs or mining.
-- Types:
-    - Mining Drone
-    - Repair Drone
 
 ### Sensors
 

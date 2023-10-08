@@ -259,31 +259,33 @@
     document.addEventListener("DOMContentLoaded", function() {
         // Assuming 'history' is passed from Django as a JSON object
         const historyData = JSON.parse('{{ history | safe }}');
-        
+        console.log(historyData)
+
         // Prepare data for Highcharts
         const ticks = historyData.map(item => item.tick);
         
-        // Collect all unique resource names
-        const resourceNames = Object.keys(historyData[0]).filter(key => key !== 'tick');
-        
-        // Create series dynamically
-        const series = resourceNames.map(resourceName => {
-            return {
-                name: resourceName,
-                data: historyData.map(item => item[resourceName])
-            };
-        });
-        
-        // Initialize Highcharts
-        Highcharts.chart('productionConsumption', {
-            title: { text: 'Resource Quantities Over Time' },
-            xAxis: { categories: ticks },
-            yAxis: { title: { text: 'Quantity' } },
-            series: series
-        });
+        // Check if historyData has data and if it's not empty
+        if (historyData && historyData.length > 0 && historyData[0].data) {
+            // Collect all unique resource names from the first 'data' object
+            const resourceNames = Object.keys(historyData[0].data);
+            
+            // Create series dynamically
+            const series = resourceNames.map(resourceName => {
+                return {
+                    name: resourceName,
+                    data: historyData.map(item => item.data ? item.data[resourceName] : null)
+                };
+            });
+            
+            // Initialize Highcharts
+            Highcharts.chart('productionConsumption', {
+                title: { text: 'Resource Quantities Over Time' },
+                xAxis: { categories: ticks },
+                yAxis: { title: { text: 'Quantity' } },
+                series: series
+            });
+        }
     });
-
-
 </script>
 
 </body>

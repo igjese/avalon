@@ -1,4 +1,4 @@
-from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, InstalledStorageUnit, StoredResource
+from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, InstalledStorageUnit, StoredResource, ResourceHistory
 import logging
 import json
 from .game_logging import log, init_logs, clear_logs  # Import the new game_logging 
@@ -19,6 +19,17 @@ def advance_game_tick():
     # Any game logic that advances the state of the game by one tick
     calculate_ship_resources()
     process_ship_systems()
+    logResourceHistory()
+
+def logResourceHistory():
+    # Capture current resource state
+    resource_data = {}
+    for resource_name, resource_info in ship['resources'].items():
+        resource_data[resource_name] = resource_info['available']
+    
+    # Store this data in your Django model
+    ResourceHistory.objects.create(tick=current_tick, data=resource_data)
+ 
 
 def process_ship_systems():
     ship_systems = ShipSystem.objects.all()
@@ -75,25 +86,11 @@ def get_game_state():
     # Your logic to collect and return the current state of the game
     calculate_ship_resources()
 
-    # Dummy data for Highcharts
-    example_data = [
-        {"tick": 1, "water": 2000, "oxygen": 500},
-        {"tick": 2, "water": 1950, "oxygen": 520},
-        {"tick": 3, "water": 1900, "oxygen": 540},
-        {"tick": 4, "water": 1850, "oxygen": 560},
-        {"tick": 5, "water": 1800, "oxygen": 580},
-        {"tick": 6, "water": 1750, "oxygen": 600},
-        {"tick": 7, "water": 1700, "oxygen": 620},
-        {"tick": 8, "water": 1650, "oxygen": 640},
-        {"tick": 9, "water": 1600, "oxygen": 660},
-        {"tick": 10, "water": 1550, "oxygen": 680},
-    ]
-
-
     # Add any additional game state information you may have
     game_state = {
         'resources': ship['resources'],
-        'history': example_data
+        'history': list(ResourceHistory.objects.values('tick', 'data'))
+
     }
 
     return game_state

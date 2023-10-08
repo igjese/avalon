@@ -1,4 +1,9 @@
 from django.db import models
+import jsonfield  # You'll need to install this package
+
+class ResourceHistory(models.Model):
+    tick = models.IntegerField()
+    data = jsonfield.JSONField()  # Stores the resource data as JSON
 
 class StorageType(models.Model):
     name = models.CharField(max_length=50, unique=True)

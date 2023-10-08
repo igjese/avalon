@@ -196,6 +196,7 @@
                 <!-- Sub Tab Contents -->
                 <div class="tab-content" id="suppliesSubTabContents">
                     <div class="tab-pane fade show active" id="currentStorageLevels" role="tabpanel" aria-labelledby="currentStorageLevels-tab">
+                        supplies table
                         <table id="suppliesTable" class="table table-striped">
                             <thead>
                                 <tr>
@@ -222,6 +223,7 @@
                         </table>
                     </div>
                     <div class="tab-pane fade" id="productionConsumption" role="tabpanel" aria-labelledby="productionConsumption-tab">
+                        charts
                         <!-- Place for Highcharts -->
                             <div id="quantityHistory"></div>
                             <div id="productionHistory"></div>
@@ -371,7 +373,7 @@
 </script>
 
 <script>
-    // Updating charts
+    // drawing charts
     document.addEventListener("DOMContentLoaded", function() {
         // Assuming 'history' is passed from Django as a JSON object
         const historyData = JSON.parse('{{ history | safe }}');
@@ -398,6 +400,9 @@
             const quantitySeries = createSeries('quantity_data', 'Quantity');
             const productionSeries = createSeries('production_data', 'Production');
             const consumptionSeries = createSeries('consumption_data', 'Consumption');
+            console.log(quantitySeries)
+            console.log(productionSeries)
+            console.log(consumptionSeries)
 
             // Initialize Highcharts for Quantity
             Highcharts.chart('quantityHistory', {

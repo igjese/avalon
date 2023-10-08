@@ -26,8 +26,9 @@ def advance_game_tick():
     current_tick += 1
     
     # Reset aggregation variables for the new tick
-    aggregated_production = {}
-    aggregated_consumption = {}
+    for resource_name in ship['resources'].keys():
+        aggregated_production[resource_name] = 0
+        aggregated_consumption[resource_name] = 0
     
     # Any game logic that advances the state of the game by one tick
     calculate_ship_resources()

@@ -382,7 +382,10 @@ Shuttles handle resource transport outside the ship.
 
 #### Drones
 
-- **Drones**: Similar to bots but bigger and specialized for heavy-duty tasks like e.g.mining.
+- Similar to bots but bigger and specialized for heavy-duty tasks like e.g.repairs or mining.
+- Types:
+    - Mining Drone
+    - Repair Drone
 
 ### Sensors
 

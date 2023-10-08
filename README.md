@@ -129,116 +129,6 @@ Data:
 #### Future Considerations
 - Some dashboards for statuses.
 
-## 7. Database Models
-
-Database Entities:
-- **ShipSystem**: Logical containers for groups of sub-systems, organized by the ship's high-level functions.
-- **SubSystem**: Collections of components that together provide a single function within a ship's system.
-- **Component**: Specific pieces of hardware within a ShipSystem that consume and produce resources.
-- **Resource**: Anything that can be stored, produced, or consumed.
-- **StorageType**: Defines what kind of StorageUnit a resource can be stored in.
-- **StorageUnit**: Containers for specific types of resources.
-- **InstalledStorageUnit**: Specific storage units installed into specific ship subsystems.
-- **StoredResource**: Specific resources assigned to be stored in specific installed storage units.
-- **InstalledComponent**: Specific components installed into specific ship subsystems.
-- **ResourceHistory**: Each tick stores aggregated resource quantity, production and consumption.
-
-Not implemented yet:
-- **World Object**: Manages the overall game state.
-- **Part**: Smaller elements used to assemble Components.
-- **Bots**: Handle internal transport of resources.
-- **Shuttles**: Handle resource transport outside the ship.
-
-
-### Ship
-
-Ship consists of ShipSystems, which consist of Components:
-- **ShipSystem**: An umbrella term for a logical container for group of sub-systems, organized by ship's high-level functions. E.g., Navigation, Engineering, etc.
-- **SubSystem**: Collection of components that together provide single function within a ship's sytem. E.g. Atmosphere control subsystem within Life Support system.
-- **Component**: A specific piece of hardware within a ShipSystem that does the actual work. Consumes resources and produces resources or other Components. Assembled from Parts and other Components.
-- **Part**: Smaller elements that are used to assemble Components. Manufactured from Resources and Parts.
-
-Ship systems and their subsystems in the game:
-- **Bridge**: MainComputer, ShipsLog, EmergencyBackups
-- **Navigation**: Communication, Sensors, Astrogation
-- **Engineering**: Propulsion, Power, Manufacturing, Maintenance
-- **Supplies and Cargo**: CargoBay
-- **Provisions**: Hydroponics, FoodFarms
-- **Life Support**: WaterReclamation, AtmosphereControl, Cryonics, Medical
-- **Crew**: Personell
-
-### Resources and Storage
-In general:
-- Specialized containers are strictly reserved for their designated resources.
-- Intangible resources like "Air" will use the same storage mechanism as tangible resources.
-- Energy and fluids have "magical" instantaneous flow and are either available or not.
-- No concurrency in resource allocation; a random system gets the resources if not enough are available.
-- MaxCapacity is a calculated value and will not be stored in the database.
-- Specialized storage units cannot be used for general cargo.
-- Energy, fluids, and special fluids each have their own separate storage types.
-
-#### Models
-
-Resource:
-- Master list of all resources
-- Represent anything that can be stored, produced, consumed
-- Each resource has StorageType, defining where it can be stored
-- Resources in the game are: Air, Nutrients, Water, WasteWater, FuelCells, Energy, Hydrogen, Oxygen, Food
-
-StorageType:
-- Represent in what kind of StorageUnit resource can be stored
-- Storage types in the game are: Air, GeneralCargo, SpecialCargo, Fluid, SpecialFluid, Energy
-
-StorageUnit:
-- Storage container for specific StorageType
-- Can be installed in ship's subsystem as InstalledStorageUnit
-- Storage units in the game: BatteryBank (for Energy), CargoHold (for general cargo), RegulatedCargoHold (for Food), FluidTank (for Water, WasteWater), PressurizedFluidTank (for Oxygen, Hydrogen), GeneralShipAir (for Air)
-- RegulatedCargoHold, FluidTank and PressurizedFluidTank can store only single type of resource at one time
-- CargoHold stores any number of resources at same time
-
-InstalledStorageUnit:
-- Specific storage unit installed into specific ship subsystem
-- Subsystem can have multiple installed storage units of the same type
-
-StoredResource:
-- Specific resource assigned to be stored specific installed storage unit
-- Holds quantity information
-
-### Components
-
-Component:
-- Consumes and produces resources
-- Production and consumptions historical data is tracked in ResourceTransactions
-- Can be installed in ship's subsystem as InstalledComponent
-- Components in game are: AeroMixer, FusionMaster, OxyGenius, AquaPurifier, AgroGenesis, Specialist
-
-InstalledComponent:
-- Specific component installed into specific ship subsystem
-- Quantity defines how many are installed there
-
-ResourceHistory:
-- Source for historical data (for charts etc) for resource quantity, production, consumption over time
-- each record represents aggregated data for single tick
-- Fields: tick, quantity_data, production_data, consumption_data
-- data fields are JSON dictionaries 
-
-### Future Considerations
-
-#### Universe
-
-- **Hierarchy**: Universe > Star System > Stars > Planets > Moons
-- Also: Artificial Structures, Ships (the Ship?), other celestial bodies
-- Types of Stars: O-Type, B-Type, A-Type, F-Type, G-Type, K-Type, M-Type, Red Giant, White Dwarf, Neutron Star, Blue Giant
-- Types of Planets: Rocky, Gas Giant, Ice Giant, Volcanic, Water World
-- Types of Moons: Rocky, Icy, Volcanically Active, Iron
-- Characteristics for planets and moons: Tidally Locked, Atmosphere-bearing, Waterless
-
-### Ship and Locations
-
-- **Ship Status**: In transit, Docked, Landed, In orbit
-- **Location**: Reference to a celestial body or coordinates
-
-
 ## 7. Gameplay Mechanics
 
 ### Strategy and Planning
@@ -425,3 +315,114 @@ Sensors are additional components planned for future implementation. They will a
 - **Upgrades**: Improved sensors, faster computing hardware, specialized algorithms, and increased data storage.
 - **Advanced Types**: Spectral, Radio, Gravitic, Thermal.
 - **Data Analysis**: From raw sensor data to player interpretation, various levels of data analysis will be available. This analysis process may itself function as a "production chain" within the game.
+
+## 8. Database Models
+
+Database Entities:
+- **ShipSystem**: Logical containers for groups of sub-systems, organized by the ship's high-level functions.
+- **SubSystem**: Collections of components that together provide a single function within a ship's system.
+- **Component**: Specific pieces of hardware within a ShipSystem that consume and produce resources.
+- **Resource**: Anything that can be stored, produced, or consumed.
+- **StorageType**: Defines what kind of StorageUnit a resource can be stored in.
+- **StorageUnit**: Containers for specific types of resources.
+- **InstalledStorageUnit**: Specific storage units installed into specific ship subsystems.
+- **StoredResource**: Specific resources assigned to be stored in specific installed storage units.
+- **InstalledComponent**: Specific components installed into specific ship subsystems.
+- **ResourceHistory**: Each tick stores aggregated resource quantity, production and consumption.
+
+Not implemented yet:
+- **World Object**: Manages the overall game state.
+- **Part**: Smaller elements used to assemble Components.
+- **Bots**: Handle internal transport of resources.
+- **Shuttles**: Handle resource transport outside the ship.
+
+
+### Ship
+
+Ship consists of ShipSystems, which consist of Components:
+- **ShipSystem**: An umbrella term for a logical container for group of sub-systems, organized by ship's high-level functions. E.g., Navigation, Engineering, etc.
+- **SubSystem**: Collection of components that together provide single function within a ship's sytem. E.g. Atmosphere control subsystem within Life Support system.
+- **Component**: A specific piece of hardware within a ShipSystem that does the actual work. Consumes resources and produces resources or other Components. Assembled from Parts and other Components.
+- **Part**: Smaller elements that are used to assemble Components. Manufactured from Resources and Parts.
+
+Ship systems and their subsystems in the game:
+- **Bridge**: MainComputer, ShipsLog, EmergencyBackups
+- **Navigation**: Communication, Sensors, Astrogation
+- **Engineering**: Propulsion, Power, Manufacturing, Maintenance
+- **Supplies and Cargo**: CargoBay
+- **Provisions**: Hydroponics, FoodFarms
+- **Life Support**: WaterReclamation, AtmosphereControl, Cryonics, Medical
+- **Crew**: Personell
+
+### Resources and Storage
+In general:
+- Specialized containers are strictly reserved for their designated resources.
+- Intangible resources like "Air" will use the same storage mechanism as tangible resources.
+- Energy and fluids have "magical" instantaneous flow and are either available or not.
+- No concurrency in resource allocation; a random system gets the resources if not enough are available.
+- MaxCapacity is a calculated value and will not be stored in the database.
+- Specialized storage units cannot be used for general cargo.
+- Energy, fluids, and special fluids each have their own separate storage types.
+
+#### Models
+
+Resource:
+- Master list of all resources
+- Represent anything that can be stored, produced, consumed
+- Each resource has StorageType, defining where it can be stored
+- Resources in the game are: Air, Nutrients, Water, WasteWater, FuelCells, Energy, Hydrogen, Oxygen, Food
+
+StorageType:
+- Represent in what kind of StorageUnit resource can be stored
+- Storage types in the game are: Air, GeneralCargo, SpecialCargo, Fluid, SpecialFluid, Energy
+
+StorageUnit:
+- Storage container for specific StorageType
+- Can be installed in ship's subsystem as InstalledStorageUnit
+- Storage units in the game: BatteryBank (for Energy), CargoHold (for general cargo), RegulatedCargoHold (for Food), FluidTank (for Water, WasteWater), PressurizedFluidTank (for Oxygen, Hydrogen), GeneralShipAir (for Air)
+- RegulatedCargoHold, FluidTank and PressurizedFluidTank can store only single type of resource at one time
+- CargoHold stores any number of resources at same time
+
+InstalledStorageUnit:
+- Specific storage unit installed into specific ship subsystem
+- Subsystem can have multiple installed storage units of the same type
+
+StoredResource:
+- Specific resource assigned to be stored specific installed storage unit
+- Holds quantity information
+
+### Components
+
+Component:
+- Consumes and produces resources
+- Production and consumptions historical data is tracked in ResourceTransactions
+- Can be installed in ship's subsystem as InstalledComponent
+- Components in game are: AeroMixer, FusionMaster, OxyGenius, AquaPurifier, AgroGenesis, Specialist
+
+InstalledComponent:
+- Specific component installed into specific ship subsystem
+- Quantity defines how many are installed there
+
+ResourceHistory:
+- Source for historical data (for charts etc) for resource quantity, production, consumption over time
+- each record represents aggregated data for single tick
+- Fields: tick, quantity_data, production_data, consumption_data
+- data fields are JSON dictionaries 
+
+### Future Considerations
+
+#### Universe
+
+- **Hierarchy**: Universe > Star System > Stars > Planets > Moons
+- Also: Artificial Structures, Ships (the Ship?), other celestial bodies
+- Types of Stars: O-Type, B-Type, A-Type, F-Type, G-Type, K-Type, M-Type, Red Giant, White Dwarf, Neutron Star, Blue Giant
+- Types of Planets: Rocky, Gas Giant, Ice Giant, Volcanic, Water World
+- Types of Moons: Rocky, Icy, Volcanically Active, Iron
+- Characteristics for planets and moons: Tidally Locked, Atmosphere-bearing, Waterless
+
+### Ship and Locations
+
+- **Ship Status**: In transit, Docked, Landed, In orbit
+- **Location**: Reference to a celestial body or coordinates
+
+

@@ -73,54 +73,83 @@ def process_installed_component(installed_component):
     consumes = component.consumes
     produces = component.produces
 
-    # Check if enough resources are available for consumption
-    can_consume = all(ship['resources'][resource_name]['available'] >= amount for resource_name, amount in consumes.items())
-
-    # Check if enough capacity is available for production
-    can_produce = all(ship['resources'][resource_name]['available'] + amount <= ship['resources'][resource_name]['capacity'] for resource_name, amount in produces.items())
-
-    if can_consume and can_produce:
-        consume_text = ""
-        produce_text = ""
-
-        # Handle consumption
+    # Step 1: Handle the 'WAIT_FOR_RESOURCES' state
+    if installed_component.state == 'WAIT_FOR_RESOURCES':
+        # Substep 1.1: Consume input resources
         for resource_name, amount in consumes.items():
-            # Reduce the resource in the ship's available resources
-            ship['resources'][resource_name]['available'] -= amount
-            consume_text += f"{amount} {resource_name}, "
+            available = ship['resources'][resource_name]['available']
+            actual_consumption = min(amount, available)
+            installed_component.resource_buffer_in[resource_name] = actual_consumption
+            ship['resources'][resource_name]['available'] -= actual_consumption
 
-            # Update the database
-            stored_resource = StoredResource.objects.get(resource__name=resource_name)
-            stored_resource.currently_stored -= amount
-            stored_resource.save()
+            # Update StoredResource and logs
+            update_stored_resource(resource_name, -actual_consumption)
 
-            # Update aggregated consumption
-            for resource_name, amount in consumes.items():
-                aggregated_consumption[resource_name] = aggregated_consumption.get(resource_name, 0) + amount
+        # Transition to 'WORKING' state and empty the input buffer
+        installed_component.state = 'WORKING'
+        installed_component.remaining_ticks_for_cycle = component.ticks_per_cycle
+        installed_component.resource_buffer_in.clear()
+        installed_component.save()
+        
+    # Step 2: Handle the 'WORKING' state
+    elif installed_component.state == 'WORKING':
+        # Substep 2.1: Count down the remaining ticks
+        installed_component.remaining_ticks_for_cycle -= 1
 
-        # Handle production
-        for resource_name, amount in produces.items():
-            # Increase the resource in the ship's available resources
-            ship['resources'][resource_name]['available'] += amount
-            produce_text += f"{amount} {resource_name}, "
+        # Transition to 'WAIT_TO_OUTPUT' state
+        if installed_component.remaining_ticks_for_cycle == 0:
+            installed_component.state = 'WAIT_TO_OUTPUT'
+            installed_component.resource_buffer_out = produces.copy()
+        installed_component.save()
 
-            # Update the database
-            stored_resource, created = StoredResource.objects.get_or_create(resource__name=resource_name)
-            stored_resource.currently_stored += amount
-            stored_resource.save()
+    # Step 3: Handle the 'WAIT_TO_OUTPUT' state
+    elif installed_component.state == 'WAIT_TO_OUTPUT':
+        # Substep 3.1: Output produced resources
+        for resource_name, amount in installed_component.resource_buffer_out.items():
+            available_capacity = ship['resources'][resource_name]['capacity'] - ship['resources'][resource_name]['available']
+            actual_output = min(amount, available_capacity)
+            ship['resources'][resource_name]['available'] += actual_output
 
-            # Update aggregated production
-            for resource_name, amount in produces.items():
-                aggregated_production[resource_name] = aggregated_production.get(resource_name, 0) + amount
+            # Update StoredResource and logs
+            update_stored_resource(resource_name, actual_output)
 
-        consume_text = consume_text[:-2] if consume_text else "-"
-        produce_text = produce_text[:-2] if produce_text else "-"
+            # Update the output buffer
+            installed_component.resource_buffer_out[resource_name] -= actual_output
 
-        log(f"{component.name} in {installed_component.parent_subsystem}/{installed_component.parent_subsystem.parent_system} # In: {consume_text} # Out: {produce_text}")
- 
-    else:
-        # Log or handle the case where the component can't process due to insufficient resources or capacity
-        log(f"Component {component.name} could not process due to insufficient resources or capacity.")
+        # Transition to 'WAIT_FOR_RESOURCES' state and empty the output buffer
+        if all(v == 0 for v in installed_component.resource_buffer_out.values()):
+            installed_component.state = 'WAIT_FOR_RESOURCES'
+            installed_component.resource_buffer_out.clear()
+        installed_component.save()
+
+    # Update logs
+    update_component_logs(installed_component)
+
+# Helper functions to update StoredResource and logs
+def update_stored_resource(resource_name, amount):
+    stored_resource = StoredResource.objects.get(resource__name=resource_name)
+    stored_resource.currently_stored += amount
+    stored_resource.save()
+
+def update_component_logs(installed_component):
+    component = installed_component.component
+    subsystem = installed_component.parent_subsystem
+    system = installed_component.parent_subsystem.parent_system
+    state = installed_component.state
+    
+    log_message = f"{component.name} ({subsystem}/{system}) - {state}."
+    
+    buffer_in_text = ", ".join(f"{k}: {v}" for k, v in installed_component.resource_buffer_in.items())
+    buffer_out_text = ", ".join(f"{k}: {v}" for k, v in installed_component.resource_buffer_out.items())
+    
+    if buffer_in_text:
+        log_message += f"Buffer in: {buffer_in_text}."
+        
+    if buffer_out_text:
+        log_message += f"Buffer out: {buffer_out_text}."
+    
+    log(log_message)
+
 
 def get_game_state():
     # Your logic to collect and return the current state of the game
@@ -169,7 +198,7 @@ def restart_game():
         aggregated_consumption[resource_name] = 0
 
     updateResourceHistory()
-    
+
 def calculate_ship_resources():
     # Reset to zero for each tick
     for resource_key in ship['resources']:

@@ -38,14 +38,19 @@
 
     <div class="tab-content">
         <div id="logs" class="tab-pane fade in active">
+            <label class="mt-3">Filter by Tick:
+                <input type="text" id="tickSearch" placeholder="<?>">
+            </label>
+
             <!-- Logs will go here -->
-            <table id="logTable" class="display small">
+            <table id="logTable" class="table table-sm table-striped display small">
                 <thead>
                     <tr>
-                        <th>Timestamp</th>
-                        <th>Tick</th>
-                        <th>Level</th>
-                        <th>Message</th>
+                        <th class="th-sm">Timestamp</th>
+                        <th class="th-sm">Tick</th>
+                        <th>Msg1</th>
+                        <th>Msg2</th>
+                        <th>Msg3</th>
                     </tr>
                 </thead>
             </table>
@@ -72,7 +77,7 @@
 <script>
 $(document).ready(function() {
     // Initialize DataTable
-    table = $('#logTable').DataTable({
+    var table = $('#logTable').DataTable({
         "pageLength": 10000,  // Show 10000 rows per page
         "lengthChange": false,  // Remove the dropdown menu
         "ajax": {
@@ -82,11 +87,21 @@ $(document).ready(function() {
         "columns": [
             { "data": "timestamp" },
             { "data": "tick" },
-            { "data": "level" },
-            { "data": "message" }
+            { "data": "msg1" },
+            { "data": "msg2" },
+            { "data": "msg3" },
         ],
         "order": [[0, "desc"]],  // Sort by tick, descending
     });
+
+    // Use the input to filter the table based on the tick number
+    $('#tickSearch').on('keyup', function() {
+        table
+        .column(1)  // Assuming the tick number is in the second column
+        .search(this.value)
+        .draw();
+    });
+
 
     // Manually click the logs tab
     $('#logs-tab').tab('show');

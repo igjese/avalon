@@ -14,7 +14,7 @@ class ComponentAdmin(admin.ModelAdmin):
     list_display = ('name', 'consumes', 'produces', 'info')
 
 class InstalledComponentAdmin(admin.ModelAdmin):
-    list_display = ('component', 'parent_subsystem', 'quantity')
+    list_display = ('component', 'parent_subsystem', 'quantity', 'state', 'input_buffer', 'output_buffer')
 
 class StorageTypeAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')

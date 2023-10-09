@@ -48,18 +48,18 @@ class Component(models.Model):
         return self.name
 
 COMPONENT_STATES = [
-    ('WAITING_FOR_RESOURCES', 'Waiting for resources'),
+    ('INTAKE', 'Waiting for resources'),
     ('WORKING', 'Working'),
-    ('WAITING_TO_OUTPUT', 'Waiting to output'),
+    ('OUTPUT', 'Waiting to output'),
 ]
 class InstalledComponent(models.Model):
     component = models.ForeignKey(Component, related_name='instances', on_delete=models.CASCADE)
     parent_subsystem = models.ForeignKey(SubSystem, related_name='components', on_delete=models.CASCADE)
     quantity = models.IntegerField()
     remaining_ticks_for_cycle = models.IntegerField(default=0)  # Remaining ticks for the current cycle
-    state = models.CharField(max_length=30, choices=COMPONENT_STATES, default='WAITING_FOR_RESOURCES')
-    resource_buffer_in = models.JSONField(default=dict, blank=True, null=True)
-    resource_buffer_out = models.JSONField(default=dict, blank=True, null=True)
+    state = models.CharField(max_length=30, choices=COMPONENT_STATES, default='INTAKE')
+    input_buffer = models.JSONField(default=dict, blank=True, null=True)
+    output_buffer = models.JSONField(default=dict, blank=True, null=True)
 
     def __str__(self):
         return self.component.name

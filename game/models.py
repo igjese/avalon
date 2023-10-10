@@ -12,7 +12,7 @@ class ResourceHistory(models.Model):
 
 class StorageType(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    description = models.TextField()
+    info = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
@@ -20,6 +20,7 @@ class StorageType(models.Model):
 class Resource(models.Model):
     name = models.CharField(max_length=100)
     storage_type = models.ForeignKey(StorageType, on_delete=models.CASCADE)
+    info = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
@@ -68,6 +69,7 @@ class StorageUnit(models.Model):
     name = models.CharField(max_length=100)
     storage_type = models.ForeignKey(StorageType, on_delete=models.CASCADE)
     capacity = models.IntegerField()
+    info = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name

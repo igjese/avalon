@@ -1,30 +1,33 @@
 from django.contrib import admin
 from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, StorageType, StorageUnit, InstalledStorageUnit, StoredResource, Location, World, ResourceHistory
 
+# Configurations
 class ResourceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'storage_type')
+    list_display = ('name', 'storage_type', 'info')
 
+class ComponentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'consumes', 'produces', 'ticks_per_cycle', 'info')
+
+class StorageTypeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'info')
+
+class StorageUnitAdmin(admin.ModelAdmin):
+    list_display = ('name', 'storage_type', 'capacity', 'info')
+
+# Ship Setup
 class ShipSystemAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 class SubSystemAdmin(admin.ModelAdmin):
     list_display = ('name', 'parent_system')
 
-class ComponentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'consumes', 'produces', 'info')
-
 class InstalledComponentAdmin(admin.ModelAdmin):
     list_display = ('component', 'parent_subsystem', 'quantity', 'state', 'input_buffer', 'output_buffer')
-
-class StorageTypeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
-
-class StorageUnitAdmin(admin.ModelAdmin):
-    list_display = ('name', 'storage_type', 'capacity')
 
 class InstalledStorageUnitAdmin(admin.ModelAdmin):
     list_display = ('storage_unit', 'subsystem', 'quantity')  # Removed 'resource', 'currently_stored' as they are now in StoredResource
 
+# Game Data
 class StoredResourceAdmin(admin.ModelAdmin):
     list_display = ('storage_unit', 'resource', 'currently_stored')
 

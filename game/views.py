@@ -128,10 +128,10 @@ def get_alerts(ship_resources):
     return alerts
 
 def export_data(request):
-    storage_types = list(StorageType.objects.all().values('name', 'description'))
-    resources = list(Resource.objects.all().values('name','storage_type__name'))
-    storage_units = list(StorageUnit.objects.all().values('name', 'capacity','storage_type__name'))
-    components = list(Component.objects.all().values('name', 'ticks_per_cycle'))
+    storage_types = list(StorageType.objects.all().values('name', 'info'))
+    resources = list(Resource.objects.all().values('name','storage_type__name', 'info'))
+    storage_units = list(StorageUnit.objects.all().values('name', 'capacity','storage_type__name', 'info'))
+    components = list(Component.objects.all().values('name', 'ticks_per_cycle', 'consumes', 'produces', 'info'))
     
     all_data = {
         'StorageType': storage_types,
@@ -152,17 +152,18 @@ def import_data(request):
     
     for item in data['StorageType']:
         name = item.get('name')
-        description = item.get('description')
+        info = item.get('info')
         
         # Update or create new record
         StorageType.objects.update_or_create(
             name=name,
-            defaults={'description': description}
+            defaults={'info': info}
         )
 
     for item in data['Resource']:
         name = item.get('name')
         storage_type_name = item.get('storage_type__name')
+        info = item.get('info')
 
         # Look up the StorageType by name
         try:
@@ -173,13 +174,14 @@ def import_data(request):
         # Update or create new record
         Resource.objects.update_or_create(
             name=name,
-            defaults={'storage_type': storage_type}
+            defaults={'storage_type': storage_type, 'info': info}
         )
 
     for item in data['StorageUnit']:
         name = item.get('name')
         capacity = item.get('capacity')
         storage_type_name = item.get('storage_type__name')
+        info = item.get('info')
 
         # Look up the StorageType by name
         try:
@@ -190,17 +192,18 @@ def import_data(request):
         # Update or create new record
         StorageUnit.objects.update_or_create(
             name=name,
-            defaults={'capacity': capacity, 'storage_type': storage_type}
+            defaults={'capacity': capacity, 'storage_type': storage_type, 'info': info}
         )
 
     for item in data['Component']:
         name = item.get('name')
         ticks_per_cycle = item.get('ticks_per_cycle')
-        
+        info = item.get('info')
+
         # Update or create new record
         Component.objects.update_or_create(
             name=name,
-            defaults={'ticks_per_cycle': ticks_per_cycle}
+            defaults={'ticks_per_cycle': ticks_per_cycle, 'info': info}
         )
 
     return HttpResponse("Data Imported Successfully")

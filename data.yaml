@@ -144,6 +144,11 @@ Ship:
     - name: AgroGenesis Mk1
       quantity: 5
     storage_units: []
+  - name: Food Stores
+    components: []
+    storage_units:
+    - name: Regulated Cargo Hold
+      quantity: 1
 - name: Life Support
   subsystems:
   - name: Water Reclamation

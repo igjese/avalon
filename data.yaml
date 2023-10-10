@@ -129,88 +129,88 @@ Component:
     Air: 10
   info: Mixes pure oxygen into ship's air, to keep it breathable.
 
-Ship:
+ShipSystems:
 - name: Crew
-  subsystems:
+  SubSystems:
   - name: Personnel
-    components:
-    - name: Specialist
+    InstalledComponents:
+    - component__name: Specialist
       quantity: 5
-    storage_units: []
+    InstalledStorageUnits: []
 - name: Provisions
-  subsystems:
+  SubSystems:
   - name: Astro Farms
-    components:
-    - name: AgroGenesis Mk1
+    InstalledComponents:
+    - component__name: AgroGenesis Mk1
       quantity: 5
-    storage_units: []
+    InstalledStorageUnits: []
   - name: Food Stores
-    components: []
-    storage_units:
-    - name: Regulated Cargo Hold
-      quantity: 1
+    InstalledComponents: []
+    InstalledStorageUnits:
+    - storage_unit__name: Regulated Cargo Hold
+      assigned_resource__name: Food
 - name: Life Support
-  subsystems:
+  SubSystems:
   - name: Water Reclamation
-    components:
-    - name: Aqua Purifier Mk1
+    InstalledComponents:
+    - component__name: Aqua Purifier Mk1
       quantity: 1
-    storage_units: []
+    InstalledStorageUnits: []
   - name: Atmosphere Control
-    components:
-    - name: OxyGenius Mk1
+    InstalledComponents:
+    - component__name: OxyGenius Mk1
       quantity: 1
-    - name: AeroMixer Mk1
+    - component__name: AeroMixer Mk1
       quantity: 3
-    storage_units:
-    - name: Pressurized Fluid Tank
-      quantity: 1
+    InstalledStorageUnits:
+    - storage_unit__name: Pressurized Fluid Tank
+      assigned_resource__name: Oxygen
   - name: Cryonics
-    components: []
-    storage_units: []
+    InstalledComponents: []
+    InstalledStorageUnits: []
 - name: Engineering
-  subsystems:
+  SubSystems:
   - name: Power Plant
-    components:
-    - name: FusionMaster Mk1
+    InstalledComponents:
+    - component__name: FusionMaster Mk1
       quantity: 1
-    storage_units:
-    - name: Battery Bank
-      quantity: 1
+    InstalledStorageUnits:
+    - storage_unit__name: Battery Bank
+      assigned_resource__name: Energy
   - name: Propulsion
-    components: []
-    storage_units: []
+    InstalledComponents: []
+    InstalledStorageUnits: []
   - name: Manufacturing
-    components: []
-    storage_units: []
+    InstalledComponents: []
+    InstalledStorageUnits: []
   - name: Maintenance
-    components: []
-    storage_units: []
+    InstalledComponents: []
+    InstalledStorageUnits: []
 - name: Navigation
-  subsystems:
+  SubSystems:
   - name: Sensors
-    components: []
-    storage_units: []
+    InstalledComponents: []
+    InstalledStorageUnits: []
   - name: Communications
-    components: []
-    storage_units: []
+    InstalledComponents: []
+    InstalledStorageUnits: []
   - name: Astrogation
-    components: []
-    storage_units: []
+    InstalledComponents: []
+    InstalledStorageUnits: []
 - name: Cargo
-  subsystems:
+  SubSystems:
   - name: Cargo Bay
-    components: []
-    storage_units:
-    - name: General Ship Air
-      quantity: 1
-    - name: Cargo Hold
-      quantity: 1
-    - name: Fluid Tank
-      quantity: 1
-    - name: Fluid Tank
-      quantity: 1
-    - name: Pressurized Fluid Tank
-      quantity: 1
+    InstalledComponents: []
+    InstalledStorageUnits:
+    - storage_unit__name: General Ship Air
+      assigned_resource__name: Air
+    - storage_unit__name: Cargo Hold
+      assigned_resource__name: null
+    - storage_unit__name: Fluid Tank
+      assigned_resource__name: WasteWater
+    - storage_unit__name: Fluid Tank
+      assigned_resource__name: Water
+    - storage_unit__name: Pressurized Fluid Tank
+      assigned_resource__name: Hydrogen
 - name: Medical
-  subsystems: []
+  SubSystems: []

@@ -78,7 +78,6 @@ class Location(models.Model):
     name = models.CharField(max_length=100)
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
     location_type = models.CharField(max_length=50)  # This can be 'Star', 'Planet', 'Moon', 'Ship', 'Space Station', 'Surface Installation', etc.
-    # ... any other fields like coordinates, description etc.
 
     def __str__(self):
         return self.name

@@ -143,30 +143,18 @@ def export_data(request):
         subsystems_data = []
         
         for subsystem in subsystems:
-            units = InstalledStorageUnit.objects.filter(subsystem=subsystem)
-            units_data = []
-
-            for unit in units:
-                stored_resource = StoredResource.objects.get(storage_unit=unit)
-
-                units_data.append({
-                    'id': unit.id,
-                    'name': unit.storage_unit.name,
-                    'quantity': unit.quantity,
-                    'StoredResource': stored_resource.resource.name
-                })
-
+            installed_storage_units = subsystem.installed_storage_units.all()
             installed_components = subsystem.components.all()
 
             subsystems_data.append({
                 'name': subsystem.name,
-                'InstalledComponent': list(installed_components.values('component__name', 'quantity')),
-                'InstalledStorageUnit': units_data  
+                'InstalledComponents': list(installed_components.values('component__name', 'quantity')),
+                'InstalledStorageUnits': list(installed_storage_units.values('storage_unit__name', 'assigned_resource__name')),  
             })
 
         systems_data.append({
             'name': system.name,
-            'SubSystem': subsystems_data
+            'SubSystems': subsystems_data
         })
 
     all_data = {
@@ -174,7 +162,7 @@ def export_data(request):
         'Resource': resources,
         'StorageUnit': storage_units,
         'Component': components,
-        'Ship': systems_data
+        'ShipSystems': systems_data
     }
 
     yaml_data = yaml.dump(all_data, default_flow_style=False, sort_keys=False)

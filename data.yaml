@@ -1,72 +1,211 @@
 
 StorageType:
 - name: Air
-  description: Ship's air. Capacity represents how "breathable" it is, max is 100%.
+  info: Ship's air. Capacity represents how "breathable" it is, max is 100%.
 - name: General Cargo
-  description: Shared general storage area for items without special requirements,
-    like materials, spare parts, etc. It is SHARED among such resources.
+  info: Shared general storage area for items without special requirements, like materials,
+    spare parts, etc. It is SHARED among such resources.
 - name: Fluid
-  description: Storage tanks for common fluids like water or waste water. Assume they
-    flow freely through pipes.
+  info: Storage tanks for common fluids like water or waste water. Assume they flow
+    freely through pipes.
 - name: Special Fluid
-  description: Special containment tanks for fluids that require specific temperature
-    or pressure settings, e.g., Oxygen, Hydrogen.
+  info: Special containment tanks for fluids that require specific temperature or
+    pressure settings, e.g., Oxygen, Hydrogen.
 - name: Special Cargo
-  description: Regulated cargo holds for items requiring specific conditions, like
-    food needing temperature control.
+  info: Regulated cargo holds for items requiring specific conditions, like food needing
+    temperature control.
 - name: Energy
-  description: Electricity is stored in batteries or capacitors.
+  info: Electricity is stored in batteries or capacitors.
 
 Resource:
-- name: Food
-  storage_type__name: Special Cargo
 - name: Water
   storage_type__name: Fluid
+  info: Crucial for life support, also used for various manufacturing processes.
 - name: Oxygen
   storage_type__name: Special Fluid
+  info: Essential for maintaining breathable atmosphere.
 - name: Energy
   storage_type__name: Energy
+  info: Powers all ship systems and components. Instantly available when required.
 - name: Hydrogen
   storage_type__name: Special Fluid
+  info: Used in energy production and other manufacturing processes.
 - name: FuelCells
   storage_type__name: General Cargo
+  info: Keep any types of fusion power-plants running.
 - name: WasteWater
   storage_type__name: Fluid
+  info: Byproduct of various manufacturing processes, can be purified back into ordinary
+    water.
 - name: Nutrients
   storage_type__name: General Cargo
+  info: Essential for food production in hydroponics and synth farms.
 - name: Air
   storage_type__name: Air
+  info: Represents air circulating within the ship.
+- name: Food
+  storage_type__name: Special Cargo
+  info: Crew eats it.
 
 StorageUnit:
 - name: General Ship Air
   capacity: 100
   storage_type__name: Air
+  info: Keeps your crew breathing.
 - name: Cargo Hold
   capacity: 1000
   storage_type__name: General Cargo
+  info: Your go-to storage for most resources.
 - name: Fluid Tank
   capacity: 500
   storage_type__name: Fluid
+  info: For storage of most fluids, e.g. water.
 - name: Pressurized Fluid Tank
   capacity: 100
   storage_type__name: Special Fluid
+  info: For high-pressure gases like Oxygen and Hydrogen.
 - name: Regulated Cargo Hold
   capacity: 100
   storage_type__name: Special Cargo
+  info: Climate-controlled storage for perishables like Food.
 - name: Battery Bank
   capacity: 100
   storage_type__name: Energy
+  info: Accumulates electrical energy when production exceeds demand, and releases
+    it when demand exceeds production.
 
 Component:
 - name: Specialist
   ticks_per_cycle: 1
+  consumes:
+    Energy: 1
+    Food: 1
+    Air: 1
+  produces: {}
+  info: Member of your crew. Chief, Doc, Pilot, Purser.
 - name: AgroGenesis Mk1
   ticks_per_cycle: 1
+  consumes:
+    Water: 1
+    Nutrients: 1
+    Energy: 1
+  produces:
+    Food: 1
+  info: Closed-loop hydroponics, grows food from water and nutrients.
 - name: Aqua Purifier Mk1
   ticks_per_cycle: 1
+  consumes:
+    WasteWater: 100
+    Energy: 10
+  produces:
+    Water: 99
+  info: Filters and distilles waste water back into clean, usable water.
 - name: OxyGenius Mk1
   ticks_per_cycle: 1
+  consumes:
+    Water: 1
+    Energy: 2
+  produces:
+    Oxygen: 3
+    Hydrogen: 6
+  info: Employs electrolysis to split water molecules into oxygen and hydrogen.
 - name: FusionMaster Mk1
   ticks_per_cycle: 1
+  consumes:
+    FuelCells: 1
+    Water: 50
+  produces:
+    Energy: 100
+    WasteWater: 50
+  info: Utilizes fusion fuel cells and a water-cooling system to provide constant
+    flow of energy.
 - name: AeroMixer Mk1
   ticks_per_cycle: 1
+  consumes:
+    Oxygen: 1
+    Air: 9
+    Energy: 1
+  produces:
+    Air: 10
+  info: Mixes pure oxygen into ship's air, to keep it breathable.
+
+Ship:
+- name: Crew
+  subsystems:
+  - name: Personnel
+    components:
+    - name: Specialist
+      quantity: 5
+    storage_units: []
+- name: Provisions
+  subsystems:
+  - name: Astro Farms
+    components:
+    - name: AgroGenesis Mk1
+      quantity: 5
+    storage_units: []
+- name: Life Support
+  subsystems:
+  - name: Water Reclamation
+    components:
+    - name: Aqua Purifier Mk1
+      quantity: 1
+    storage_units: []
+  - name: Atmosphere Control
+    components:
+    - name: OxyGenius Mk1
+      quantity: 1
+    - name: AeroMixer Mk1
+      quantity: 3
+    storage_units:
+    - name: Pressurized Fluid Tank
+      quantity: 1
+  - name: Cryonics
+    components: []
+    storage_units: []
+- name: Engineering
+  subsystems:
+  - name: Power Plant
+    components:
+    - name: FusionMaster Mk1
+      quantity: 1
+    storage_units:
+    - name: Battery Bank
+      quantity: 1
+  - name: Propulsion
+    components: []
+    storage_units: []
+  - name: Manufacturing
+    components: []
+    storage_units: []
+  - name: Maintenance
+    components: []
+    storage_units: []
+- name: Navigation
+  subsystems:
+  - name: Sensors
+    components: []
+    storage_units: []
+  - name: Communications
+    components: []
+    storage_units: []
+  - name: Astrogation
+    components: []
+    storage_units: []
+- name: Cargo
+  subsystems:
+  - name: Cargo Bay
+    components: []
+    storage_units:
+    - name: General Ship Air
+      quantity: 1
+    - name: Cargo Hold
+      quantity: 1
+    - name: Fluid Tank
+      quantity: 1
+    - name: Fluid Tank
+      quantity: 1
+    - name: Pressurized Fluid Tank
+      quantity: 1
+- name: Medical
+  subsystems: []

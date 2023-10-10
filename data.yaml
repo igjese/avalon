@@ -1,0 +1,72 @@
+
+StorageType:
+- name: Air
+  description: Ship's air. Capacity represents how "breathable" it is, max is 100%.
+- name: General Cargo
+  description: Shared general storage area for items without special requirements,
+    like materials, spare parts, etc. It is SHARED among such resources.
+- name: Fluid
+  description: Storage tanks for common fluids like water or waste water. Assume they
+    flow freely through pipes.
+- name: Special Fluid
+  description: Special containment tanks for fluids that require specific temperature
+    or pressure settings, e.g., Oxygen, Hydrogen.
+- name: Special Cargo
+  description: Regulated cargo holds for items requiring specific conditions, like
+    food needing temperature control.
+- name: Energy
+  description: Electricity is stored in batteries or capacitors.
+
+Resource:
+- name: Food
+  storage_type__name: Special Cargo
+- name: Water
+  storage_type__name: Fluid
+- name: Oxygen
+  storage_type__name: Special Fluid
+- name: Energy
+  storage_type__name: Energy
+- name: Hydrogen
+  storage_type__name: Special Fluid
+- name: FuelCells
+  storage_type__name: General Cargo
+- name: WasteWater
+  storage_type__name: Fluid
+- name: Nutrients
+  storage_type__name: General Cargo
+- name: Air
+  storage_type__name: Air
+
+StorageUnit:
+- name: General Ship Air
+  capacity: 100
+  storage_type__name: Air
+- name: Cargo Hold
+  capacity: 1000
+  storage_type__name: General Cargo
+- name: Fluid Tank
+  capacity: 500
+  storage_type__name: Fluid
+- name: Pressurized Fluid Tank
+  capacity: 100
+  storage_type__name: Special Fluid
+- name: Regulated Cargo Hold
+  capacity: 100
+  storage_type__name: Special Cargo
+- name: Battery Bank
+  capacity: 100
+  storage_type__name: Energy
+
+Component:
+- name: Specialist
+  ticks_per_cycle: 1
+- name: AgroGenesis Mk1
+  ticks_per_cycle: 1
+- name: Aqua Purifier Mk1
+  ticks_per_cycle: 1
+- name: OxyGenius Mk1
+  ticks_per_cycle: 1
+- name: FusionMaster Mk1
+  ticks_per_cycle: 1
+- name: AeroMixer Mk1
+  ticks_per_cycle: 1

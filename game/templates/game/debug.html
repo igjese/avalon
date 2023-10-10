@@ -60,8 +60,8 @@
 
         <div id="data" class="tab-pane fade">
             <h4 class="mt-3">Utilities</h4>
-            <button id="exportStorageType" class="btn btn-primary">Export Storage Type</button>
-            <button id="importStorageType" class="btn btn-danger">Import Storage Type</button>
+            <button id="exportData" class="btn btn-primary">Export Data</button>
+            <button id="importData" class="btn btn-danger">Import Data</button>
             <button id="copyToClipboard" class="btn btn-success">Copy to Clipboard</button>
             <div id="statusAlert" class="alert mt-3" role="alert" style="display:none;">
             <!-- Status message will go here -->
@@ -116,20 +116,20 @@ $(document).ready(function() {
 
     $("#copyToClipboard").click(function() {
         const dataContainer = $("#dataContainer");
-        copyToClipboard(dataContainer.text());
+        copyToClipboard(dataContainer.val());
     });
 
     async function copyToClipboard(text) {
         try {
             await navigator.clipboard.writeText(text);
-            console.log('Text successfully copied to clipboard');
+            showSuccess('Data copied to clipboard.');
         } catch (err) {
-            console.error('Failed to copy text: ', err);
+            showError('Failed to copy data: ', err);
         }
     }
 
     // export configuration and setup data from database
-    $("#exportStorageType").click(function() {
+    $("#exportData").click(function() {
         $.ajax({
             url: "/game/export_data/",
             type: "GET",
@@ -144,9 +144,9 @@ $(document).ready(function() {
     });
 
     // import StorageType
-    $("#importStorageType").click(function() {
+    $("#importData").click(function() {
         $.ajax({
-            url: '/game/import_storage_type/',
+            url: '/game/import_data/',
             method: 'POST',
             data: {
                 'yaml_data': $("#dataContainer").val()

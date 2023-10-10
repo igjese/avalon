@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.core.serializers import serialize
+from django.core.exceptions import ObjectDoesNotExist
 import json
 import yaml
 import re
@@ -128,8 +129,8 @@ def get_alerts(ship_resources):
 
 def export_data(request):
     storage_types = list(StorageType.objects.all().values('name', 'description'))
-    resources = list(Resource.objects.all().values('name'))
-    storage_units = list(StorageUnit.objects.all().values('name', 'capacity'))
+    resources = list(Resource.objects.all().values('name','storage_type__name'))
+    storage_units = list(StorageUnit.objects.all().values('name', 'capacity','storage_type__name'))
     components = list(Component.objects.all().values('name', 'ticks_per_cycle'))
     
     all_data = {
@@ -145,11 +146,11 @@ def export_data(request):
 
     return HttpResponse(yaml_data, content_type="application/x-yaml")
 
-def import_storage_type(request):
+def import_data(request):
     yaml_data = request.POST.get('yaml_data')  # Assuming you send YAML data as a POST parameter
-    parsed_data = yaml.safe_load(yaml_data)
+    data = yaml.safe_load(yaml_data)
     
-    for item in parsed_data:
+    for item in data['StorageType']:
         name = item.get('name')
         description = item.get('description')
         
@@ -158,5 +159,48 @@ def import_storage_type(request):
             name=name,
             defaults={'description': description}
         )
-    
+
+    for item in data['Resource']:
+        name = item.get('name')
+        storage_type_name = item.get('storage_type__name')
+
+        # Look up the StorageType by name
+        try:
+            storage_type = StorageType.objects.get(name=storage_type_name)
+        except ObjectDoesNotExist:
+            return HttpResponse(f"StorageType {storage_type_name} does not exist.")
+        
+        # Update or create new record
+        Resource.objects.update_or_create(
+            name=name,
+            defaults={'storage_type': storage_type}
+        )
+
+    for item in data['StorageUnit']:
+        name = item.get('name')
+        capacity = item.get('capacity')
+        storage_type_name = item.get('storage_type__name')
+
+        # Look up the StorageType by name
+        try:
+            storage_type = StorageType.objects.get(name=storage_type_name)
+        except ObjectDoesNotExist:
+            return HttpResponse(f"StorageType {storage_type_name} does not exist.")
+        
+        # Update or create new record
+        StorageUnit.objects.update_or_create(
+            name=name,
+            defaults={'capacity': capacity, 'storage_type': storage_type}
+        )
+
+    for item in data['Component']:
+        name = item.get('name')
+        ticks_per_cycle = item.get('ticks_per_cycle')
+        
+        # Update or create new record
+        Component.objects.update_or_create(
+            name=name,
+            defaults={'ticks_per_cycle': ticks_per_cycle}
+        )
+
     return HttpResponse("Data Imported Successfully")

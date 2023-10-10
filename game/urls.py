@@ -8,6 +8,6 @@ urlpatterns = [
     path('debug/', views.debug_page, name='debug_page'),
     path('logs/', views.get_logs, name='logs'),
     path('export_data/', views.export_data, name='export_data'),
-    path('import_storage_type/', views.import_storage_type, name='import_storage_type'),
+    path('import_data/', views.import_data, name='import_data'),
     # Add other URL patterns here
 ]

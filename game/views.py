@@ -128,16 +128,50 @@ def get_alerts(ship_resources):
     return alerts
 
 def export_data(request):
+    # Get config data
     storage_types = list(StorageType.objects.all().values('name', 'info'))
     resources = list(Resource.objects.all().values('name','storage_type__name', 'info'))
     storage_units = list(StorageUnit.objects.all().values('name', 'capacity','storage_type__name', 'info'))
     components = list(Component.objects.all().values('name', 'ticks_per_cycle', 'consumes', 'produces', 'info'))
     
+    # Get ship data
+    ship_data = []
+    systems = ShipSystem.objects.all()
+    
+    for system in systems:
+        system_data = {'name': system.name, 'subsystems': []}
+        subsystems = system.subsystems.all()
+        
+        for subsystem in subsystems:
+            subsystem_data = {'name': subsystem.name, 'components': [], 'storage_units': []}
+            installed_components = subsystem.components.all()
+            
+            for component in installed_components:
+                component_data = {
+                    'name': component.component.name,
+                    'quantity': component.quantity
+                }
+                subsystem_data['components'].append(component_data)
+            
+            installed_storage_units = InstalledStorageUnit.objects.filter(subsystem=subsystem)
+            
+            for storage_unit in installed_storage_units:
+                storage_unit_data = {
+                    'name': storage_unit.storage_unit.name,
+                    'quantity': storage_unit.quantity
+                }
+                subsystem_data['storage_units'].append(storage_unit_data)
+            
+            system_data['subsystems'].append(subsystem_data)
+        
+        ship_data.append(system_data)
+
     all_data = {
         'StorageType': storage_types,
         'Resource': resources,
         'StorageUnit': storage_units,
-        'Component': components
+        'Component': components,
+        'Ship': ship_data
     }
 
     yaml_data = yaml.dump(all_data, default_flow_style=False, sort_keys=False)

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction
 import yaml
 import re
 
@@ -59,6 +60,7 @@ def export_data(request):
 
     return HttpResponse(yaml_data, content_type="application/x-yaml")
 
+@transaction.atomic
 def import_data(request):
     yaml_data = request.POST.get('yaml_data')  # Assuming you send YAML data as a POST parameter
     data = yaml.safe_load(yaml_data)
@@ -120,48 +122,65 @@ def import_data(request):
         )
 
     # Import ShipSystems
+    # ShipSystems and SubSystems can have temporary IDs, since they can be referenced from InstalledComponents and InstalledStorageUnits
+    temp_id_mapping = {}
+
     for system_data in data['ShipSystems']:
-        system_name = system_data.get('name')
-        subsystems_data = system_data.get('SubSystems')
+        temp_id = system_data.get('id', None)
+        system_name = system_data['name']
         
-        # Create or get ShipSystem
-        system, created = ShipSystem.objects.get_or_create(name=system_name)
+        system, _ = ShipSystem.objects.update_or_create(
+            name=system_name
+        )
         
-        for subsystem_data in subsystems_data:
-            subsystem_name = subsystem_data.get('name')
-            installed_components_data = subsystem_data.get('InstalledComponents')
-            installed_storage_units_data = subsystem_data.get('InstalledStorageUnits')
+        if temp_id:
+            temp_id_mapping[temp_id] = system.id  # Map the temporary ID to the actual ID
+
+        for subsystem_data in system_data['SubSystems']:
+            temp_id = subsystem_data.get('id', None)
+            subsystem_name = subsystem_data['name']
             
-            # Create or get SubSystem
-            subsystem, created = SubSystem.objects.get_or_create(name=subsystem_name, system=system)
+            subsystem, _ = SubSystem.objects.update_or_create(
+                name=subsystem_name,
+                parent_system=system
+            )
             
-            # Import InstalledComponents
-            for component_data in installed_components_data:
-                component_name = component_data.get('component__name')
+            if temp_id:
+                temp_id_mapping[temp_id] = subsystem.id  # Map the temporary ID to the actual ID
+
+            # Importing InstalledComponents
+            for component_data in subsystem_data['InstalledComponents']:
+                component_id = component_data.get('id', None)
+                component_name = component_data['component__name']
                 component = Component.objects.get(name=component_name)
                 
-                # Create or update InstalledComponent
                 InstalledComponent.objects.update_or_create(
-                    component=component,
-                    subsystem=subsystem
+                    id=component_id,
+                    defaults={
+                        'component': component,
+                        'parent_subsystem': subsystem
+                    }
                 )
-            
-            # Import InstalledStorageUnits
-            for storage_unit_data in installed_storage_units_data:
-                storage_unit_name = storage_unit_data.get('storage_unit__name')
-                assigned_resource_name = storage_unit_data.get('assigned_resource__name')
-                
+
+            # Importing InstalledStorageUnits
+            for storage_unit_data in subsystem_data['InstalledStorageUnits']:
+                storage_unit_id = storage_unit_data.get('id', None)
+                storage_unit_name = storage_unit_data['storage_unit__name']
                 storage_unit = StorageUnit.objects.get(name=storage_unit_name)
-                assigned_resource = None
+                assigned_resource_name = storage_unit_data.get('assigned_resource__name', None)
                 
                 if assigned_resource_name:
                     assigned_resource = Resource.objects.get(name=assigned_resource_name)
+                else:
+                    assigned_resource = None
                 
-                # Create or update InstalledStorageUnit
                 InstalledStorageUnit.objects.update_or_create(
-                    storage_unit=storage_unit,
-                    subsystem=subsystem,
-                    defaults={'assigned_resource': assigned_resource}
+                    id=storage_unit_id,
+                    defaults={
+                        'storage_unit': storage_unit,
+                        'subsystem': subsystem,
+                        'assigned_resource': assigned_resource
+                    }
                 )
 
     return HttpResponse("Data Imported Successfully")

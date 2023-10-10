@@ -1,8 +1,10 @@
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.core.serializers import serialize
 import json
+import yaml
+import re
 
 from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, StorageType, StorageUnit, InstalledStorageUnit, StoredResource, World
 from . import ctrl  # Import the game_controller module
@@ -99,33 +101,6 @@ def get_logs(request):
     log_data = parse_logs()
     return JsonResponse({'data': log_data})
 
-def get_data(request):
-    systems = serialize('json', ShipSystem.objects.all())
-    subsystems = serialize('json', SubSystem.objects.all())
-    components = serialize('json', Component.objects.all())
-    installed_components = serialize('json', InstalledComponent.objects.all())
-    resources = serialize('json',Resource.objects.all())
-    storage_units = serialize('json', StorageUnit.objects.all())
-    installed_storage_units = serialize('json', InstalledStorageUnit.objects.all())
-    stored_resources = serialize('json', StoredResource.objects.all())
-    
-    # Get aggregated ship data
-    game_state = ctrl.get_game_state()
-
-    return JsonResponse({
-        'systems': systems,
-        'subsystems': subsystems,
-        'components': components,
-        'installed_components': installed_components,
-        'resources': resources,
-        'storage_units': storage_units,
-        'installed_storage_units': installed_storage_units,
-        'stored_resources': stored_resources,
-        'ship_resources': game_state['resources'], # This is your new aggregated ship data
-        'history': json.dumps(game_state['history']),
-        'alerts': get_alerts(game_state['resources']),
-    }, safe=False)
-
 def get_alerts(ship_resources):
     alerts = {}
     thresholds = {
@@ -151,3 +126,37 @@ def get_alerts(ship_resources):
 
     return alerts
 
+def export_data(request):
+    storage_types = list(StorageType.objects.all().values('name', 'description'))
+    resources = list(Resource.objects.all().values('name'))
+    storage_units = list(StorageUnit.objects.all().values('name', 'capacity'))
+    components = list(Component.objects.all().values('name', 'ticks_per_cycle'))
+    
+    all_data = {
+        'StorageType': storage_types,
+        'Resource': resources,
+        'StorageUnit': storage_units,
+        'Component': components
+    }
+
+    yaml_data = yaml.dump(all_data, default_flow_style=False, sort_keys=False)
+    # Add empty lines between tables for better readability
+    yaml_data = re.sub(r'^(?=\S)(?![\-])', r'\n', yaml_data, flags=re.MULTILINE)
+
+    return HttpResponse(yaml_data, content_type="application/x-yaml")
+
+def import_storage_type(request):
+    yaml_data = request.POST.get('yaml_data')  # Assuming you send YAML data as a POST parameter
+    parsed_data = yaml.safe_load(yaml_data)
+    
+    for item in parsed_data:
+        name = item.get('name')
+        description = item.get('description')
+        
+        # Update or create new record
+        StorageType.objects.update_or_create(
+            name=name,
+            defaults={'description': description}
+        )
+    
+    return HttpResponse("Data Imported Successfully")

@@ -60,8 +60,14 @@
 
         <div id="data" class="tab-pane fade">
             <h4 class="mt-3">Utilities</h4>
-            <button id="getData" class="btn btn-primary">Get Data</button>
-            <div id="dataContainer"></div>  <!-- This is where we'll display the data -->
+            <button id="exportStorageType" class="btn btn-primary">Export Storage Type</button>
+            <button id="importStorageType" class="btn btn-danger">Import Storage Type</button>
+            <button id="copyToClipboard" class="btn btn-success">Copy to Clipboard</button>
+            <div id="statusAlert" class="alert mt-3" role="alert" style="display:none;">
+            <!-- Status message will go here -->
+            </div>
+            <textarea id="dataContainer" class="mt-3 form-control form-control-sm text-monospace" style="height:500px">
+            </textarea>  <!-- This is where we'll display the data -->
         </div> <!-- Data -->
     </div>
 
@@ -104,42 +110,68 @@ $(document).ready(function() {
         .draw();
     });
 
-
     // Manually click the logs tab
     $('#logs-tab').tab('show');
 
-    // Get Data button click event
-    $('#getData').click(function() {
+
+    $("#copyToClipboard").click(function() {
+        const dataContainer = $("#dataContainer");
+        copyToClipboard(dataContainer.text());
+    });
+
+    async function copyToClipboard(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            console.log('Text successfully copied to clipboard');
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+        }
+    }
+
+    // export configuration and setup data from database
+    $("#exportStorageType").click(function() {
         $.ajax({
-            url: '/game/datadump/',  // Replace with the actual path to your Django view
-            method: 'GET',
+            url: "/game/export_data/",
+            type: "GET",
             success: function(response) {
-                // Handle the returned data (assuming it's JSON)
-                // Convert it to a nicely formatted string
-                const dataString = JSON.stringify(response, null, 4);
-                
-                // Display it in a div or some other HTML element
-                $('#dataContainer').html('<pre>' + dataString + '</pre>');
-                
-                // Copy dataString to clipboard
-                copyToClipboard(dataString);
+                $("#dataContainer").val(response);
+                showSuccess('Data successfully exported.');
             },
             error: function(error) {
-                alert('An error occurred');
+                showError('Failed to export data: ' + error);
             }
         });
     });
 
-    // Function to copy text to clipboard
-    function copyToClipboard(text) {
-        var textArea = document.createElement("textarea");
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        alert('Data copied to clipboard.');
-    }
+    // import StorageType
+    $("#importStorageType").click(function() {
+        $.ajax({
+            url: '/game/import_storage_type/',
+            method: 'POST',
+            data: {
+                'yaml_data': $("#dataContainer").val()
+            },
+            success: function (response) {
+                showSuccess('Data successfully imported.');
+            },
+            error: function(error) {
+                showError('Failed to import data: ' + error);
+            }
+        });
+    });
+
+function showSuccess(message) {
+  $('#statusAlert').removeClass('alert-danger').addClass('alert-success');
+  $('#statusAlert').html(message);
+  $('#statusAlert').show();
+}
+
+function showError(message) {
+  $('#statusAlert').removeClass('alert-success').addClass('alert-danger');
+  $('#statusAlert').html(message);
+  $('#statusAlert').show();
+}
+
 
 
 });

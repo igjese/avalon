@@ -135,43 +135,46 @@ def export_data(request):
     components = list(Component.objects.all().values('name', 'ticks_per_cycle', 'consumes', 'produces', 'info'))
     
     # Get ship data
-    ship_data = []
     systems = ShipSystem.objects.all()
+    systems_data = []
     
     for system in systems:
-        system_data = {'name': system.name, 'subsystems': []}
         subsystems = system.subsystems.all()
+        subsystems_data = []
         
         for subsystem in subsystems:
-            subsystem_data = {'name': subsystem.name, 'components': [], 'storage_units': []}
+            units = InstalledStorageUnit.objects.filter(subsystem=subsystem)
+            units_data = []
+
+            for unit in units:
+                stored_resource = StoredResource.objects.get(storage_unit=unit)
+
+                units_data.append({
+                    'id': unit.id,
+                    'name': unit.storage_unit.name,
+                    'quantity': unit.quantity,
+                    'StoredResource': stored_resource.resource.name
+                })
+
             installed_components = subsystem.components.all()
-            
-            for component in installed_components:
-                component_data = {
-                    'name': component.component.name,
-                    'quantity': component.quantity
-                }
-                subsystem_data['components'].append(component_data)
-            
-            installed_storage_units = InstalledStorageUnit.objects.filter(subsystem=subsystem)
-            
-            for storage_unit in installed_storage_units:
-                storage_unit_data = {
-                    'name': storage_unit.storage_unit.name,
-                    'quantity': storage_unit.quantity
-                }
-                subsystem_data['storage_units'].append(storage_unit_data)
-            
-            system_data['subsystems'].append(subsystem_data)
-        
-        ship_data.append(system_data)
+
+            subsystems_data.append({
+                'name': subsystem.name,
+                'InstalledComponent': list(installed_components.values('component__name', 'quantity')),
+                'InstalledStorageUnit': units_data  
+            })
+
+        systems_data.append({
+            'name': system.name,
+            'SubSystem': subsystems_data
+        })
 
     all_data = {
         'StorageType': storage_types,
         'Resource': resources,
         'StorageUnit': storage_units,
         'Component': components,
-        'Ship': ship_data
+        'Ship': systems_data
     }
 
     yaml_data = yaml.dump(all_data, default_flow_style=False, sort_keys=False)

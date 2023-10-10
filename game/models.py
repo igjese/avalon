@@ -19,7 +19,7 @@ class StorageType(models.Model):
 
 class Resource(models.Model):
     name = models.CharField(max_length=100)
-    storage_type = models.ForeignKey(StorageType, on_delete=models.CASCADE)
+    storage_type = models.ForeignKey(StorageType, related_name='resources', on_delete=models.CASCADE)
     info = models.CharField(max_length=100)
 
     def __str__(self):
@@ -67,7 +67,7 @@ class InstalledComponent(models.Model):
 
 class StorageUnit(models.Model):
     name = models.CharField(max_length=100)
-    storage_type = models.ForeignKey(StorageType, on_delete=models.CASCADE)
+    storage_type = models.ForeignKey(StorageType, related_name='storage_units', on_delete=models.CASCADE)
     capacity = models.IntegerField()
     info = models.CharField(max_length=100)
 
@@ -85,9 +85,8 @@ class Location(models.Model):
 
 class InstalledStorageUnit(models.Model):
     storage_unit = models.ForeignKey('StorageUnit', on_delete=models.CASCADE)
-    resource = models.ForeignKey('Resource', on_delete=models.CASCADE, null=True, blank=True)
-    subsystem = models.ForeignKey('Subsystem', on_delete=models.CASCADE, null=True, blank=True)
-    quantity = models.IntegerField()  # How many units are installed in the subsystem
+    assigned_resource = models.ForeignKey('Resource', related_name='assigned_storage_unit', on_delete=models.CASCADE, null=True, blank=True)
+    subsystem = models.ForeignKey('Subsystem', related_name='installed_storage_units', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.storage_unit.name
@@ -95,7 +94,7 @@ class InstalledStorageUnit(models.Model):
 class StoredResource(models.Model):
     """Defines a resource stored in an installed storage unit."""
     storage_unit = models.ForeignKey('InstalledStorageUnit', related_name='stored_resources', on_delete=models.CASCADE)
-    resource = models.ForeignKey('Resource', on_delete=models.CASCADE)
+    resource = models.ForeignKey('Resource', related_name='stored_resources', on_delete=models.CASCADE)
     currently_stored = models.IntegerField()
 
     def __str__(self):

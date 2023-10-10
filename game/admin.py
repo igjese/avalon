@@ -25,7 +25,7 @@ class InstalledComponentAdmin(admin.ModelAdmin):
     list_display = ('component', 'parent_subsystem', 'quantity', 'state', 'input_buffer', 'output_buffer')
 
 class InstalledStorageUnitAdmin(admin.ModelAdmin):
-    list_display = ('storage_unit', 'subsystem', 'quantity')  # Removed 'resource', 'currently_stored' as they are now in StoredResource
+    list_display = ('storage_unit', 'subsystem', 'assigned_resource') 
 
 # Game Data
 class StoredResourceAdmin(admin.ModelAdmin):

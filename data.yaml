@@ -1,4 +1,87 @@
 
+ShipSystems:
+- name: Crew
+  SubSystems:
+  - name: Personnel
+    InstalledComponents:
+    - component__name: Specialist
+    - component__name: Specialist
+    - component__name: Specialist
+    - component__name: Specialist
+    InstalledStorageUnits: []
+- name: Provisions
+  SubSystems:
+  - name: Astro Farms
+    InstalledComponents:
+    - component__name: AgroGenesis Mk1
+    InstalledStorageUnits: []
+  - name: Food Stores
+    InstalledComponents: []
+    InstalledStorageUnits:
+    - storage_unit__name: Regulated Cargo Hold
+      assigned_resource__name: Food
+- name: Life Support
+  SubSystems:
+  - name: Water Reclamation
+    InstalledComponents:
+    - component__name: Aqua Purifier Mk1
+    InstalledStorageUnits: []
+  - name: Atmosphere Control
+    InstalledComponents:
+    - component__name: OxyGenius Mk1
+    - component__name: AeroMixer Mk1
+    InstalledStorageUnits:
+    - storage_unit__name: Pressurized Fluid Tank
+      assigned_resource__name: Oxygen
+  - name: Cryonics
+    InstalledComponents: []
+    InstalledStorageUnits: []
+- name: Engineering
+  SubSystems:
+  - name: Power Plant
+    InstalledComponents:
+    - component__name: FusionMaster Mk1
+    InstalledStorageUnits:
+    - storage_unit__name: Battery Bank
+      assigned_resource__name: Energy
+  - name: Propulsion
+    InstalledComponents: []
+    InstalledStorageUnits: []
+  - name: Manufacturing
+    InstalledComponents: []
+    InstalledStorageUnits: []
+  - name: Maintenance
+    InstalledComponents: []
+    InstalledStorageUnits: []
+- name: Navigation
+  SubSystems:
+  - name: Sensors
+    InstalledComponents: []
+    InstalledStorageUnits: []
+  - name: Communications
+    InstalledComponents: []
+    InstalledStorageUnits: []
+  - name: Astrogation
+    InstalledComponents: []
+    InstalledStorageUnits: []
+- name: Cargo
+  SubSystems:
+  - name: Cargo Bay
+    InstalledComponents: []
+    InstalledStorageUnits:
+    - storage_unit__name: General Ship Air
+      assigned_resource__name: Air
+    - storage_unit__name: Cargo Hold
+      assigned_resource__name: null
+    - storage_unit__name: Fluid Tank
+      assigned_resource__name: WasteWater
+    - storage_unit__name: Fluid Tank
+      assigned_resource__name: Water
+    - storage_unit__name: Pressurized Fluid Tank
+      assigned_resource__name: Hydrogen
+- name: Medical
+  SubSystems: []
+
 StorageType:
 - name: Air
   info: Ship's air. Capacity represents how "breathable" it is, max is 100%.
@@ -128,89 +211,3 @@ Component:
   produces:
     Air: 10
   info: Mixes pure oxygen into ship's air, to keep it breathable.
-
-ShipSystems:
-- name: Crew
-  SubSystems:
-  - name: Personnel
-    InstalledComponents:
-    - component__name: Specialist
-      quantity: 5
-    InstalledStorageUnits: []
-- name: Provisions
-  SubSystems:
-  - name: Astro Farms
-    InstalledComponents:
-    - component__name: AgroGenesis Mk1
-      quantity: 5
-    InstalledStorageUnits: []
-  - name: Food Stores
-    InstalledComponents: []
-    InstalledStorageUnits:
-    - storage_unit__name: Regulated Cargo Hold
-      assigned_resource__name: Food
-- name: Life Support
-  SubSystems:
-  - name: Water Reclamation
-    InstalledComponents:
-    - component__name: Aqua Purifier Mk1
-      quantity: 1
-    InstalledStorageUnits: []
-  - name: Atmosphere Control
-    InstalledComponents:
-    - component__name: OxyGenius Mk1
-      quantity: 1
-    - component__name: AeroMixer Mk1
-      quantity: 3
-    InstalledStorageUnits:
-    - storage_unit__name: Pressurized Fluid Tank
-      assigned_resource__name: Oxygen
-  - name: Cryonics
-    InstalledComponents: []
-    InstalledStorageUnits: []
-- name: Engineering
-  SubSystems:
-  - name: Power Plant
-    InstalledComponents:
-    - component__name: FusionMaster Mk1
-      quantity: 1
-    InstalledStorageUnits:
-    - storage_unit__name: Battery Bank
-      assigned_resource__name: Energy
-  - name: Propulsion
-    InstalledComponents: []
-    InstalledStorageUnits: []
-  - name: Manufacturing
-    InstalledComponents: []
-    InstalledStorageUnits: []
-  - name: Maintenance
-    InstalledComponents: []
-    InstalledStorageUnits: []
-- name: Navigation
-  SubSystems:
-  - name: Sensors
-    InstalledComponents: []
-    InstalledStorageUnits: []
-  - name: Communications
-    InstalledComponents: []
-    InstalledStorageUnits: []
-  - name: Astrogation
-    InstalledComponents: []
-    InstalledStorageUnits: []
-- name: Cargo
-  SubSystems:
-  - name: Cargo Bay
-    InstalledComponents: []
-    InstalledStorageUnits:
-    - storage_unit__name: General Ship Air
-      assigned_resource__name: Air
-    - storage_unit__name: Cargo Hold
-      assigned_resource__name: null
-    - storage_unit__name: Fluid Tank
-      assigned_resource__name: WasteWater
-    - storage_unit__name: Fluid Tank
-      assigned_resource__name: Water
-    - storage_unit__name: Pressurized Fluid Tank
-      assigned_resource__name: Hydrogen
-- name: Medical
-  SubSystems: []

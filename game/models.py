@@ -56,7 +56,6 @@ COMPONENT_STATES = [
 class InstalledComponent(models.Model):
     component = models.ForeignKey(Component, related_name='instances', on_delete=models.CASCADE)
     parent_subsystem = models.ForeignKey(SubSystem, related_name='components', on_delete=models.CASCADE)
-    quantity = models.IntegerField()
     remaining_ticks_for_cycle = models.IntegerField(default=0)  # Remaining ticks for the current cycle
     state = models.CharField(max_length=30, choices=COMPONENT_STATES, default='INTAKE')
     input_buffer = models.JSONField(default=dict, blank=True, null=True)

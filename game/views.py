@@ -2,14 +2,10 @@ from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.core.serializers import serialize
-from django.core.exceptions import ObjectDoesNotExist
 import json
-import yaml
-import re
 
 from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, StorageType, StorageUnit, InstalledStorageUnit, StoredResource, World
 from . import ctrl  # Import the game_controller module
-from .game_logging  import parse_logs # Import the new game_logging file
 
 # Global variables for resource thresholds
 AIR_THRESHOLDS = {'Green': 99, 'Yellow': 51, 'Red': 0}
@@ -95,13 +91,6 @@ def restart_game(request):
     ctrl.restart_game()
     return HttpResponseRedirect(reverse('main'))
 
-def debug_page(request):
-    return render(request,'game/debug.html')
-
-def get_logs(request):
-    log_data = parse_logs()
-    return JsonResponse({'data': log_data})
-
 def get_alerts(ship_resources):
     alerts = {}
     thresholds = {
@@ -126,109 +115,3 @@ def get_alerts(ship_resources):
         alerts[resource_name] = {'percentage': round(percentage, 2), 'level': level}
 
     return alerts
-
-def export_data(request):
-    # Get config data
-    storage_types = list(StorageType.objects.all().values('name', 'info'))
-    resources = list(Resource.objects.all().values('name','storage_type__name', 'info'))
-    storage_units = list(StorageUnit.objects.all().values('name', 'capacity','storage_type__name', 'info'))
-    components = list(Component.objects.all().values('name', 'ticks_per_cycle', 'consumes', 'produces', 'info'))
-    
-    # Get ship data
-    systems = ShipSystem.objects.all()
-    systems_data = []
-    
-    for system in systems:
-        subsystems = system.subsystems.all()
-        subsystems_data = []
-        
-        for subsystem in subsystems:
-            installed_storage_units = subsystem.installed_storage_units.all()
-            installed_components = subsystem.components.all()
-
-            subsystems_data.append({
-                'name': subsystem.name,
-                'InstalledComponents': list(installed_components.values('component__name', 'quantity')),
-                'InstalledStorageUnits': list(installed_storage_units.values('storage_unit__name', 'assigned_resource__name')),  
-            })
-
-        systems_data.append({
-            'name': system.name,
-            'SubSystems': subsystems_data
-        })
-
-    all_data = {
-        'StorageType': storage_types,
-        'Resource': resources,
-        'StorageUnit': storage_units,
-        'Component': components,
-        'ShipSystems': systems_data
-    }
-
-    yaml_data = yaml.dump(all_data, default_flow_style=False, sort_keys=False)
-    # Add empty lines between tables for better readability
-    yaml_data = re.sub(r'^(?=\S)(?![\-])', r'\n', yaml_data, flags=re.MULTILINE)
-
-    return HttpResponse(yaml_data, content_type="application/x-yaml")
-
-def import_data(request):
-    yaml_data = request.POST.get('yaml_data')  # Assuming you send YAML data as a POST parameter
-    data = yaml.safe_load(yaml_data)
-    
-    for item in data['StorageType']:
-        name = item.get('name')
-        info = item.get('info')
-        
-        # Update or create new record
-        StorageType.objects.update_or_create(
-            name=name,
-            defaults={'info': info}
-        )
-
-    for item in data['Resource']:
-        name = item.get('name')
-        storage_type_name = item.get('storage_type__name')
-        info = item.get('info')
-
-        # Look up the StorageType by name
-        try:
-            storage_type = StorageType.objects.get(name=storage_type_name)
-        except ObjectDoesNotExist:
-            return HttpResponse(f"StorageType {storage_type_name} does not exist.")
-        
-        # Update or create new record
-        Resource.objects.update_or_create(
-            name=name,
-            defaults={'storage_type': storage_type, 'info': info}
-        )
-
-    for item in data['StorageUnit']:
-        name = item.get('name')
-        capacity = item.get('capacity')
-        storage_type_name = item.get('storage_type__name')
-        info = item.get('info')
-
-        # Look up the StorageType by name
-        try:
-            storage_type = StorageType.objects.get(name=storage_type_name)
-        except ObjectDoesNotExist:
-            return HttpResponse(f"StorageType {storage_type_name} does not exist.")
-        
-        # Update or create new record
-        StorageUnit.objects.update_or_create(
-            name=name,
-            defaults={'capacity': capacity, 'storage_type': storage_type, 'info': info}
-        )
-
-    for item in data['Component']:
-        name = item.get('name')
-        ticks_per_cycle = item.get('ticks_per_cycle')
-        info = item.get('info')
-
-        # Update or create new record
-        Component.objects.update_or_create(
-            name=name,
-            defaults={'ticks_per_cycle': ticks_per_cycle, 'info': info}
-        )
-
-    return HttpResponse("Data Imported Successfully")

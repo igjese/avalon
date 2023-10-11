@@ -20,7 +20,7 @@
 <body>
 
 <nav class="navbar navbar-expand-sm navbar-light bg-light py-0 mb-2 justify-content-between">
-    <a class="navbar-brand" href="/game/"><em class="fa fa-jedi"></em> FSS Adequate</a> {{ game_time }}
+    <a class="navbar-brand" href="/game/"><em class="fa fa-jedi"></em> FSS Adequate</a> <span id="shipClock">{{ game_time }}</span>
     <ul class="navbar-nav">
         <li class="nav-item">
             <a class="nav-link" href="/game/debug/">Debug</a>
@@ -157,18 +157,16 @@
                                 <th scope="col">System</th>
                                 <th scope="col">Subsystem</th>
                                 <th scope="col">Component</th>
-                                <th scope="col">Quantity</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for system in systems %}
-                                {% for subsystem in system.subsystems.all %}
-                                    {% for component in subsystem.components.all %}
+                            {% for system in ship_systems %}
+                                {% for subsystem in system.subsystems %}
+                                    {% for component in subsystem.components %}
                                     <tr>
                                         <td>{{ system.name }}</td>
                                         <td>{{ subsystem.name }}</td>
-                                        <td>{{ component.component.name }}</td>
-                                        <td>{{ component.quantity }}</td>
+                                        <td>{{ component.name }}</td>
                                     </tr>
                                     {% endfor %}
                                 {% endfor %}
@@ -309,120 +307,28 @@
 <!-- DataTables JS -->
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 
-<script>
-    // Initialize DataTables
-    $(document).ready(function() {
-        $('#suppliesTable').DataTable({
-            "pageLength": 100,  // Show 100 rows per page
-            "lengthChange": false  // Remove the dropdown menu
-        });
-        $('#systemsTable').DataTable({
-            "pageLength": 100,  // Show 100 rows per page
-            "lengthChange": false  // Remove the dropdown menu
-        });
-        $('#referenceTable').DataTable({  // Assuming you also have a table with this ID for recipes
-            "pageLength": 100,  // Show 100 rows per page
-            "lengthChange": false  // Remove the dropdown menu
-        });
-        $('#storageTypeTable').DataTable({  // Assuming you also have a table with this ID for recipes
-            "pageLength": 100,  // Show 100 rows per page
-            "lengthChange": false  // Remove the dropdown menu
-        });
-    });
-</script>
-
-<script>
-    // Set an interval to advance the game tick and update game state
-    setInterval(function() {
-        $.get("/game/advance_tick", function(data) {
-            updateResourceTable(data['resource_data']);
-            updateAlerts(data['alerts']);
-            drawHighcharts(data['history_data']);
-            // ... any other updates
-        });
-    }, 10000);  // 10,000 milliseconds = 10 seconds 
-
-    // Update resource table
-    function updateResourceTable(resources) {
-        for (const [resourceName, resourceData] of Object.entries(resources)) {
-            $(`#${resourceName}_quantity`).text(resourceData['available']);
-            $(`#${resourceName}_capacity`).text(resourceData['capacity']);
-        }
-    }
-
-    // Update alerts
-    function updateAlerts(alerts) {
-        for (const [resourceName, alertData] of Object.entries(alerts)) {
-            $(`#${resourceName}_alert`).removeClass('bg-success bg-warning bg-danger').addClass(alertData['level']);
-        }
-    }
-</script>
-
+<script src="{% static 'index.js' %}"></script>
 <script>
    $(document).ready(function() {
+        // Initialize DataTables
+        initDataTables()
+
         // Fetch initial data and initialize charts
         $.get("/game/get_data", function(data) {
             drawHighcharts(data['history_data']);
         });
 
+        // Set an interval to advance the game tick and update game state
+        setInterval(function() {
+            $.get("/game/advance_tick", function(data) {
+                updateResourceTable(data['resource_data']);
+                updateAlerts(data['alerts']);
+                drawHighcharts(data['history_data']);
+                $("#shipClock").text(data['game_time']);
+            });
+        }, 10000);  // 10,000 milliseconds = 10 seconds 
+
     });
-
-    function drawHighcharts(historyData) {
-        // Prepare data for Highcharts
-        const ticks = historyData.map(item => item.tick);
-
-        // Check if historyData has data and if it's not empty
-        if (historyData && historyData.length > 0) {
-            // Collect all unique resource names from the first 'quantity_data' object
-            const resourceNames = Object.keys(historyData[0].quantity_data);
-
-            // Function to create series
-            const createSeries = (dataKey, titlePrefix) => {
-                return resourceNames.map(resourceName => {
-                    return {
-                        name: `${resourceName}`,
-                        data: historyData.map(item => item[dataKey] ? item[dataKey][resourceName] : null)
-                    };
-                });
-            };
-
-            // Create series dynamically for quantities, production, and consumption
-            const quantitySeries = createSeries('quantity_data', 'Quantity');
-            const productionSeries = createSeries('production_data', 'Production');
-            const consumptionSeries = createSeries('consumption_data', 'Consumption');
-
-            // Check if charts are already initialized
-            if (typeof Highcharts.charts[0] !== 'undefined') {
-                // Update existing charts
-                Highcharts.charts[0].update({ series: quantitySeries });
-                Highcharts.charts[1].update({ series: productionSeries });
-                Highcharts.charts[2].update({ series: consumptionSeries });
-            } else {
-                // Initialize new charts
-                Highcharts.chart('quantityHistory', {
-                    title: { text: 'Resource Quantities Over Time' },
-                    xAxis: { categories: ticks },
-                    yAxis: { title: { text: 'Quantity' } },
-                    series: quantitySeries
-                });
-
-                Highcharts.chart('productionHistory', {
-                    title: { text: 'Resource Production Over Time' },
-                    xAxis: { categories: ticks },
-                    yAxis: { title: { text: 'Production' } },
-                    series: productionSeries
-                });
-
-                Highcharts.chart('consumptionHistory', {
-                    title: { text: 'Resource Consumption Over Time' },
-                    xAxis: { categories: ticks },
-                    yAxis: { title: { text: 'Consumption' } },
-                    series: consumptionSeries
-                });
-            }
-        }
-    }
-
 </script>
 
 </body>

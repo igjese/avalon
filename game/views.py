@@ -44,10 +44,36 @@ def prepare_context():
         'alerts': get_alerts(),
         'game_time': calculate_gametime(World.objects.get(pk=1).current_tick),
         'resource_data': get_resource_data(),
-        'history_data': list(ResourceHistory.objects.all().values()),
+        'history_data': prepare_history(),
+        'ship_systems': prepare_ship_systems()
     }
 
     return context
+
+def prepare_ship_systems():
+    ship_systems = []
+    for system in ShipSystem.objects.all():
+        system_dict = {'name': system.name, 'subsystems': []}
+        for subsystem in system.subsystems.all():
+            subsystem_dict = {'name': subsystem.name, 'components': []}
+            for installed_component in subsystem.components.all():
+                component_dict = {'name': installed_component.component.name}
+                subsystem_dict['components'].append(component_dict)
+            system_dict['subsystems'].append(subsystem_dict)
+        ship_systems.append(system_dict)
+    print(ship_systems)
+    return ship_systems
+
+
+def prepare_history():
+    history = list(ResourceHistory.objects.all().values())
+    transformed_history = []
+    for entry in history:
+        transformed_entry = entry.copy()
+        transformed_entry['game_time'] = calculate_short_gametime(entry['tick'])
+        del transformed_entry['tick']
+        transformed_history.append(transformed_entry)
+    return transformed_history
 
 def get_resource_data():
     from .ctrl import aggregated
@@ -59,7 +85,7 @@ def get_resource_data():
 
         resource_data[resource.name]['available'] = aggregated.available_amount[resource.name]
         resource_data[resource.name]['capacity'] = aggregated.total_capacity[resource.name]
-
+    print(aggregated.available_amount, aggregated.available_capacity,resource_data)
     return resource_data
 
 def get_alerts():

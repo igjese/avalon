@@ -134,15 +134,15 @@ def restart_game():
     ResourceHistory.objects.all().delete()
 
     # Reset resource quantities to half of their storage capacities
-    StoredResource.objects.filter(resource__name='Energy').update(currently_stored=50)
-    StoredResource.objects.filter(resource__name='Air').update(currently_stored=100)
-    StoredResource.objects.filter(resource__name='Food').update(currently_stored=50)
-    StoredResource.objects.filter(resource__name='FuelCells').update(currently_stored=500)
-    StoredResource.objects.filter(resource__name='Hydrogen').update(currently_stored=50)
-    StoredResource.objects.filter(resource__name='Nutrients').update(currently_stored=500)
-    StoredResource.objects.filter(resource__name='Oxygen').update(currently_stored=50)
-    StoredResource.objects.filter(resource__name='WasteWater').update(currently_stored=250)
-    StoredResource.objects.filter(resource__name='Water').update(currently_stored=250)
+    store_resources("Energy",50)
+    store_resources("Air",100)
+    store_resources("Food",50)
+    store_resources("FuelCells",500)
+    store_resources("Hydrogen",50)
+    store_resources("Nutrients",150)
+    store_resources("Oxygen",50)
+    store_resources("WasteWater",250)
+    store_resources("Water",200)
 
     # Reset states for installed components
     InstalledComponent.objects.all().update(state='INTAKE', input_buffer={}, output_buffer={})

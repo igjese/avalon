@@ -4,34 +4,42 @@ ShipSystems:
   SubSystems:
   - name: Personnel
     InstalledComponents:
-    - component__name: Specialist
-    - component__name: Specialist
-    - component__name: Specialist
-    - component__name: Specialist
+    - id: 7
+      component__name: Specialist
+    - id: 8
+      component__name: Specialist
+    - id: 18
+      component__name: Specialist
     InstalledStorageUnits: []
 - name: Provisions
   SubSystems:
   - name: Astro Farms
     InstalledComponents:
-    - component__name: AgroGenesis Mk1
+    - id: 2
+      component__name: AgroGenesis Mk1
     InstalledStorageUnits: []
   - name: Food Stores
     InstalledComponents: []
     InstalledStorageUnits:
-    - storage_unit__name: Regulated Cargo Hold
+    - id: 9
+      storage_unit__name: Regulated Cargo Hold
       assigned_resource__name: Food
 - name: Life Support
   SubSystems:
   - name: Water Reclamation
     InstalledComponents:
-    - component__name: Aqua Purifier Mk1
+    - id: 3
+      component__name: Aqua Purifier Mk1
     InstalledStorageUnits: []
   - name: Atmosphere Control
     InstalledComponents:
-    - component__name: OxyGenius Mk1
-    - component__name: AeroMixer Mk1
+    - id: 4
+      component__name: OxyGenius Mk1
+    - id: 6
+      component__name: AeroMixer Mk1
     InstalledStorageUnits:
-    - storage_unit__name: Pressurized Fluid Tank
+    - id: 5
+      storage_unit__name: Pressurized Fluid Tank
       assigned_resource__name: Oxygen
   - name: Cryonics
     InstalledComponents: []
@@ -40,9 +48,11 @@ ShipSystems:
   SubSystems:
   - name: Power Plant
     InstalledComponents:
-    - component__name: FusionMaster Mk1
+    - id: 5
+      component__name: FusionMaster Mk1
     InstalledStorageUnits:
-    - storage_unit__name: Battery Bank
+    - id: 7
+      storage_unit__name: Battery Bank
       assigned_resource__name: Energy
   - name: Propulsion
     InstalledComponents: []
@@ -69,15 +79,20 @@ ShipSystems:
   - name: Cargo Bay
     InstalledComponents: []
     InstalledStorageUnits:
-    - storage_unit__name: General Ship Air
+    - id: 1
+      storage_unit__name: General Ship Air
       assigned_resource__name: Air
-    - storage_unit__name: Cargo Hold
+    - id: 2
+      storage_unit__name: Cargo Hold
       assigned_resource__name: null
-    - storage_unit__name: Fluid Tank
+    - id: 3
+      storage_unit__name: Fluid Tank
       assigned_resource__name: WasteWater
-    - storage_unit__name: Fluid Tank
+    - id: 4
+      storage_unit__name: Fluid Tank
       assigned_resource__name: Water
-    - storage_unit__name: Pressurized Fluid Tank
+    - id: 6
+      storage_unit__name: Pressurized Fluid Tank
       assigned_resource__name: Hydrogen
 - name: Medical
   SubSystems: []
@@ -159,7 +174,7 @@ StorageUnit:
 
 Component:
 - name: Specialist
-  ticks_per_cycle: 1
+  ticks_per_cycle: 12
   consumes:
     Energy: 1
     Food: 1
@@ -167,7 +182,7 @@ Component:
   produces: {}
   info: Member of your crew. Chief, Doc, Pilot, Purser.
 - name: AgroGenesis Mk1
-  ticks_per_cycle: 1
+  ticks_per_cycle: 72
   consumes:
     Water: 1
     Nutrients: 1
@@ -176,7 +191,7 @@ Component:
     Food: 1
   info: Closed-loop hydroponics, grows food from water and nutrients.
 - name: Aqua Purifier Mk1
-  ticks_per_cycle: 1
+  ticks_per_cycle: 12
   consumes:
     WasteWater: 100
     Energy: 10
@@ -184,7 +199,7 @@ Component:
     Water: 99
   info: Filters and distilles waste water back into clean, usable water.
 - name: OxyGenius Mk1
-  ticks_per_cycle: 1
+  ticks_per_cycle: 3
   consumes:
     Water: 1
     Energy: 2
@@ -193,7 +208,7 @@ Component:
     Hydrogen: 6
   info: Employs electrolysis to split water molecules into oxygen and hydrogen.
 - name: FusionMaster Mk1
-  ticks_per_cycle: 1
+  ticks_per_cycle: 10
   consumes:
     FuelCells: 1
     Water: 50
@@ -203,7 +218,7 @@ Component:
   info: Utilizes fusion fuel cells and a water-cooling system to provide constant
     flow of energy.
 - name: AeroMixer Mk1
-  ticks_per_cycle: 1
+  ticks_per_cycle: 6
   consumes:
     Oxygen: 1
     Air: 9

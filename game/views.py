@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.core.serializers import serialize
 import json
 
-from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, StorageType, StorageUnit, InstalledStorageUnit, StoredResource, World
+from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, StorageType, StorageUnit, InstalledStorageUnit, StoredResource, World, ResourceHistory
 from . import ctrl  # Import the game_controller module
 
 # Global variables for resource thresholds
@@ -23,10 +23,8 @@ def index(request):
     storage_units = StorageUnit.objects.all()
     installed_storage_units = InstalledStorageUnit.objects.all()
     stored_resources = StoredResource.objects.all()
-    game_state = ctrl.get_game_state()
+    game_state = ctrl_get_game_state()
     current_tick = World.objects.get(pk=1).current_tick
-
-    print(game_state)
 
     return render(request, 'game/index.html', {
         'resources': resources,
@@ -45,7 +43,7 @@ def index(request):
 
 def advance_game_tick_and_get_game_state(request):
     ctrl.advance_game_tick()  # Advance the game by one tick
-    game_state = ctrl.get_game_state()  # Get the current game state
+    game_state = ctrl_get_game_state()  # Get the current game state
 
     # Prepare the alerts data
     game_state['alerts'] = get_alerts(game_state['resources'])
@@ -116,3 +114,25 @@ def calculate_short_gametime(tick_count):
     short_time += f"{hours}:{str(minutes).zfill(2)}"
 
     return short_time
+
+def ctrl_get_game_state():
+    from .ctrl import aggregated
+    # Collect current resources data
+    resources_data = {}
+    for resource in Resource.objects.all():
+        if resource.name not in resources_data:
+            resources_data[resource.name] = {}
+        resources_data[resource.name]['available'] = aggregated.available_amount[resource.name]
+        resources_data[resource.name]['capacity'] = aggregated.total_capacity[resource.name]
+
+    # Fetch the resource history data
+    history_data = list(ResourceHistory.objects.values('tick', 'quantity_data', 'production_data', 'consumption_data'))
+
+    # Add any additional game state information you may have
+    game_state = {
+        'resources': resources_data,
+        'history': history_data,
+        'current_tick': World.objects.get(pk=1).current_tick
+    }
+
+    return game_state

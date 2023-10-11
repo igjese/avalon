@@ -126,27 +126,6 @@ def process_installed_component(installed_component):
     msg_component = f"{component.name} ({ic.parent_subsystem} / {ic.parent_subsystem.parent_system}) - {ic.state}"
     log(msg_component, msg_start, msg_finish)
 
-def get_game_state():
-    # Collect current resources data
-    resources_data = {}
-    for resource in Resource.objects.all():
-        if resource.name not in resources_data:
-            resources_data[resource.name] = {}
-        resources_data[resource.name]['available'] = aggregated.available_amount[resource.name]
-        resources_data[resource.name]['capacity'] = aggregated.total_capacity[resource.name]
-
-    # Fetch the resource history data
-    history_data = list(ResourceHistory.objects.values('tick', 'quantity_data', 'production_data', 'consumption_data'))
-
-    # Add any additional game state information you may have
-    game_state = {
-        'resources': resources_data,
-        'history': history_data,
-        'current_tick': World.objects.get(pk=1).current_tick
-    }
-
-    return game_state
-
 def restart_game():
     # Reset World
     world = World.objects.get(pk=1)
@@ -200,13 +179,10 @@ class AggregatedData:
             self.total_capacity[resource.name] = 0
             self.available_capacity[resource.name] = 0
 
-        # Recalculate available amount and capacity
-        self.recalculate_amount_and_capacity()
+        # Recalculate available amount, available and total capacity
+        self.update()
 
     def update(self):
-        self.recalculate_amount_and_capacity()
-
-    def recalculate_amount_and_capacity(self):
         # Iterate through all InstalledStorageUnits
         for installed_unit in InstalledStorageUnit.objects.all():
             # Fetch the corresponding StoredResources

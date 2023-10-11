@@ -404,8 +404,17 @@
 <script>
     // drawing charts
     document.addEventListener("DOMContentLoaded", function() {
+
+        $.get("/game/advance_tick", function(data) {
+            drawHighcharts(data['history_data']);
+        });
+    });
+
+    function drawHighcharts(historyData){
         // Assuming 'history' is passed from Django as a JSON object
-        const historyData = JSON.parse('{{ history_data | safe }}');
+        //const historyData = JSON.parse('{{ history_data | safe }}');
+
+        console.log(historyData);
 
         // Prepare data for Highcharts
         const ticks = historyData.map(item => item.tick);
@@ -454,7 +463,7 @@
                 series: consumptionSeries
             });
         }
-    });
+    };
 </script>
 
 </body>

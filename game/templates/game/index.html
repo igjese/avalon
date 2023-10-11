@@ -196,7 +196,6 @@
                 <!-- Sub Tab Contents -->
                 <div class="tab-content" id="suppliesSubTabContents">
                     <div class="tab-pane fade show active" id="currentStorageLevels" role="tabpanel" aria-labelledby="currentStorageLevels-tab">
-                        supplies table
                         <table id="suppliesTable" class="table table-striped">
                             <thead>
                                 <tr>
@@ -206,7 +205,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for resource_name, resource_data in ship_resources.items %}
+                                {% for resource_name, resource_data in resource_data.items %}
                                     <tr>
                                         <td id="{{ resource_name }}_name">{{ resource_name }}</td>
                                         <td id="{{ resource_name }}_quantity">{{ resource_data.available }}</td>
@@ -283,14 +282,14 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Description</th>
+                                <th>Info</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for storage_type in storage_types %}
                             <tr>
                                 <td>{{ storage_type.name }}</td>
-                                <td>{{ storage_type.description }}</td>
+                                <td>{{ storage_type.info }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -335,43 +334,31 @@
 <script>
     // Set an interval to advance the game tick and update game state
     setInterval(function() {
-        $.ajax({
-            url: '/game/advance_game_tick_and_get_game_state/',  // Replace with the actual URL if different
-            type: 'GET',
-            success: function(response) {
-                updateGameState(response);
-            },
-            error: function() {
-                console.log('Error occurred');
-            }
+        $.get("/game/advance_tick", function(data) {
+            updateResourceTable(data['resource_data']);
+            updateAlerts(data['alerts']);
+            updateHighcharts(data['history_data']);
+            // ... any other updates
         });
     }, 10000);  // 10,000 milliseconds = 10 seconds 
 
-    // Function to update the game state
-    function updateGameState(gameState) {
-        // Update just the resources table cells directly
-        var resources = gameState.resources;
-        $.each(resources, function(name, data) {
-            $("#" + name + "_quantity").text(data.available);
-            // Check storage type and append '(shared)' if it is 'General Cargo'
-            var capacityText = data.capacity;
-            if (data.storage_type === 'General Cargo') {
-                capacityText += ' (shared)';
-            }
+    // Update resource table
+    function updateResourceTable(resources) {
+        for (const [resourceName, resourceData] of Object.entries(resources)) {
+            $(`#${resourceName}_quantity`).text(resourceData['available']);
+            $(`#${resourceName}_capacity`).text(resourceData['capacity']);
+        }
+    }
 
-            $("#" + name + "_capacity").text(capacityText);
-        });
+    // Update alerts
+    function updateAlerts(alerts) {
+        for (const [resourceName, alertData] of Object.entries(alerts)) {
+            $(`#${resourceName}_alert`).removeClass('bg-success bg-warning bg-danger').addClass(alertData['level']);
+        }
+    }
 
-        // update alerts directly
-        var alerts = gameState.alerts;  // Replace with the actual path to the alerts in your game state object
-        $.each(alerts, function(name, data) {
-            $("#alert" + name).text(data.percentage + '%');
-            $("#alert" + name).attr('class', data.level.toLowerCase() + ' text-white');
-        });
-
-        // Assuming 'gameState' contains 'history' as a JSON object
-        const historyData = gameState.history;
-
+    // Update Highcharts
+    function updateHighcharts(historyData) {
         // Prepare data for Highcharts
         const gameTimes = historyData.map(item => item.game_time);  // Use game_time instead of tick
 
@@ -418,7 +405,7 @@
     // drawing charts
     document.addEventListener("DOMContentLoaded", function() {
         // Assuming 'history' is passed from Django as a JSON object
-        const historyData = JSON.parse('{{ history | safe }}');
+        const historyData = JSON.parse('{{ history_data | safe }}');
 
         // Prepare data for Highcharts
         const ticks = historyData.map(item => item.tick);

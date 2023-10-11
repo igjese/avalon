@@ -5,8 +5,6 @@ from .game_logging import log, init_logs, clear_logs  # Import the new game_logg
 
 ship_name = "FSS Adequate"
 
-aggregated = None
-
 # Initialize logging
 init_logs()
 
@@ -225,3 +223,6 @@ def updateResourceHistory():
         production_data=aggregated.produced_in_tick, 
         consumption_data=aggregated.consumed_in_tick
     )
+
+aggregated = AggregatedData()
+aggregated.reset()

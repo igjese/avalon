@@ -1,8 +1,6 @@
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
-from django.core.serializers import serialize
-import json
 
 from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, StorageType, StorageUnit, InstalledStorageUnit, StoredResource, World, ResourceHistory
 from . import ctrl  # Import the game_controller module
@@ -16,9 +14,9 @@ ENERGY_THRESHOLDS = {'Green': 81, 'Yellow': 51, 'Red': 0}
 # Create your views here.
 def index(request):
     context = prepare_context()
-    return render(request, 'index.html', context)
+    return render(request, 'game/index.html', context)
 
-def advance_game_tick_and_get_game_state(request):
+def advance_tick(request):
     ctrl.advance_game_tick()
     context = prepare_context()
     return JsonResponse(context)
@@ -30,19 +28,19 @@ def restart_game(request):
 def prepare_context():
     # Prepare context
     context = {
-        'resources': Resource.objects.all(),
-        'systems': ShipSystem.objects.all(),
-        'subsystems': SubSystem.objects.all(),
-        'components': Component.objects.all(),
-        'storage_types': StorageType.objects.all(),
-        'storage_units': StorageUnit.objects.all(),
-        'installed_storage_units': InstalledStorageUnit.objects.all(),
-        'installed_components': InstalledComponent.objects.all(),
-        'stored_resources': StoredResource.objects.all(),
+        'resources': list(Resource.objects.all().values()),
+        'systems': list(ShipSystem.objects.all().values()),
+        'subsystems': list(SubSystem.objects.all().values()),
+        'components': list(Component.objects.all().values()),
+        'storage_types': list(StorageType.objects.all().values()),
+        'storage_units': list(StorageUnit.objects.all().values()),
+        'installed_storage_units': list(InstalledStorageUnit.objects.all().values()),
+        'installed_components': list(InstalledComponent.objects.all().values()),
+        'stored_resources': list(StoredResource.objects.all().values()),
         'alerts': get_alerts(),
         'game_time': calculate_gametime(World.objects.get(pk=1).current_tick),
         'resource_data': get_resource_data(),
-        'history_data': list(ResourceHistory.objects.values('tick', 'quantity_data', 'production_data', 'consumption_data')),
+        'history_data': list(ResourceHistory.objects.all().values()),
     }
 
     return context

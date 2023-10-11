@@ -210,6 +210,7 @@ Emergency Power Core (EPC):
 | OxyGenius    | Atmosphere Control Unit  | Air                | Water, Energy            | WasteWater |
 | AeroMixer    | Air Circulation Unit     | Air                | Oxygen, Air              | -          |
 | FusionMaster | Power Plant              | Energy             | Fuel Cells, Water        | WasteWater |
+| Specialist   | Personnel                | -                  | Water, Food, Air         | -          |
 
 
 ### Customizable Blueprints

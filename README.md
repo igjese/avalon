@@ -347,7 +347,7 @@ ER Diagram:
 
 ### Ship
 
-Ship consists of ShipSystems, which consist of Components:
+Ship consists of ShipSystems, which contain installed Components and StorageUnits:
 - **ShipSystem**: An umbrella term for a logical container for group of sub-systems, organized by ship's high-level functions. E.g., Navigation, Engineering, etc.
 - **SubSystem**: Collection of components that together provide single function within a ship's sytem. E.g. Atmosphere control subsystem within Life Support system.
 - **Component**: A specific piece of hardware within a ShipSystem that does the actual work. Consumes resources and produces resources or other Components. Assembled from Parts and other Components.

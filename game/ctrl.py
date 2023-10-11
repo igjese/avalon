@@ -97,16 +97,18 @@ def process_installed_component(installed_component):
         output_buffer_cleared = True  # Initialize a flag to check if the output buffer is cleared
 
         for resource_name, amount in installed_component.output_buffer.items():
-            available_capacity = ship['resources'][resource_name]['capacity'] - ship['resources'][resource_name]['available']
+            available_capacity = aggregated.total_capacity[resource_name] - aggregated.available_amount[resource_name]
             actual_output = min(amount, available_capacity)
-            ship['resources'][resource_name]['available'] += actual_output
-            aggregated_production[resource_name] += amount  # Update based on actual production
 
             # Update StoredResource and logs
-            update_stored_resource(resource_name, actual_output)
+            store_resources(resource_name, actual_output)
 
             # Update the output buffer
             installed_component.output_buffer[resource_name] -= actual_output
+
+            # Update aggregated data
+            aggregated.produced_in_tick[resource_name] += actual_output
+            aggregated.update()
 
             # Check if the output buffer is cleared
             if installed_component.output_buffer[resource_name] > 0:
@@ -117,22 +119,25 @@ def process_installed_component(installed_component):
             installed_component.state = 'INTAKE'
             installed_component.output_buffer.clear()
         installed_component.save()
-        
+            
     # Update logs
     msg_finish = f"FINISH:%s - %s, IN: %s, OUT: %s" % (ic.component.name, ic.state, ic.input_buffer, ic.output_buffer)
     msg_component = f"{component.name} ({ic.parent_subsystem} / {ic.parent_subsystem.parent_system}) - {ic.state}"
     log(msg_component, msg_start, msg_finish)
 
 def get_game_state():
-    # Your logic to collect and return the current state of the game
-    calculate_ship_resources()
+    # Collect current resources data
+    resources_data = {}
+    for resource in Resource.objects.all():
+        resources_data[resource.name]['available'] = aggregated.available_amount[resource.name]
+        resources_data[resource.name]['capacity'] = aggregated.available_capacity[resource.name]
 
     # Fetch the resource history data
     history_data = list(ResourceHistory.objects.values('tick', 'quantity_data', 'production_data', 'consumption_data'))
 
     # Add any additional game state information you may have
     game_state = {
-        'resources': ship['resources'],
+        'resources': resources_data,
         'history': history_data,
         'current_tick': World.objects.get(pk=1).current_tick
     }
@@ -172,33 +177,6 @@ def restart_game():
     # Reset AggregatedData and ResourceHistory
     aggregated.reset()
     updateResourceHistory()
-
-def calculate_ship_resources():
-    # Reset to zero for each tick
-    for resource_key in ship['resources']:
-        ship['resources'][resource_key]['available'] = 0
-        ship['resources'][resource_key]['capacity'] = 0
-
-    # Get all installed storage units for the ship
-    installed_storage_units = InstalledStorageUnit.objects.all()
-
-    # Aggregate available and capacity for each resource from InstalledStorageUnit
-    for unit in installed_storage_units:
-        # Access StoredResource objects related to this InstalledStorageUnit
-        stored_resources = StoredResource.objects.filter(storage_unit=unit)
-
-        for stored_resource in stored_resources:
-            resource_name = stored_resource.resource.name
-            storage_type = unit.storage_unit.storage_type  # Assuming you can access the storage type like this
-
-            if resource_name not in ship['resources']:
-                ship['resources'][resource_name] = {'available': 0, 'capacity': 0, 'storage_type': storage_type}
-
-            ship['resources'][resource_name]['available'] += stored_resource.currently_stored
-
-            # Aggregate capacity for each installed storage unit
-            ship['resources'][resource_name]['capacity'] += unit.storage_unit.capacity * unit.quantity
-            ship['resources'][resource_name]['storage_type'] = storage_type.name  # Added this line to update the storage type
 
 class AggregatedData:
     def __init__(self):

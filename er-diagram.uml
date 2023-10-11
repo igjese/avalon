@@ -1,0 +1,91 @@
+@startuml
+!define RECTANGLE class
+
+top to bottom direction
+
+RECTANGLE World {
+  +current_tick: Integer
+}
+
+RECTANGLE ShipSystem {
+  +name: String
+}
+
+RECTANGLE SubSystem {
+  +name: String
+  +parent_system: ShipSystem
+}
+
+RECTANGLE ResourceHistory {
+  +tick: Integer
+  +quantity_data: JSON
+  +production_data: JSON
+  +consumption_data: JSON
+}
+
+
+RECTANGLE Component {
+  +name: String
+  +consumes: JSON
+  +produces: JSON
+  +info: String
+  +ticks_per_cycle: Integer
+}
+
+RECTANGLE InstalledComponent {
+  +remaining_ticks_for_cycle: Integer
+  +state: String
+  +input_buffer: JSON
+  +output_buffer: JSON
+  +component: Component
+  +parent_subsystem: SubSystem
+}
+
+RECTANGLE StorageUnit {
+  +name: String
+  +capacity: Integer
+  +info: String
+  +storage_type: StorageType
+}
+
+RECTANGLE Location {
+  +name: String
+  +location_type: String
+  +parent: Location
+}
+
+RECTANGLE InstalledStorageUnit {
+  +storage_unit: StorageUnit
+  +assigned_resource: Resource
+  +subsystem: SubSystem
+}
+
+RECTANGLE StoredResource {
+  +currently_stored: Integer
+  +storage_unit: InstalledStorageUnit
+  +resource: Resource
+}
+
+RECTANGLE StorageType {
+  +name: String
+  +info: String
+}
+
+RECTANGLE Resource {
+  +name: String
+  +info: String
+  +storage_type: StorageType
+}
+
+World --|> ResourceHistory
+StorageType --|> Resource
+Resource --|> StoredResource
+StoredResource --|> InstalledStorageUnit
+InstalledStorageUnit --|> StorageUnit
+StorageUnit --|> StorageType
+SubSystem --|> InstalledStorageUnit
+SubSystem --|> InstalledComponent
+InstalledComponent --|> Component
+SubSystem --|> ShipSystem
+Location --|> Location
+@enduml

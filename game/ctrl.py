@@ -1,5 +1,6 @@
-from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, InstalledStorageUnit, StoredResource, ResourceHistory, World
+from django.db.models import F
 import random
+from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, InstalledStorageUnit, StoredResource, ResourceHistory, World
 from .game_logging import log, init_logs, clear_logs  # Import the new game_logging 
 
 ship_name = "FSS Adequate"
@@ -223,7 +224,7 @@ def store_resources(resource_name, amount):
     eligible_stored_resources = StoredResource.objects.filter(
         resource__name=resource_name
     ).annotate(
-        remaining_capacity=F('storage_unit__capacity') - F('currently_stored')
+        remaining_capacity=F('storage_unit__storage_unit__capacity') - F('currently_stored')
     ).order_by('-remaining_capacity')
 
     remaining_to_store = amount

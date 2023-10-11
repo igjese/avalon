@@ -81,7 +81,7 @@ def get_alerts(ship_resources):
     for resource_name, threshold in thresholds.items():
         available = ship_resources[resource_name]['available']
         capacity = ship_resources[resource_name]['capacity']
-        percentage = (available / capacity) * 100
+        percentage = 0 if capacity==0 else (available / capacity) * 100
 
         if percentage >= threshold['Green']:
             level = 'bg-success'

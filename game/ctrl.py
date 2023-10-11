@@ -133,7 +133,7 @@ def get_game_state():
         if resource.name not in resources_data:
             resources_data[resource.name] = {}
         resources_data[resource.name]['available'] = aggregated.available_amount[resource.name]
-        resources_data[resource.name]['capacity'] = aggregated.available_capacity[resource.name]
+        resources_data[resource.name]['capacity'] = aggregated.total_capacity[resource.name]
 
     # Fetch the resource history data
     history_data = list(ResourceHistory.objects.values('tick', 'quantity_data', 'production_data', 'consumption_data'))

@@ -61,7 +61,6 @@ def prepare_ship_systems():
                 subsystem_dict['components'].append(component_dict)
             system_dict['subsystems'].append(subsystem_dict)
         ship_systems.append(system_dict)
-    print(ship_systems)
     return ship_systems
 
 
@@ -85,7 +84,6 @@ def get_resource_data():
 
         resource_data[resource.name]['available'] = aggregated.available_amount[resource.name]
         resource_data[resource.name]['capacity'] = aggregated.total_capacity[resource.name]
-    print(aggregated.available_amount, aggregated.available_capacity,resource_data)
     return resource_data
 
 def get_alerts():

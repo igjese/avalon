@@ -134,6 +134,7 @@ def restart_game():
     ResourceHistory.objects.all().delete()
 
     # Reset resource quantities to half of their storage capacities
+    StoredResource.objects.all().update(currently_stored=0)
     store_resources("Energy",50)
     store_resources("Air",100)
     store_resources("Food",50)
@@ -181,6 +182,11 @@ class AggregatedData:
         self.update()
 
     def update(self):
+        # Reset available amount and total capacity to 0 for all resources
+        for resource_name in self.available_amount.keys():
+            self.available_amount[resource_name] = 0
+            self.total_capacity[resource_name] = 0
+
         # Iterate through all InstalledStorageUnits
         for installed_unit in InstalledStorageUnit.objects.all():
             # Fetch the corresponding StoredResources

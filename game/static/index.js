@@ -71,6 +71,14 @@ function initDataTables() {
                  title: { text: 'Resource Quantities Over Time' },
                  xAxis: { categories: gameTimes },
                  yAxis: { title: { text: 'Quantity' } },
+                 plotOptions: {
+                    series: {
+                        marker: {
+                            enabled: false
+                        },
+                        lineWidth: 2 // Adjust the line thickness here
+                     }
+                },            
                  series: quantitySeries
              });
 
@@ -78,6 +86,14 @@ function initDataTables() {
                  title: { text: 'Resource Production Over Time' },
                  xAxis: { categories: gameTimes },
                  yAxis: { title: { text: 'Production' } },
+                 plotOptions: {
+                    series: {
+                        marker: {
+                            enabled: false
+                        },
+                        lineWidth: 2 // Adjust the line thickness here
+                    }
+                },            
                  series: productionSeries
              });
 
@@ -85,6 +101,14 @@ function initDataTables() {
                  title: { text: 'Resource Consumption Over Time' },
                  xAxis: { categories: gameTimes },
                  yAxis: { title: { text: 'Consumption' } },
+                 plotOptions: {
+                    series: {
+                        marker: {
+                            enabled: false
+                        },
+                        lineWidth: 2 // Adjust the line thickness here
+                    }
+                },            
                  series: consumptionSeries
              });
          }

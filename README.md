@@ -229,7 +229,7 @@ Approach:
 Notes:
 - Components may require multiple ticks to complete a production cycle.
 - If not enough resources are available, the component uses built-in buffer to store what it can but doesn't start the cycle.
-- If a component can't output its production due to lack of storage, it waits for the next cycle.
+- If a component can't output its production due to lack of storage, it waits for the next cycle - i.e. it doesn't proceed until the output buffer is clear.
 - Machines will have statuses like "Idle," "Running," "Waiting for Resources," "Waiting for Storage", etc.
 - Energy will not be buffered; it is consumed as generated.
 - Fluids will be buffered similarly to itemized resources.

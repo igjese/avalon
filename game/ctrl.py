@@ -65,13 +65,10 @@ def process_ship_systems():
 def process_subsystem(sub_system):
     installed_components = InstalledComponent.objects.filter(parent_subsystem=sub_system)
     for installed_component in installed_components:
-        for _ in range(installed_component.quantity):
-            process_installed_component(installed_component)
+        process_installed_component(installed_component)  # Directly process each installed component
 
 def process_installed_component(installed_component):
     component = installed_component.component
-    consumes = component.consumes
-    produces = component.produces
 
     # Capture start state for the logs
     ic = installed_component
@@ -80,20 +77,27 @@ def process_installed_component(installed_component):
     # Step 1: INTAKE: Take-in required resources
     if installed_component.state == 'INTAKE':
         # Substep 1.1: Consume input resources
-        for resource_name, amount in consumes.items():
+        all_resources_available = True  # Initialize a flag to check if all resources are available
+        for resource_name, amount in component.consumes.items():
             available = ship['resources'][resource_name]['available']
             actual_consumption = min(amount, available)
             installed_component.input_buffer[resource_name] = actual_consumption
             ship['resources'][resource_name]['available'] -= actual_consumption
+            aggregated_consumption[resource_name] += amount  # Update based on actual consumption
 
             # Update StoredResource and logs
             update_stored_resource(resource_name, -actual_consumption)
 
-        # Transition to 'WORKING' state and empty the input buffer
-        installed_component.state = 'WORKING'
-        installed_component.remaining_ticks_for_cycle = component.ticks_per_cycle
-        installed_component.input_buffer.clear()
-        installed_component.save()
+            # Check if all required resources are available
+            if actual_consumption < amount:
+                all_resources_available = False
+
+        # Transition to 'WORKING' state only if all resources are available
+        if all_resources_available:
+            installed_component.state = 'WORKING'
+            installed_component.remaining_ticks_for_cycle = component.ticks_per_cycle
+            installed_component.input_buffer.clear()
+            installed_component.save()
         
     # Step 2: WORKING: Work for some ticks
     elif installed_component.state == 'WORKING':
@@ -109,10 +113,13 @@ def process_installed_component(installed_component):
     # Step 3: OUTPUT: Produce resources and send them to storage
     elif installed_component.state == 'OUTPUT':
         # Substep 3.1: Output produced resources
+        output_buffer_cleared = True  # Initialize a flag to check if the output buffer is cleared
+
         for resource_name, amount in installed_component.output_buffer.items():
             available_capacity = ship['resources'][resource_name]['capacity'] - ship['resources'][resource_name]['available']
             actual_output = min(amount, available_capacity)
             ship['resources'][resource_name]['available'] += actual_output
+            aggregated_production[resource_name] += amount  # Update based on actual production
 
             # Update StoredResource and logs
             update_stored_resource(resource_name, actual_output)
@@ -120,12 +127,16 @@ def process_installed_component(installed_component):
             # Update the output buffer
             installed_component.output_buffer[resource_name] -= actual_output
 
-        # Transition to 'INTAKE' state and empty the output buffer
-        if all(v == 0 for v in installed_component.output_buffer.values()):
+            # Check if the output buffer is cleared
+            if installed_component.output_buffer[resource_name] > 0:
+                output_buffer_cleared = False
+
+        # Transition to 'INTAKE' state only if the output buffer is cleared
+        if output_buffer_cleared:
             installed_component.state = 'INTAKE'
             installed_component.output_buffer.clear()
         installed_component.save()
-    
+        
     # Update logs
     msg_finish = f"FINISH:%s - %s, IN: %s, OUT: %s" % (ic.component.name, ic.state, ic.input_buffer, ic.output_buffer)
     msg_component = f"{component.name} ({ic.parent_subsystem} / {ic.parent_subsystem.parent_system}) - {ic.state}"

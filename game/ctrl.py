@@ -3,15 +3,15 @@ import logging
 import json
 from .game_logging import log, init_logs, clear_logs  # Import the new game_logging 
 
-ship = {
-    'name': "FSS Adequate",
-    'resources': {}
-}
+ship_name = "FSS Adequate"
 
-# aggregated production and consumption data for single tick
-aggregated_production = {}
-aggregated_consumption = {}
-
+class Aggregated:
+    def __init__(self):
+        self.production = {}
+        self.consumption = {}
+        self.available_amount = {}
+        self.total_capacity = {}
+        self.available_capacity = {}
 
 # Initialize logging
 init_logs()

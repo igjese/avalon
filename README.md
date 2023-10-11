@@ -341,6 +341,9 @@ Not implemented yet:
 - **Bots**: Handle internal transport of resources.
 - **Shuttles**: Handle resource transport outside the ship.
 
+ER Diagram:
+![ER Diagram](er-diagram.png)
+
 
 ### Ship
 

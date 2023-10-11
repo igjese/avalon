@@ -337,7 +337,7 @@
         $.get("/game/advance_tick", function(data) {
             updateResourceTable(data['resource_data']);
             updateAlerts(data['alerts']);
-            updateHighcharts(data['history_data']);
+            drawHighcharts(data['history_data']);
             // ... any other updates
         });
     }, 10000);  // 10,000 milliseconds = 10 seconds 
@@ -356,66 +356,18 @@
             $(`#${resourceName}_alert`).removeClass('bg-success bg-warning bg-danger').addClass(alertData['level']);
         }
     }
-
-    // Update Highcharts
-    function updateHighcharts(historyData) {
-        // Prepare data for Highcharts
-        const gameTimes = historyData.map(item => item.game_time);  // Use game_time instead of tick
-
-        // Collect all unique resource names from the first 'quantity_data' object
-        const resourceNames = Object.keys(historyData[0].quantity_data);
-
-        // Function to create series
-        const createSeries = (dataKey, titlePrefix) => {
-            return resourceNames.map(resourceName => {
-                return {
-                    name: `${resourceName}`,
-                    data: historyData.map(item => item[dataKey] ? item[dataKey][resourceName] : null)
-                };
-            });
-        };
-
-        // Create series dynamically for quantities, production, and consumption
-        const quantitySeries = createSeries('quantity_data', 'Quantity');
-        const productionSeries = createSeries('production_data', 'Production');
-        const consumptionSeries = createSeries('consumption_data', 'Consumption');
-
-        // Update Highcharts for Quantity
-        Highcharts.charts[0].update({
-            xAxis: { categories: gameTimes },  // Use gameTimes instead of ticks
-            series: quantitySeries
-        });
-
-        // Update Highcharts for Production
-        Highcharts.charts[1].update({
-            xAxis: { categories: gameTimes },  // Use gameTimes instead of ticks
-            series: productionSeries
-        });
-
-        // Update Highcharts for Consumption
-        Highcharts.charts[2].update({
-            xAxis: { categories: gameTimes },  // Use gameTimes instead of ticks
-            series: consumptionSeries
-        });
-
-    }
 </script>
 
 <script>
-    // drawing charts
-    document.addEventListener("DOMContentLoaded", function() {
-
-        $.get("/game/advance_tick", function(data) {
+   $(document).ready(function() {
+        // Fetch initial data and initialize charts
+        $.get("/game/get_data", function(data) {
             drawHighcharts(data['history_data']);
         });
+
     });
 
-    function drawHighcharts(historyData){
-        // Assuming 'history' is passed from Django as a JSON object
-        //const historyData = JSON.parse('{{ history_data | safe }}');
-
-        console.log(historyData);
-
+    function drawHighcharts(historyData) {
         // Prepare data for Highcharts
         const ticks = historyData.map(item => item.tick);
 
@@ -439,31 +391,38 @@
             const productionSeries = createSeries('production_data', 'Production');
             const consumptionSeries = createSeries('consumption_data', 'Consumption');
 
-            // Initialize Highcharts for Quantity
-            Highcharts.chart('quantityHistory', {
-                title: { text: 'Resource Quantities Over Time' },
-                xAxis: { categories: ticks },
-                yAxis: { title: { text: 'Quantity' } },
-                series: quantitySeries
-            });
+            // Check if charts are already initialized
+            if (typeof Highcharts.charts[0] !== 'undefined') {
+                // Update existing charts
+                Highcharts.charts[0].update({ series: quantitySeries });
+                Highcharts.charts[1].update({ series: productionSeries });
+                Highcharts.charts[2].update({ series: consumptionSeries });
+            } else {
+                // Initialize new charts
+                Highcharts.chart('quantityHistory', {
+                    title: { text: 'Resource Quantities Over Time' },
+                    xAxis: { categories: ticks },
+                    yAxis: { title: { text: 'Quantity' } },
+                    series: quantitySeries
+                });
 
-            // Initialize Highcharts for Production
-            Highcharts.chart('productionHistory', {
-                title: { text: 'Resource Production Over Time' },
-                xAxis: { categories: ticks },
-                yAxis: { title: { text: 'Production' } },
-                series: productionSeries
-            });
+                Highcharts.chart('productionHistory', {
+                    title: { text: 'Resource Production Over Time' },
+                    xAxis: { categories: ticks },
+                    yAxis: { title: { text: 'Production' } },
+                    series: productionSeries
+                });
 
-            // Initialize Highcharts for Consumption
-            Highcharts.chart('consumptionHistory', {
-                title: { text: 'Resource Consumption Over Time' },
-                xAxis: { categories: ticks },
-                yAxis: { title: { text: 'Consumption' } },
-                series: consumptionSeries
-            });
+                Highcharts.chart('consumptionHistory', {
+                    title: { text: 'Resource Consumption Over Time' },
+                    xAxis: { categories: ticks },
+                    yAxis: { title: { text: 'Consumption' } },
+                    series: consumptionSeries
+                });
+            }
         }
-    };
+    }
+
 </script>
 
 </body>

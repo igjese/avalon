@@ -4,6 +4,7 @@ from . import views, debug_views  # Make sure your views are being imported
 urlpatterns = [
     path('', views.index, name='main'),
     path('advance_tick/', views.advance_tick, name='advance_tick'),
+    path('get_data/', views.get_data, name='get_data'),
     path('restart/', views.restart_game, name='restart_game'),
     path('debug/', debug_views.debug_page, name='debug_page'),
     path('logs/', debug_views.get_logs, name='logs'),

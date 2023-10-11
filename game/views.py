@@ -21,6 +21,10 @@ def advance_tick(request):
     context = prepare_context()
     return JsonResponse(context)
 
+def get_data(request):
+    context = prepare_context()
+    return JsonResponse(context)
+
 def restart_game(request):
     ctrl.restart_game()
     return HttpResponseRedirect(reverse('main'))

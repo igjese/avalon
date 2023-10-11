@@ -1,17 +1,10 @@
 from .models import Resource, ShipSystem, SubSystem, Component, InstalledComponent, InstalledStorageUnit, StoredResource, ResourceHistory, World
-import logging
-import json
+import random
 from .game_logging import log, init_logs, clear_logs  # Import the new game_logging 
 
 ship_name = "FSS Adequate"
 
-class Aggregated:
-    def __init__(self):
-        self.production = {}
-        self.consumption = {}
-        self.available_amount = {}
-        self.total_capacity = {}
-        self.available_capacity = {}
+aggregated = None
 
 # Initialize logging
 init_logs()
@@ -23,36 +16,19 @@ def advance_game_tick():
     world.save()
 
     # Reset aggregation variables for the new tick
-    global aggregated_production
-    global aggregated_consumption
-        
-    for resource_name in ship['resources'].keys():
-        aggregated_production[resource_name] = 0
-        aggregated_consumption[resource_name] = 0
-    
+    global aggregated
+    aggregated.reset()
+            
     # Any game logic that advances the state of the game by one tick
-    calculate_ship_resources()
     process_ship_systems()
     
     # Update resource history and aggregated data
     updateResourceHistory()
-
-def updateResourceHistory():
-    # Capture current resource state
-    resource_quantity = {}
-    for resource_name, resource_info in ship['resources'].items():
-        resource_quantity[resource_name] = resource_info['available']
-    
-    # Store this data in your Django model
-    ResourceHistory.objects.create(
-        tick=World.objects.get(pk=1).current_tick, 
-        quantity_data=resource_quantity, 
-        production_data=aggregated_production, 
-        consumption_data=aggregated_consumption
-    )
  
-
 def process_ship_systems():
+    # Create an empty list to hold all installed components
+    all_installed_components = []
+
     ship_systems = ShipSystem.objects.all()
 
     for system in ship_systems:
@@ -60,12 +36,15 @@ def process_ship_systems():
         subsystems = SubSystem.objects.filter(parent_system=system)
 
         for subsystem in subsystems:
-            process_subsystem(subsystem)
+            installed_components = InstalledComponent.objects.filter(parent_subsystem=subsystem)
+            all_installed_components.extend(installed_components)
 
-def process_subsystem(sub_system):
-    installed_components = InstalledComponent.objects.filter(parent_subsystem=sub_system)
-    for installed_component in installed_components:
-        process_installed_component(installed_component)  # Directly process each installed component
+    # Shuffle the list of all installed components
+    random.shuffle(all_installed_components)
+
+    # Process each installed component
+    for component in all_installed_components:
+        process_installed_component(component)
 
 def process_installed_component(installed_component):
     component = installed_component.component
@@ -76,20 +55,22 @@ def process_installed_component(installed_component):
 
     # Step 1: INTAKE: Take-in required resources
     if installed_component.state == 'INTAKE':
-        # Substep 1.1: Consume input resources
         all_resources_available = True  # Initialize a flag to check if all resources are available
         for resource_name, amount in component.consumes.items():
-            available = ship['resources'][resource_name]['available']
-            actual_consumption = min(amount, available)
-            installed_component.input_buffer[resource_name] = actual_consumption
-            ship['resources'][resource_name]['available'] -= actual_consumption
-            aggregated_consumption[resource_name] += amount  # Update based on actual consumption
+            # Take available resources into input buffer, up to required amount
+            available = aggregated.available_amount[resource_name]
+            resources_consumed = min(amount, available)
+            installed_component.input_buffer[resource_name] = resources_consumed
 
-            # Update StoredResource and logs
-            update_stored_resource(resource_name, -actual_consumption)
+            # Update stored resource in db
+            store_resources(resource_name, resources_consumed)
 
-            # Check if all required resources are available
-            if actual_consumption < amount:
+            # Update aggregated data
+            aggregated.consumed_in_tick[resource_name] += resources_consumed
+            aggregated.update()
+
+            # Check if all resources required for production cycle are available
+            if resources_consumed < amount:
                 all_resources_available = False
 
         # Transition to 'WORKING' state only if all resources are available
@@ -107,7 +88,7 @@ def process_installed_component(installed_component):
         # Transition to 'OUTPUT' state
         if installed_component.remaining_ticks_for_cycle == 0:
             installed_component.state = 'OUTPUT'
-            installed_component.output_buffer = produces.copy()
+            installed_component.output_buffer = component.produces.copy()
         installed_component.save()
 
     # Step 3: OUTPUT: Produce resources and send them to storage
@@ -142,13 +123,6 @@ def process_installed_component(installed_component):
     msg_component = f"{component.name} ({ic.parent_subsystem} / {ic.parent_subsystem.parent_system}) - {ic.state}"
     log(msg_component, msg_start, msg_finish)
 
-# Helper functions to update StoredResource and logs
-def update_stored_resource(resource_name, amount):
-    stored_resource = StoredResource.objects.get(resource__name=resource_name)
-    stored_resource.currently_stored += amount
-    stored_resource.save()
-
-
 def get_game_state():
     # Your logic to collect and return the current state of the game
     calculate_ship_resources()
@@ -166,6 +140,11 @@ def get_game_state():
     return game_state
 
 def restart_game():
+    # Setup AggregatedData instance
+    global aggregated
+    aggregated = AggregatedData()
+
+    # Reset World
     world = World.objects.get(pk=1)
     world.current_tick = 0
     world.save()
@@ -190,17 +169,8 @@ def restart_game():
     # Clear logs
     clear_logs()
 
-    # Calculate intermediate results
-    calculate_ship_resources()
-
-    # Reset aggregation variables for the new tick
-    global aggregated_production
-    global aggregated_consumption
-        
-    for resource_name in ship['resources'].keys():
-        aggregated_production[resource_name] = 0
-        aggregated_consumption[resource_name] = 0
-
+    # Reset AggregatedData and ResourceHistory
+    aggregated.reset()
     updateResourceHistory()
 
 def calculate_ship_resources():
@@ -229,3 +199,77 @@ def calculate_ship_resources():
             # Aggregate capacity for each installed storage unit
             ship['resources'][resource_name]['capacity'] += unit.storage_unit.capacity * unit.quantity
             ship['resources'][resource_name]['storage_type'] = storage_type.name  # Added this line to update the storage type
+
+class AggregatedData:
+    def __init__(self):
+        self.produced_in_tick = {}
+        self.consumed_in_tick = {}
+        self.available_amount = {}
+        self.total_capacity = {}
+        self.available_capacity = {}
+
+    def reset(self):
+        # Reset produced and consumed amounts
+        self.produced_in_tick = {}
+        self.consumed_in_tick = {}
+        
+        # Fetch all resource types from the database
+        all_resources = [str(resource.name) for resource in Resource.objects.all()]
+        
+        # Initialize aggregated data for each resource type
+        for resource in all_resources:
+            self.produced_in_tick[resource] = 0
+            self.consumed_in_tick[resource] = 0
+            self.available_amount[resource] = 0
+            self.total_capacity[resource] = 0
+            self.available_capacity[resource] = 0
+
+        # Recalculate available amount and capacity
+        self.recalculate_amount_and_capacity()
+
+    def update(self):
+        self.recalculate_amount_and_capacity()
+
+    def recalculate_amount_and_capacity(self):
+        # Iterate through all InstalledStorageUnits
+        for installed_unit in InstalledStorageUnit.objects.all():
+            # Fetch the corresponding StoredResources
+            stored_resources = StoredResource.objects.filter(storage_unit=installed_unit)
+            
+            # Update the aggregated data
+            for stored_resource in stored_resources:
+                resource_name = str(stored_resource.resource.name)
+                self.available_amount[resource_name] += stored_resource.currently_stored
+                self.total_capacity[resource_name] += installed_unit.storage_unit.capacity
+                self.available_capacity[resource_name] = self.total_capacity[resource_name] - self.available_amount[resource_name]
+
+def store_resources(resource_name, amount):
+    # Query all eligible StoredResource objects
+    eligible_stored_resources = StoredResource.objects.filter(
+        resource__name=resource_name
+    ).annotate(
+        remaining_capacity=F('storage_unit__capacity') - F('currently_stored')
+    ).order_by('-remaining_capacity')
+
+    remaining_to_store = amount
+
+    # Store the resources
+    for stored_resource in eligible_stored_resources:
+        space_available = min(stored_resource.remaining_capacity, remaining_to_store)
+        stored_resource.currently_stored += space_available
+        stored_resource.save()
+        remaining_to_store -= space_available
+
+        if remaining_to_store <= 0:
+            break
+
+def updateResourceHistory():
+    aggregated.update()
+
+    # Store this data in your Django model
+    ResourceHistory.objects.create(
+        tick=World.objects.get(pk=1).current_tick, 
+        quantity_data=aggregated.available_amount,
+        production_data=aggregated.produced_in_tick, 
+        consumption_data=aggregated.consumed_in_tick
+    )

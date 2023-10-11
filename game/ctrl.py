@@ -129,6 +129,8 @@ def get_game_state():
     # Collect current resources data
     resources_data = {}
     for resource in Resource.objects.all():
+        if resource.name not in resources_data:
+            resources_data[resource.name] = {}
         resources_data[resource.name]['available'] = aggregated.available_amount[resource.name]
         resources_data[resource.name]['capacity'] = aggregated.available_capacity[resource.name]
 
@@ -145,10 +147,6 @@ def get_game_state():
     return game_state
 
 def restart_game():
-    # Setup AggregatedData instance
-    global aggregated
-    aggregated = AggregatedData()
-
     # Reset World
     world = World.objects.get(pk=1)
     world.current_tick = 0
@@ -175,6 +173,8 @@ def restart_game():
     clear_logs()
 
     # Reset AggregatedData and ResourceHistory
+    global aggregated
+    aggregated = AggregatedData()
     aggregated.reset()
     updateResourceHistory()
 
@@ -190,17 +190,14 @@ class AggregatedData:
         # Reset produced and consumed amounts
         self.produced_in_tick = {}
         self.consumed_in_tick = {}
-        
-        # Fetch all resource types from the database
-        all_resources = [str(resource.name) for resource in Resource.objects.all()]
-        
+                
         # Initialize aggregated data for each resource type
-        for resource in all_resources:
-            self.produced_in_tick[resource] = 0
-            self.consumed_in_tick[resource] = 0
-            self.available_amount[resource] = 0
-            self.total_capacity[resource] = 0
-            self.available_capacity[resource] = 0
+        for resource in Resource.objects.all():
+            self.produced_in_tick[resource.name] = 0
+            self.consumed_in_tick[resource.name] = 0
+            self.available_amount[resource.name] = 0
+            self.total_capacity[resource.name] = 0
+            self.available_capacity[resource.name] = 0
 
         # Recalculate available amount and capacity
         self.recalculate_amount_and_capacity()
@@ -216,7 +213,7 @@ class AggregatedData:
             
             # Update the aggregated data
             for stored_resource in stored_resources:
-                resource_name = str(stored_resource.resource.name)
+                resource_name = stored_resource.resource.name
                 self.available_amount[resource_name] += stored_resource.currently_stored
                 self.total_capacity[resource_name] += installed_unit.storage_unit.capacity
                 self.available_capacity[resource_name] = self.total_capacity[resource_name] - self.available_amount[resource_name]

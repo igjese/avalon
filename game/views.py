@@ -25,6 +25,9 @@ def index(request):
     stored_resources = StoredResource.objects.all()
     game_state = ctrl.get_game_state()
     current_tick = World.objects.get(pk=1).current_tick
+
+    print(game_state)
+
     return render(request, 'game/index.html', {
         'resources': resources,
         'systems': systems,
@@ -45,12 +48,10 @@ def advance_game_tick_and_get_game_state(request):
     game_state = ctrl.get_game_state()  # Get the current game state
 
     # Prepare the alerts data
-    alerts = get_alerts(game_state['resources'])
-    game_state['alerts'] = alerts
+    game_state['alerts'] = get_alerts(game_state['resources'])
 
     # Calculate game time
-    game_time = calculate_gametime(game_state['current_tick'])
-    game_state['game_time'] = game_time
+    game_state['game_time'] = calculate_gametime(game_state['current_tick'])
 
     # Transform history data to have game time instead of ticks
     transformed_history = []
@@ -63,29 +64,6 @@ def advance_game_tick_and_get_game_state(request):
     game_state['history'] = transformed_history
 
     return JsonResponse(game_state)
-
-def calculate_gametime(current_tick):
-    elapsed_minutes = current_tick * 5
-
-    days = elapsed_minutes // (24 * 60)
-    hours = (elapsed_minutes % (24 * 60)) // 60
-    minutes = elapsed_minutes % 60
-
-    return f"{days} days, {hours} hours, {minutes} minutes"
-
-def calculate_short_gametime(tick_count):
-    total_minutes = tick_count * 5  # 5 minutes per tick
-
-    days = total_minutes // (24 * 60)
-    hours = (total_minutes % (24 * 60)) // 60
-    minutes = total_minutes % 60
-
-    short_time = ''
-    if days > 0:
-        short_time += f"{days}:"
-    short_time += f"{hours}:{str(minutes).zfill(2)}"
-
-    return short_time
 
 def restart_game(request):
     ctrl.restart_game()
@@ -115,3 +93,26 @@ def get_alerts(ship_resources):
         alerts[resource_name] = {'percentage': round(percentage, 2), 'level': level}
 
     return alerts
+
+def calculate_gametime(current_tick):
+    elapsed_minutes = current_tick * 5
+
+    days = elapsed_minutes // (24 * 60)
+    hours = (elapsed_minutes % (24 * 60)) // 60
+    minutes = elapsed_minutes % 60
+
+    return f"{days} days, {hours} hours, {minutes} minutes"
+
+def calculate_short_gametime(tick_count):
+    total_minutes = tick_count * 5  # 5 minutes per tick
+
+    days = total_minutes // (24 * 60)
+    hours = (total_minutes % (24 * 60)) // 60
+    minutes = total_minutes % 60
+
+    short_time = ''
+    if days > 0:
+        short_time += f"{days}:"
+    short_time += f"{hours}:{str(minutes).zfill(2)}"
+
+    return short_time

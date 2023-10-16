@@ -37,6 +37,20 @@ What wil NOT be implemented:
 7. **Manufacture repair parts**: Player uses production facilities to create repair parts or packs.
 8. **Repair broken components**: Player allocates repair bots and parts to fix malfunctioning OxyGeniuses.
 
+### Mechanics needed for First-Minutes Example
+
+| Step | Mechanics | Gameplay Considerations | Implementation Considerations & Challenges | Possible Approach |
+|------|-----------|-------------------------|--------------------------------------------|-------------------|
+| 1    | Basic Resource Management | All info available; Avoiding bottlenecks that make game unplayable | Extend resource types and storage units. Challenge: Balancing resource production and consumption rates. | Use Excel for initial modeling. Then use increased game speed to observe more complex interactions. |
+| 2    | Broken Components (Initial Challenge) | Achievable initial challenge | Extend `Component` and `InstalledComponent` for breakdowns. Challenge: Randomizing initial broken components without making the game unwinnable. | Use a predefined list of "safe-to-break" components for initial challenge. |
+| 3    | Celestial Bodies and Resources | Sense of discovery | Create models for celestial bodies and contained resources. Challenge: Generating celestial bodies in a way that feels both random and balanced. | Use procedural generation algorithms with constraints for celestial bodies. |
+| 4    | Sensors and Scanners | Meaningful choices | Implement sensor and scanner models as special components. Types: Planetary Scanners, Resource Surveyors. Challenge: Making scanning engaging but not too time-consuming. | Implement a quick-scan and detailed-scan option, each with different time and resource costs. |
+| 5    | Mining Drones | Logistical challenges | Implement drone models; extend resource interactions. Challenge: Drone pathfinding and resource allocation. | Use a grid-based pathfinding algorithm for drones. Implement a priority queue for resource allocation. |
+| 6    | Repair Drones and Repairs | Essential but not tedious | Implement repair drone models; add repair mechanics. Challenge: Balancing repair speed and resource costs. | Use a tiered system for repair drones, each with different speeds and resource costs. |
+| 7    | Bases and Shuttles | New layer of strategy | Implement models for bases and shuttles; extend resource/component interactions. Challenge: Synchronizing base and shuttle operations with the main ship. | Implement a "command queue" to schedule and synchronize operations between the base, shuttles, and the main ship. |
+| 8    | Automation | Reduce tedium | Implement automation algorithms for drones and shuttles. Challenge: Making automation customizable but not overwhelming. | Implement simple "if-then" logic blocks that players can customize for each drone or shuttle. |
+
+
 
 ## 4. Implementation
 
